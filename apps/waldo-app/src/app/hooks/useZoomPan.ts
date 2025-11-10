@@ -59,6 +59,13 @@ export function useZoomPan(minScale = 1, maxScale = 4) {
     });
   }, []);
 
+  const setScale = useCallback((newScale: number) => {
+    setTransform((prev) => ({
+      ...prev,
+      scale: Math.max(minScale, Math.min(maxScale, newScale)),
+    }));
+  }, [minScale, maxScale]);
+
   const reset = useCallback(() => {
     setTransform({
       scale: 1,
@@ -71,6 +78,7 @@ export function useZoomPan(minScale = 1, maxScale = 4) {
     transform,
     handleZoom,
     handlePan,
+    setScale,
     reset,
   };
 }
