@@ -8,6 +8,7 @@ This project demonstrates a modern development setup combining:
 - **Nx monorepo** for efficient workspace management
 - **React application** built with Vite
 - **GitHub Spec Kit** for spec-driven development workflows
+- **GitHub Pages** for automated deployment
 
 ## Getting Started
 
@@ -34,6 +35,33 @@ npx nx test @wheres-waldo/waldo-app
 
 # Run linting
 npx nx lint @wheres-waldo/waldo-app
+```
+
+## Deployment to GitHub Pages
+
+The application is configured for automatic deployment to GitHub Pages on every push to the `main` branch.
+
+### Setup GitHub Pages
+
+1. Go to your repository Settings → Pages
+2. Under "Build and deployment", select "Source: GitHub Actions"
+3. Push to the `main` branch to trigger deployment
+
+The workflow file is located at `.github/workflows/deploy.yml`.
+
+### Manual Deployment
+
+To manually trigger a deployment:
+1. Go to Actions tab in GitHub
+2. Select "Deploy to GitHub Pages" workflow
+3. Click "Run workflow"
+
+### Local Build for GitHub Pages
+
+To build locally with the GitHub Pages base path:
+
+```bash
+VITE_BASE_PATH=/wheres-waldo/ npx nx build @wheres-waldo/waldo-app
 ```
 
 ## Project Structure
