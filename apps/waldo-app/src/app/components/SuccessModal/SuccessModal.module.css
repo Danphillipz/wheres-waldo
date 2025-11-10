@@ -1,0 +1,99 @@
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modalContent {
+  background-color: white;
+  border-radius: 16px;
+  padding: 2rem;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modalTitle {
+  font-size: 1.75rem;
+  margin: 0 0 1rem 0;
+  color: #2e7d32;
+}
+
+.modalMessage {
+  font-size: 1.25rem;
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.modalSubtext {
+  font-size: 1rem;
+  margin: 0 0 1.5rem 0;
+  color: #666;
+}
+
+.modalButton {
+  min-width: 140px;
+  min-height: 44px;
+  padding: 0.75rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.modalButton:hover {
+  background-color: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.modalButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.modalButton:focus-visible {
+  outline: 3px solid #2e7d32;
+  outline-offset: 2px;
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .modalContent {
+    padding: 2.5rem;
+  }
+
+  .modalTitle {
+    font-size: 2rem;
+  }
+
+  .modalMessage {
+    font-size: 1.5rem;
+  }
+}

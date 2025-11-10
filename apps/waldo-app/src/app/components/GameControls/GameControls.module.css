@@ -1,0 +1,70 @@
+.gameControls {
+  display: flex;
+  gap: 1rem;
+  padding: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.controlButton {
+  min-width: 120px;
+  min-height: 44px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.controlButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.controlButton:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.controlButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.controlButton:focus-visible {
+  outline: 3px solid #0066cc;
+  outline-offset: 2px;
+}
+
+.skipButton {
+  background-color: #f5f5f5;
+  color: #333;
+}
+
+.skipButton:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+.nextButton {
+  background-color: #0066cc;
+  color: white;
+}
+
+.nextButton:hover:not(:disabled) {
+  background-color: #0052a3;
+}
+
+/* Tablet and up */
+@media (min-width: 768px) {
+  .gameControls {
+    gap: 1.5rem;
+  }
+
+  .controlButton {
+    min-width: 140px;
+    font-size: 1.125rem;
+  }
+}
