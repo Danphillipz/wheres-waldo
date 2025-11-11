@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react';
 import { waldoImages } from '../../utils/imageData';
 import { useGameState } from '../../hooks/useGameState';
-import { addToLeaderboard, getLeaderboard } from '../../utils/leaderboard';
+import { getLeaderboard, updateLeaderboardScore } from '../../utils/leaderboard';
 import ImageViewer from '../ImageViewer/ImageViewer';
 import GameControls from '../GameControls/GameControls';
 import ProgressIndicator from '../ProgressIndicator/ProgressIndicator';
 import SuccessModal from '../SuccessModal/SuccessModal';
 import Leaderboard from '../Leaderboard/Leaderboard';
+import ScoreCounter from '../ScoreCounter/ScoreCounter';
 import styles from './GameBoard.module.css';
 
 interface GameBoardProps {
@@ -50,6 +51,10 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
 
   const handleCloseModal = () => {
     setShowSuccessModal(false);
+    // If this was the last image, advance to completion screen
+    if (state.currentImageIndex === waldoImages.length - 1) {
+      nextImage();
+    }
   };
 
   const handleRestart = () => {
@@ -61,11 +66,7 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
   // Add score to leaderboard when game completes
   useEffect(() => {
     if (state.isComplete && playerName && !scoreAdded) {
-      addToLeaderboard({
-        name: playerName,
-        score: state.attempts,
-        foundImages: state.foundImages.size,
-      });
+      updateLeaderboardScore(playerName, state.attempts, state.foundImages.size);
       setLeaderboardEntries(getLeaderboard());
       setScoreAdded(true);
     }
@@ -125,6 +126,11 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
           foundImages={state.foundImages}
           imageIds={imageIds}
         />
+        <ScoreCounter
+          attempts={state.attempts}
+          currentGame={state.currentImageIndex + 1}
+          totalGames={waldoImages.length}
+        />
         <button className={styles.exitButtonHeader} onClick={onExit}>
           Exit
         </button>
@@ -135,6 +141,7 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
           image={currentImage}
           onWaldoFound={handleWaldoFound}
           onImageClick={handleImageClick}
+          clearMarkers={true}
         />
       </main>
 

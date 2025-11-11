@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { WaldoImage } from '../../utils/imageData';
 import {
   getRelativeCoordinates,
@@ -13,6 +13,7 @@ interface ImageViewerProps {
   image: WaldoImage;
   onWaldoFound: () => void;
   onImageClick: (coords: ClickCoordinates) => void;
+  clearMarkers?: boolean;
 }
 
 interface ClickMarker {
@@ -25,6 +26,7 @@ export function ImageViewer({
   image,
   onWaldoFound,
   onImageClick,
+  clearMarkers = false,
 }: ImageViewerProps) {
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -35,6 +37,13 @@ export function ImageViewer({
   const [lastTouchDistance, setLastTouchDistance] = useState<number | null>(null);
   const clickCounter = useRef(0);
   const touchStartTime = useRef<number>(0);
+
+  // Clear markers when clearMarkers prop changes or when image changes
+  useEffect(() => {
+    if (clearMarkers) {
+      setClickMarkers([]);
+    }
+  }, [clearMarkers, image.id]);
 
   const handleImageClick = (
     event: React.MouseEvent<HTMLImageElement> | React.TouchEvent<HTMLImageElement>
