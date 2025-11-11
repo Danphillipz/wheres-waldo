@@ -1,7 +1,6 @@
 import { useRef, useState, useEffect } from 'react';
 import { WaldoImage } from '../../utils/imageData';
 import {
-  getRelativeCoordinates,
   isClickNearTarget,
   percentToPixels,
   ClickCoordinates,
@@ -64,17 +63,49 @@ export function ImageViewer({
     const imgElement = imageRef.current;
     if (!imgElement) return;
 
-    // Get click coordinates as percentages
-    const clickCoords = getRelativeCoordinates(event, imgElement);
+    // Get the actual position of the click relative to the container (not the scaled image)
+    const containerRect = containerRef.current?.getBoundingClientRect();
+    if (!containerRect) return;
+
+    let clientX: number;
+    let clientY: number;
+
+    // Handle touch events
+    if ('touches' in event.nativeEvent && event.nativeEvent.touches.length > 0) {
+      const touch = event.nativeEvent.touches[0];
+      clientX = touch.clientX;
+      clientY = touch.clientY;
+    }
+    // Handle mouse events
+    else if ('clientX' in event.nativeEvent) {
+      clientX = event.nativeEvent.clientX;
+      clientY = event.nativeEvent.clientY;
+    } else {
+      return;
+    }
+
+    // Calculate the click position relative to the image element (which is scaled)
+    const imgRect = imgElement.getBoundingClientRect();
+    const x = clientX - imgRect.left;
+    const y = clientY - imgRect.top;
+
+    // Convert to percentage of the actual image size (not scaled)
+    const xPercent = (x / imgRect.width) * 100;
+    const yPercent = (y / imgRect.height) * 100;
+
+    const clickCoords = {
+      x: Math.max(0, Math.min(100, xPercent)),
+      y: Math.max(0, Math.min(100, yPercent)),
+    };
+
     onImageClick(clickCoords);
 
-    // Get image dimensions for pixel calculations
-    const rect = imgElement.getBoundingClientRect();
-    const clickPixels = percentToPixels(clickCoords, rect.width, rect.height);
+    // For Waldo detection, use pixel calculations
+    const clickPixels = percentToPixels(clickCoords, imgRect.width, imgRect.height);
     const waldoPixels = percentToPixels(
       image.waldoLocation,
-      rect.width,
-      rect.height
+      imgRect.width,
+      imgRect.height
     );
 
     // Check if click is near Waldo
@@ -83,10 +114,13 @@ export function ImageViewer({
     ) {
       onWaldoFound();
     } else {
-      // Add a marker for the missed click
+      // Add a marker for the missed click - store actual pixel position relative to container
+      const markerX = clientX - containerRect.left;
+      const markerY = clientY - containerRect.top;
+      
       setClickMarkers((prev) => [
         ...prev,
-        { id: clickCounter.current++, x: clickCoords.x, y: clickCoords.y },
+        { id: clickCounter.current++, x: markerX, y: markerY },
       ]);
     }
   };
@@ -245,17 +279,17 @@ export function ImageViewer({
             onTouchEnd={handleImageClick}
             draggable={false}
           />
-          {clickMarkers.map((marker) => (
-            <div
-              key={marker.id}
-              className={styles.clickMarker}
-              style={{
-                left: `${marker.x}%`,
-                top: `${marker.y}%`,
-              }}
-            />
-          ))}
         </div>
+        {clickMarkers.map((marker) => (
+          <div
+            key={marker.id}
+            className={styles.clickMarker}
+            style={{
+              left: `${marker.x}px`,
+              top: `${marker.y}px`,
+            }}
+          />
+        ))}
       </div>
     </div>
   );

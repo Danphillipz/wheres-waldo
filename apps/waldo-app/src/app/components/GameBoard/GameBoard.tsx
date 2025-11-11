@@ -131,6 +131,14 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
           currentGame={state.currentImageIndex + 1}
           totalGames={waldoImages.length}
         />
+        <div className={styles.headerControls}>
+          <GameControls
+            onSkip={handleSkip}
+            onNext={handleNext}
+            canSkip={!state.isComplete}
+            canNext={!state.isComplete}
+          />
+        </div>
         <button className={styles.exitButtonHeader} onClick={onExit}>
           Exit
         </button>
@@ -144,15 +152,6 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
           clearMarkers={true}
         />
       </main>
-
-      <footer className={styles.gameFooter}>
-        <GameControls
-          onSkip={handleSkip}
-          onNext={handleNext}
-          canSkip={!state.isComplete}
-          canNext={!state.isComplete}
-        />
-      </footer>
 
       <SuccessModal
         isOpen={showSuccessModal}
