@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { waldoImages } from '../../utils/imageData';
+import { waldoImages, getCongratulationMessage } from '../../utils/imageData';
 import { useGameState } from '../../hooks/useGameState';
 import { getLeaderboard, updateLeaderboardScore } from '../../utils/leaderboard';
 import ImageViewer from '../ImageViewer/ImageViewer';
@@ -151,6 +151,7 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
         onClose={handleCloseModal}
         onNext={handleNext}
         isLastImage={state.currentImageIndex === waldoImages.length - 1}
+        message={getCongratulationMessage(currentImage)}
       />
     </div>
   );

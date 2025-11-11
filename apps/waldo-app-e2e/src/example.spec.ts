@@ -4,7 +4,7 @@ import { test, expect } from '@playwright/test';
 async function startGame(page) {
   await page.goto('/');
   await page.locator('input[type="text"]').fill('Test Player');
-  await page.locator('button', { hasText: 'Start Game' }).click();
+  await page.locator('button[type="submit"]').click();
 }
 
 test.describe('Start Screen', () => {
@@ -12,9 +12,24 @@ test.describe('Start Screen', () => {
     await page.goto('/');
     
     // Verify all start screen elements are present
-    await expect(page.locator('h1')).toContainText('Welcome');
+    await expect(page.locator('h1')).toContainText("Where's");
     await expect(page.locator('input[type="text"]')).toBeVisible();
-    await expect(page.locator('button', { hasText: 'Start Game' })).toBeVisible();
+    await expect(page.locator('button[type="submit"]')).toBeVisible();
+    // Button should be disabled when no name is entered
+    await expect(page.locator('button[type="submit"]')).toBeDisabled();
+  });
+
+  test('should enable start button when name is entered', async ({ page }) => {
+    await page.goto('/');
+    
+    // Button should be disabled initially
+    await expect(page.locator('button[type="submit"]')).toBeDisabled();
+    
+    // Enter a name
+    await page.locator('input[type="text"]').fill('Test Player');
+    
+    // Button should now be enabled
+    await expect(page.locator('button[type="submit"]')).toBeEnabled();
   });
 
   test('should start game when player enters name and clicks start', async ({ page }) => {
@@ -47,7 +62,9 @@ test.describe('Game Screen - UI Elements', () => {
   });
 
   test('should display game image', async ({ page }) => {
-    await expect(page.locator('img[alt*="find Amy and Dan"]')).toBeVisible();
+    // Images have specific characters to find (Amy or Dan)
+    const image = page.locator('img[alt*="Find"]');
+    await expect(image).toBeVisible();
   });
 });
 
@@ -75,7 +92,9 @@ test.describe('Mobile Responsiveness', () => {
     await expect(page.locator('h1')).toBeVisible();
     await expect(page.locator('text=Attempts:')).toBeVisible();
     await expect(page.locator('button', { hasText: 'Skip' })).toBeVisible();
-    await expect(page.locator('img[alt*="find Amy and Dan"]')).toBeVisible();
+    // Images have specific characters to find (Amy or Dan)
+    const image = page.locator('img[alt*="Find"]');
+    await expect(image).toBeVisible();
   });
 
   test('should have proper viewport size', async ({ page }) => {

@@ -8,6 +8,7 @@ export interface WaldoImage {
     tolerance: number; // Pixels
   };
   orientation: 'landscape' | 'portrait';
+  characters: ('Dan' | 'Amy' | 'both')[]; // Characters to find in this image
 }
 
 // Get base URL from Vite's define config
@@ -20,15 +21,34 @@ export const waldoImages: WaldoImage[] = [
    {
     id: 'image-1762897033449',
     src: `${BASE_URL}images/Amy_obvious.jpg`,
-    alt: 'Find Amy and Dan in this portrait scene!',
+    alt: 'Find Amy in this portrait scene!',
     waldoLocation: { x: 54.99, y: 59.38, tolerance: 100 },
     orientation: 'portrait',
+    characters: ['Amy'],
   },
     {
     id: 'image-1762897138879',
     src: `${BASE_URL}images/Dan_Obvious.jpg`,
-    alt: 'Find Amy and Dan in this portrait scene!',
+    alt: 'Find Dan in this portrait scene!',
     waldoLocation: { x: 46.45, y: 49.56, tolerance: 70 },
     orientation: 'portrait',
+    characters: ['Dan'],
   },
 ];
+
+/**
+ * Get congratulation message based on characters found in an image
+ */
+export function getCongratulationMessage(image: WaldoImage): string {
+  const chars = image.characters;
+  if (chars.includes('both')) {
+    return 'Congratulations! You found both Dan and Amy!';
+  } else if (chars.includes('Dan') && chars.includes('Amy')) {
+    return 'Congratulations! You found both Dan and Amy!';
+  } else if (chars.includes('Dan')) {
+    return 'Congratulations! You found Dan!';
+  } else if (chars.includes('Amy')) {
+    return 'Congratulations! You found Amy!';
+  }
+  return 'Congratulations!';
+}

@@ -6,6 +6,7 @@ interface SuccessModalProps {
   onClose: () => void;
   onNext: () => void;
   isLastImage: boolean;
+  message?: string; // Custom congratulation message
 }
 
 export function SuccessModal({
@@ -13,6 +14,7 @@ export function SuccessModal({
   onClose,
   onNext,
   isLastImage,
+  message = 'Congratulations!',
 }: SuccessModalProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -48,12 +50,12 @@ export function SuccessModal({
           <span role="img" aria-label="celebration">
             🎉
           </span>{' '}
-          Congratulations!{' '}
+          {message}
+          {' '}
           <span role="img" aria-label="celebration">
             🎉
           </span>
         </h2>
-        <p className={styles.modalMessage}>You found Waldo!</p>
         {isLastImage ? (
           <>
             <p className={styles.modalSubtext}>

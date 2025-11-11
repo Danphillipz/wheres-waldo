@@ -6,12 +6,7 @@ interface StartScreenProps {
 }
 
 export function StartScreen({ onStart }: StartScreenProps) {
-  const [showNameEntry, setShowNameEntry] = useState(false);
   const [playerName, setPlayerName] = useState('');
-
-  const handleStartClick = () => {
-    setShowNameEntry(true);
-  };
 
   const handleSubmitName = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,30 +37,28 @@ export function StartScreen({ onStart }: StartScreenProps) {
           </ol>
         </div>
 
-        {!showNameEntry ? (
-          <button className={styles.startButton} onClick={handleStartClick}>
+        <form className={styles.nameForm} onSubmit={handleSubmitName}>
+          <label htmlFor="playerName" className={styles.nameLabel}>
+            Enter Your Name:
+          </label>
+          <input
+            type="text"
+            id="playerName"
+            className={styles.nameInput}
+            value={playerName}
+            onChange={(e) => setPlayerName(e.target.value)}
+            placeholder="Your name"
+            autoFocus
+            required
+          />
+          <button 
+            type="submit" 
+            className={styles.submitButton}
+            disabled={!playerName.trim()}
+          >
             Start Game
           </button>
-        ) : (
-          <form className={styles.nameForm} onSubmit={handleSubmitName}>
-            <label htmlFor="playerName" className={styles.nameLabel}>
-              Enter Your Name:
-            </label>
-            <input
-              type="text"
-              id="playerName"
-              className={styles.nameInput}
-              value={playerName}
-              onChange={(e) => setPlayerName(e.target.value)}
-              placeholder="Your name"
-              autoFocus
-              required
-            />
-            <button type="submit" className={styles.submitButton}>
-              Let's Go!
-            </button>
-          </form>
-        )}
+        </form>
       </div>
     </div>
   );

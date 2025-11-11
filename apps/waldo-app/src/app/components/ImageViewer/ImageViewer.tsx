@@ -29,7 +29,7 @@ export function ImageViewer({
 }: ImageViewerProps) {
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { transform, handleZoom, handlePan, setScale } = useZoomPan(1, 4);
+  const { transform, handleZoom, handlePan, setScale, reset } = useZoomPan(1, 4);
   const [clickMarkers, setClickMarkers] = useState<ClickMarker[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -43,6 +43,11 @@ export function ImageViewer({
       setClickMarkers([]);
     }
   }, [clearMarkers, image.id]);
+
+  // Reset zoom when image changes
+  useEffect(() => {
+    reset();
+  }, [image.id, reset]);
 
   const handleImageClick = (
     event: React.MouseEvent<HTMLImageElement> | React.TouchEvent<HTMLImageElement>
@@ -108,9 +113,15 @@ export function ImageViewer({
       imgRect.height
     );
 
+    // Scale tolerance based on zoom level - when zoomed out, reduce tolerance
+    // At scale 1 (zoomed out), use 50% of tolerance for tighter accuracy
+    // At scale 4 (fully zoomed in), use 100% of tolerance
+    const toleranceScale = 0.5 + (transform.scale - 1) * (0.5 / 3); // Linear scale from 0.5 to 1.0
+    const scaledTolerance = image.waldoLocation.tolerance * toleranceScale;
+
     // Check if click is near Waldo
     if (
-      isClickNearTarget(clickPixels, waldoPixels, image.waldoLocation.tolerance)
+      isClickNearTarget(clickPixels, waldoPixels, scaledTolerance)
     ) {
       onWaldoFound();
     } else {

@@ -97,6 +97,9 @@
   /* Prevent text selection during touch interactions */
   -webkit-user-select: none;
   user-select: none;
+  /* Prevent blue highlight on Samsung devices */
+  -webkit-tap-highlight-color: transparent;
+  tap-highlight-color: transparent;
 }
 
 .imageWrapper {
@@ -117,6 +120,9 @@
   user-select: none;
   -webkit-user-select: none;
   -webkit-touch-callout: none;
+  /* Prevent blue highlight on Samsung devices */
+  -webkit-tap-highlight-color: transparent;
+  tap-highlight-color: transparent;
 }
 
 .clickMarker {
