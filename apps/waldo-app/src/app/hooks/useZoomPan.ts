@@ -25,6 +25,15 @@ export function useZoomPan(minScale = 1, maxScale = 4) {
           return prev;
         }
 
+        // If zooming back to minimum scale (100%), reset position
+        if (newScale === minScale) {
+          return {
+            scale: newScale,
+            translateX: 0,
+            translateY: 0,
+          };
+        }
+
         // Adjust translation to zoom toward the center point
         const scaleDiff = newScale - prev.scale;
         const newTranslateX = prev.translateX - centerX * scaleDiff * 100;

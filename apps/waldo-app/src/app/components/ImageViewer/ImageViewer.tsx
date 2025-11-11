@@ -1,7 +1,6 @@
-import { useRef, useState } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { WaldoImage } from '../../utils/imageData';
 import {
-  getRelativeCoordinates,
   isClickNearTarget,
   percentToPixels,
   ClickCoordinates,
@@ -13,6 +12,11 @@ interface ImageViewerProps {
   image: WaldoImage;
   onWaldoFound: () => void;
   onImageClick: (coords: ClickCoordinates) => void;
+  clearMarkers?: boolean;
+  onSkip: () => void;
+  onNext: () => void;
+  canSkip: boolean;
+  canNext: boolean;
 }
 
 interface ClickMarker {
@@ -25,6 +29,11 @@ export function ImageViewer({
   image,
   onWaldoFound,
   onImageClick,
+  clearMarkers = false,
+  onSkip,
+  onNext,
+  canSkip,
+  canNext,
 }: ImageViewerProps) {
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -36,6 +45,13 @@ export function ImageViewer({
   const clickCounter = useRef(0);
   const touchStartTime = useRef<number>(0);
 
+  // Clear markers when clearMarkers prop changes or when image changes
+  useEffect(() => {
+    if (clearMarkers) {
+      setClickMarkers([]);
+    }
+  }, [clearMarkers, image.id]);
+
   const handleImageClick = (
     event: React.MouseEvent<HTMLImageElement> | React.TouchEvent<HTMLImageElement>
   ) => {
@@ -46,24 +62,58 @@ export function ImageViewer({
       return;
     }
     
-    // Check if this was a quick tap (not a drag)
-    const timeSinceTouchStart = Date.now() - touchStartTime.current;
-    if (timeSinceTouchStart > 300) return; // Was a drag, not a tap
+    // For touch events, check if this was a quick tap (not a drag)
+    if ('touches' in event.nativeEvent) {
+      const timeSinceTouchStart = Date.now() - touchStartTime.current;
+      if (timeSinceTouchStart > 300) return; // Was a drag, not a tap
+    }
 
     const imgElement = imageRef.current;
     if (!imgElement) return;
 
-    // Get click coordinates as percentages
-    const clickCoords = getRelativeCoordinates(event, imgElement);
+    // Get the actual position of the click relative to the container (not the scaled image)
+    const containerRect = containerRef.current?.getBoundingClientRect();
+    if (!containerRect) return;
+
+    let clientX: number;
+    let clientY: number;
+
+    // Handle touch events
+    if ('touches' in event.nativeEvent && event.nativeEvent.touches.length > 0) {
+      const touch = event.nativeEvent.touches[0];
+      clientX = touch.clientX;
+      clientY = touch.clientY;
+    }
+    // Handle mouse events
+    else if ('clientX' in event.nativeEvent) {
+      clientX = event.nativeEvent.clientX;
+      clientY = event.nativeEvent.clientY;
+    } else {
+      return;
+    }
+
+    // Calculate the click position relative to the image element (which is scaled)
+    const imgRect = imgElement.getBoundingClientRect();
+    const x = clientX - imgRect.left;
+    const y = clientY - imgRect.top;
+
+    // Convert to percentage of the actual image size (not scaled)
+    const xPercent = (x / imgRect.width) * 100;
+    const yPercent = (y / imgRect.height) * 100;
+
+    const clickCoords = {
+      x: Math.max(0, Math.min(100, xPercent)),
+      y: Math.max(0, Math.min(100, yPercent)),
+    };
+
     onImageClick(clickCoords);
 
-    // Get image dimensions for pixel calculations
-    const rect = imgElement.getBoundingClientRect();
-    const clickPixels = percentToPixels(clickCoords, rect.width, rect.height);
+    // For Waldo detection, use pixel calculations
+    const clickPixels = percentToPixels(clickCoords, imgRect.width, imgRect.height);
     const waldoPixels = percentToPixels(
       image.waldoLocation,
-      rect.width,
-      rect.height
+      imgRect.width,
+      imgRect.height
     );
 
     // Check if click is near Waldo
@@ -72,11 +122,20 @@ export function ImageViewer({
     ) {
       onWaldoFound();
     } else {
-      // Add a marker for the missed click
+      // Add a marker for the missed click - store actual pixel position relative to container
+      const markerX = clientX - containerRect.left;
+      const markerY = clientY - containerRect.top;
+      const markerId = clickCounter.current++;
+      
       setClickMarkers((prev) => [
         ...prev,
-        { id: clickCounter.current++, x: clickCoords.x, y: clickCoords.y },
+        { id: markerId, x: markerX, y: markerY },
       ]);
+      
+      // Remove the marker after 750ms
+      setTimeout(() => {
+        setClickMarkers((prev) => prev.filter((m) => m.id !== markerId));
+      }, 750);
     }
   };
 
@@ -202,6 +261,20 @@ export function ImageViewer({
         >
           Reset
         </button>
+        <button
+          className={styles.skipButton}
+          onClick={onSkip}
+          disabled={!canSkip}
+        >
+          Skip
+        </button>
+        <button
+          className={styles.nextButton}
+          onClick={onNext}
+          disabled={!canNext}
+        >
+          Next Image
+        </button>
       </div>
 
       <div
@@ -234,17 +307,19 @@ export function ImageViewer({
             onTouchEnd={handleImageClick}
             draggable={false}
           />
-          {clickMarkers.map((marker) => (
-            <div
-              key={marker.id}
-              className={styles.clickMarker}
-              style={{
-                left: `${marker.x}%`,
-                top: `${marker.y}%`,
-              }}
-            />
-          ))}
         </div>
+        {clickMarkers.map((marker) => (
+          <div
+            key={marker.id}
+            className={styles.clickMarker}
+            style={{
+              left: `${marker.x}px`,
+              top: `${marker.y}px`,
+            }}
+          >
+            ✕
+          </div>
+        ))}
       </div>
     </div>
   );

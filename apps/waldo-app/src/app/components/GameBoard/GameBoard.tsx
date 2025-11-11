@@ -1,13 +1,20 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { waldoImages } from '../../utils/imageData';
 import { useGameState } from '../../hooks/useGameState';
+import { getLeaderboard, updateLeaderboardScore } from '../../utils/leaderboard';
 import ImageViewer from '../ImageViewer/ImageViewer';
-import GameControls from '../GameControls/GameControls';
 import ProgressIndicator from '../ProgressIndicator/ProgressIndicator';
 import SuccessModal from '../SuccessModal/SuccessModal';
+import Leaderboard from '../Leaderboard/Leaderboard';
+import ScoreCounter from '../ScoreCounter/ScoreCounter';
 import styles from './GameBoard.module.css';
 
-export function GameBoard() {
+interface GameBoardProps {
+  playerName: string;
+  onExit: () => void;
+}
+
+export function GameBoard({ playerName, onExit }: GameBoardProps) {
   const {
     state,
     nextImage,
@@ -18,6 +25,8 @@ export function GameBoard() {
   } = useGameState(waldoImages.length);
   
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [leaderboardEntries, setLeaderboardEntries] = useState(getLeaderboard());
+  const [scoreAdded, setScoreAdded] = useState(false);
 
   const currentImage = waldoImages[state.currentImageIndex];
   const imageIds = waldoImages.map((img) => img.id);
@@ -41,12 +50,26 @@ export function GameBoard() {
 
   const handleCloseModal = () => {
     setShowSuccessModal(false);
+    // If this was the last image, advance to completion screen
+    if (state.currentImageIndex === waldoImages.length - 1) {
+      nextImage();
+    }
   };
 
   const handleRestart = () => {
     reset();
     setShowSuccessModal(false);
+    setScoreAdded(false);
   };
+
+  // Add score to leaderboard when game completes
+  useEffect(() => {
+    if (state.isComplete && playerName && !scoreAdded) {
+      updateLeaderboardScore(playerName, state.attempts, state.foundImages.size);
+      setLeaderboardEntries(getLeaderboard());
+      setScoreAdded(true);
+    }
+  }, [state.isComplete, playerName, state.attempts, state.foundImages.size, scoreAdded]);
 
   if (state.isComplete) {
     return (
@@ -77,9 +100,17 @@ export function GameBoard() {
             <span className={styles.statValue}>{state.attempts}</span>
           </div>
         </div>
-        <button className={styles.restartButton} onClick={handleRestart}>
-          Play Again
-        </button>
+        
+        <Leaderboard entries={leaderboardEntries} currentPlayerName={playerName} />
+        
+        <div className={styles.buttonGroup}>
+          <button className={styles.restartButton} onClick={handleRestart}>
+            Play Again
+          </button>
+          <button className={styles.exitButton} onClick={onExit}>
+            Exit
+          </button>
+        </div>
       </div>
     );
   }
@@ -87,13 +118,21 @@ export function GameBoard() {
   return (
     <div className={styles.gameBoard}>
       <header className={styles.gameHeader}>
-        <h1 className={styles.gameTitle}>Where's Waldo?</h1>
+        <h1 className={styles.gameTitle}>Where's Amy and Dan?</h1>
         <ProgressIndicator
           currentIndex={state.currentImageIndex}
           total={waldoImages.length}
           foundImages={state.foundImages}
           imageIds={imageIds}
         />
+        <ScoreCounter
+          attempts={state.attempts}
+          currentGame={state.currentImageIndex + 1}
+          totalGames={waldoImages.length}
+        />
+        <button className={styles.exitButtonHeader} onClick={onExit}>
+          Exit
+        </button>
       </header>
 
       <main className={styles.gameMain}>
@@ -101,17 +140,13 @@ export function GameBoard() {
           image={currentImage}
           onWaldoFound={handleWaldoFound}
           onImageClick={handleImageClick}
-        />
-      </main>
-
-      <footer className={styles.gameFooter}>
-        <GameControls
+          clearMarkers={true}
           onSkip={handleSkip}
           onNext={handleNext}
           canSkip={!state.isComplete}
           canNext={!state.isComplete}
         />
-      </footer>
+      </main>
 
       <SuccessModal
         isOpen={showSuccessModal}

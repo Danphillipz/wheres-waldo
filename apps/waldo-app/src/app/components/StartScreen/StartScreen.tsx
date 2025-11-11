@@ -1,0 +1,74 @@
+import { useState } from 'react';
+import styles from './StartScreen.module.css';
+
+interface StartScreenProps {
+  onStart: (playerName: string) => void;
+}
+
+export function StartScreen({ onStart }: StartScreenProps) {
+  const [showNameEntry, setShowNameEntry] = useState(false);
+  const [playerName, setPlayerName] = useState('');
+
+  const handleStartClick = () => {
+    setShowNameEntry(true);
+  };
+
+  const handleSubmitName = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (playerName.trim()) {
+      onStart(playerName.trim());
+    }
+  };
+
+  return (
+    <div className={styles.startScreen}>
+      <div className={styles.content}>
+        <h1 className={styles.title}>
+          Where's <span className={styles.strikethrough}>Waldo</span> Amy and Dan?
+        </h1>
+        
+        <p className={styles.description}>
+          We hope you're enjoying our day, why not take a few minutes to see if you can find the bride and groom in our version of Where's Waldo?
+        </p>
+
+        <div className={styles.howToPlay}>
+          <h2 className={styles.howToPlayTitle}>How to Play</h2>
+          <ol className={styles.instructions}>
+            <li>Click on the image where you think Amy and Dan are hiding</li>
+            <li>Use zoom controls to get a closer look at the crowd</li>
+            <li>Keep clicking until you find them!</li>
+            <li>Try to find them in as few attempts as possible</li>
+            <li>Your score will be added to the leaderboard at the end</li>
+          </ol>
+        </div>
+
+        {!showNameEntry ? (
+          <button className={styles.startButton} onClick={handleStartClick}>
+            Start Game
+          </button>
+        ) : (
+          <form className={styles.nameForm} onSubmit={handleSubmitName}>
+            <label htmlFor="playerName" className={styles.nameLabel}>
+              Enter Your Name:
+            </label>
+            <input
+              type="text"
+              id="playerName"
+              className={styles.nameInput}
+              value={playerName}
+              onChange={(e) => setPlayerName(e.target.value)}
+              placeholder="Your name"
+              autoFocus
+              required
+            />
+            <button type="submit" className={styles.submitButton}>
+              Let's Go!
+            </button>
+          </form>
+        )}
+      </div>
+    </div>
+  );
+}
+
+export default StartScreen;
