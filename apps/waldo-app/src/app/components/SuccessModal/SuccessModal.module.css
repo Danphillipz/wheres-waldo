@@ -37,19 +37,19 @@
 .modalTitle {
   font-size: 1.75rem;
   margin: 0 0 1rem 0;
-  color: #2e7d32;
+  color: #8b4513;
 }
 
 .modalMessage {
   font-size: 1.25rem;
   margin: 0 0 1rem 0;
-  color: #333;
+  color: #5d4037;
 }
 
 .modalSubtext {
   font-size: 1rem;
   margin: 0 0 1.5rem 0;
-  color: #666;
+  color: #8b7355;
 }
 
 .modalButton {
@@ -58,7 +58,7 @@
   padding: 0.75rem 2rem;
   font-size: 1.125rem;
   font-weight: 600;
-  background-color: #4caf50;
+  background: linear-gradient(135deg, #d4a574 0%, #c9965f 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -68,7 +68,7 @@
 }
 
 .modalButton:hover {
-  background-color: #45a049;
+  background: linear-gradient(135deg, #c9965f 0%, #b8834a 100%);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
@@ -79,7 +79,7 @@
 }
 
 .modalButton:focus-visible {
-  outline: 3px solid #2e7d32;
+  outline: 3px solid #8b4513;
   outline-offset: 2px;
 }
 

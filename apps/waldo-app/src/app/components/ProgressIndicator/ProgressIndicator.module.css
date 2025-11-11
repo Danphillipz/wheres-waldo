@@ -12,7 +12,7 @@
 .progress-text {
   font-size: 1rem;
   font-weight: 600;
-  color: #333;
+  color: #5d4037;
 }
 
 .progress-dots {
@@ -24,21 +24,21 @@
   width: 12px;
   height: 12px;
   border-radius: 50%;
-  background-color: #ddd;
-  border: 2px solid #999;
+  background-color: #f5ebe0;
+  border: 2px solid #d4a574;
   transition: all 0.3s ease;
 }
 
 .progress-dot.current {
   width: 16px;
   height: 16px;
-  border-color: #0066cc;
-  box-shadow: 0 0 0 3px rgba(0, 102, 204, 0.2);
+  border-color: #c9965f;
+  box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.3);
 }
 
 .progress-dot.found {
-  background-color: #4caf50;
-  border-color: #2e7d32;
+  background-color: #d4a574;
+  border-color: #c9965f;
 }
 
 /* Tablet and up */

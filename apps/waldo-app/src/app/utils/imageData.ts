@@ -10,19 +10,32 @@ export interface WaldoImage {
   orientation: 'landscape' | 'portrait';
 }
 
+// Helper to get base URL, works in both browser and Jest environments
+function getBaseUrl(): string {
+  if (typeof window !== 'undefined' && window.location) {
+    // In browser, check if we have a base tag
+    const baseTag = document.querySelector('base');
+    if (baseTag && baseTag.href) {
+      return baseTag.href.replace(window.location.origin, '');
+    }
+  }
+  // Default to root path
+  return '/';
+}
+
 // Sample Where's Waldo images with Waldo coordinates
 export const waldoImages: WaldoImage[] = [
   {
     id: 'image-1',
-    src: '/images/waldo-1.svg',
-    alt: 'Busy scene with many people - find Waldo!',
+    src: `${getBaseUrl()}images/waldo-1.svg`,
+    alt: 'Busy scene with many people - find Amy and Dan!',
     waldoLocation: { x: 45, y: 32, tolerance: 30 },
     orientation: 'landscape',
   },
   {
     id: 'image-2',
-    src: '/images/waldo-2.svg',
-    alt: 'Crowded scene with many people - find Waldo!',
+    src: `${getBaseUrl()}images/waldo-2.svg`,
+    alt: 'Crowded scene with many people - find Amy and Dan!',
     waldoLocation: { x: 62, y: 58, tolerance: 30 },
     orientation: 'portrait',
   },

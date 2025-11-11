@@ -13,15 +13,15 @@ describe('App', () => {
     expect(baseElement).toBeTruthy();
   });
 
-  it('should have a greeting as the title', () => {
-    const { getAllByText } = render(
+  it('should show the start screen with title', () => {
+    const { getByRole } = render(
       <BrowserRouter>
         <App />
       </BrowserRouter>
     );
-    expect(
-      getAllByText(new RegExp('Welcome @wheres-waldo/waldo-app', 'gi')).length >
-        0
-    ).toBeTruthy();
+    // Check for the heading on the start screen
+    const heading = getByRole('heading', { level: 1 });
+    expect(heading).toBeTruthy();
+    expect(heading.textContent).toContain('Amy and Dan');
   });
 });

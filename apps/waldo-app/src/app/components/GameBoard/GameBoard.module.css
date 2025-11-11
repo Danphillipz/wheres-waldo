@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-  background: linear-gradient(to bottom, #e3f2fd, #bbdefb);
+  background: linear-gradient(to bottom, #fef5e7, #fad7a0);
   padding: 1rem;
   gap: 1rem;
 }
@@ -17,7 +17,7 @@
 .gameTitle {
   font-size: 2rem;
   font-weight: bold;
-  color: #0066cc;
+  color: #8b4513;
   margin: 0;
   text-align: center;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
@@ -42,14 +42,14 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(to bottom, #e8f5e9, #c8e6c9);
+  background: linear-gradient(135deg, #fef5e7 0%, #fad7a0 50%, #f8b88b 100%);
   padding: 2rem;
   text-align: center;
 }
 
 .completionTitle {
   font-size: 2rem;
-  color: #2e7d32;
+  color: #8b4513;
   margin: 0 0 1rem 0;
 }
 
@@ -69,6 +69,8 @@
   border-radius: 12px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
   min-width: 280px;
+  max-width: 500px;
+  width: 100%;
 }
 
 .statItem {
@@ -91,7 +93,7 @@
 .statValue {
   font-size: 1.25rem;
   font-weight: bold;
-  color: #2e7d32;
+  color: #d4a574;
 }
 
 .restartButton {
@@ -100,7 +102,7 @@
   padding: 0.75rem 2rem;
   font-size: 1.125rem;
   font-weight: 600;
-  background-color: #4caf50;
+  background: linear-gradient(135deg, #d4a574 0%, #c9965f 100%);
   color: white;
   border: none;
   border-radius: 8px;
@@ -110,7 +112,7 @@
 }
 
 .restartButton:hover {
-  background-color: #45a049;
+  background: linear-gradient(135deg, #c9965f 0%, #b8834a 100%);
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
@@ -121,7 +123,7 @@
 }
 
 .restartButton:focus-visible {
-  outline: 3px solid #2e7d32;
+  outline: 3px solid #8b4513;
   outline-offset: 2px;
 }
 

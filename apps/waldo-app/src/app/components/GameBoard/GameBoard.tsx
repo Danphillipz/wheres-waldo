@@ -1,13 +1,19 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { waldoImages } from '../../utils/imageData';
 import { useGameState } from '../../hooks/useGameState';
+import { addToLeaderboard, getLeaderboard } from '../../utils/leaderboard';
 import ImageViewer from '../ImageViewer/ImageViewer';
 import GameControls from '../GameControls/GameControls';
 import ProgressIndicator from '../ProgressIndicator/ProgressIndicator';
 import SuccessModal from '../SuccessModal/SuccessModal';
+import Leaderboard from '../Leaderboard/Leaderboard';
 import styles from './GameBoard.module.css';
 
-export function GameBoard() {
+interface GameBoardProps {
+  playerName: string;
+}
+
+export function GameBoard({ playerName }: GameBoardProps) {
   const {
     state,
     nextImage,
@@ -18,6 +24,8 @@ export function GameBoard() {
   } = useGameState(waldoImages.length);
   
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [leaderboardEntries, setLeaderboardEntries] = useState(getLeaderboard());
+  const [scoreAdded, setScoreAdded] = useState(false);
 
   const currentImage = waldoImages[state.currentImageIndex];
   const imageIds = waldoImages.map((img) => img.id);
@@ -46,7 +54,21 @@ export function GameBoard() {
   const handleRestart = () => {
     reset();
     setShowSuccessModal(false);
+    setScoreAdded(false);
   };
+
+  // Add score to leaderboard when game completes
+  useEffect(() => {
+    if (state.isComplete && playerName && !scoreAdded) {
+      addToLeaderboard({
+        name: playerName,
+        score: state.attempts,
+        foundImages: state.foundImages.size,
+      });
+      setLeaderboardEntries(getLeaderboard());
+      setScoreAdded(true);
+    }
+  }, [state.isComplete, playerName, state.attempts, state.foundImages.size, scoreAdded]);
 
   if (state.isComplete) {
     return (
@@ -77,6 +99,9 @@ export function GameBoard() {
             <span className={styles.statValue}>{state.attempts}</span>
           </div>
         </div>
+        
+        <Leaderboard entries={leaderboardEntries} currentPlayerName={playerName} />
+        
         <button className={styles.restartButton} onClick={handleRestart}>
           Play Again
         </button>
@@ -87,7 +112,7 @@ export function GameBoard() {
   return (
     <div className={styles.gameBoard}>
       <header className={styles.gameHeader}>
-        <h1 className={styles.gameTitle}>Where's Waldo?</h1>
+        <h1 className={styles.gameTitle}>Where's Amy and Dan?</h1>
         <ProgressIndicator
           currentIndex={state.currentImageIndex}
           total={waldoImages.length}
