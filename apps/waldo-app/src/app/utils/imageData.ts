@@ -15,18 +15,18 @@ const BASE_URL = '/';
 
 // Sample Where's Waldo images with Waldo coordinates
 export const waldoImages: WaldoImage[] = [
-  {
-    id: 'image-1',
-    src: `${BASE_URL}images/waldo-1.svg`,
-    alt: 'Busy scene with many people - find Amy and Dan!',
-    waldoLocation: { x: 45, y: 32, tolerance: 30 },
-    orientation: 'landscape',
+   {
+    id: 'image-1762897033449',
+    src: `${BASE_URL}images/Amy_obvious.jpg`,
+    alt: 'Find Amy and Dan in this portrait scene!',
+    waldoLocation: { x: 54.99, y: 59.38, tolerance: 100 },
+    orientation: 'portrait',
   },
-  {
-    id: 'image-2',
-    src: `${BASE_URL}images/waldo-2.svg`,
-    alt: 'Crowded scene with many people - find Amy and Dan!',
-    waldoLocation: { x: 62, y: 58, tolerance: 30 },
+    {
+    id: 'image-1762897138879',
+    src: `${BASE_URL}images/Dan_Obvious.jpg`,
+    alt: 'Find Amy and Dan in this portrait scene!',
+    waldoLocation: { x: 46.45, y: 49.56, tolerance: 70 },
     orientation: 'portrait',
   },
 ];
