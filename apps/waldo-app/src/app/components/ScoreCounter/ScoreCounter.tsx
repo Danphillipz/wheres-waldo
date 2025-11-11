@@ -4,9 +4,17 @@ interface ScoreCounterProps {
   attempts: number;
   currentGame: number;
   totalGames: number;
+  onSkip?: () => void;
+  canSkip?: boolean;
 }
 
-export function ScoreCounter({ attempts, currentGame, totalGames }: ScoreCounterProps) {
+export function ScoreCounter({ 
+  attempts, 
+  currentGame, 
+  totalGames,
+  onSkip,
+  canSkip = true
+}: ScoreCounterProps) {
   return (
     <div className={styles.scoreCounter}>
       <div className={styles.scoreItem}>
@@ -17,6 +25,16 @@ export function ScoreCounter({ attempts, currentGame, totalGames }: ScoreCounter
         <span className={styles.scoreLabel}>Game:</span>
         <span className={styles.scoreValue}>{currentGame} of {totalGames}</span>
       </div>
+      {onSkip && (
+        <button
+          className={styles.skipButton}
+          onClick={onSkip}
+          disabled={!canSkip}
+          aria-label="Skip this image"
+        >
+          Skip
+        </button>
+      )}
     </div>
   );
 }

@@ -129,6 +129,8 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
           attempts={state.attempts}
           currentGame={state.currentImageIndex + 1}
           totalGames={waldoImages.length}
+          onSkip={handleSkip}
+          canSkip={!state.isComplete}
         />
         <button className={styles.exitButtonHeader} onClick={onExit}>
           Exit
@@ -141,10 +143,6 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
           onWaldoFound={handleWaldoFound}
           onImageClick={handleImageClick}
           clearMarkers={true}
-          onSkip={handleSkip}
-          onNext={handleNext}
-          canSkip={!state.isComplete}
-          canNext={!state.isComplete}
         />
       </main>
 

@@ -10,9 +10,8 @@ export interface WaldoImage {
   orientation: 'landscape' | 'portrait';
 }
 
-// Get base URL from Vite's BASE_URL environment variable
-// This is replaced at build time with the correct base path
-const BASE_URL = import.meta.env.BASE_URL || '/';
+// Get base URL - hardcoded for now, will be replaced by Vite during build
+const BASE_URL = '/';
 
 // Sample Where's Waldo images with Waldo coordinates
 export const waldoImages: WaldoImage[] = [
