@@ -1,8 +1,5 @@
 import { useState, useRef } from 'react';
-import { 
-  percentToPixels,
-  WaldoImage
-} from '@wheres-waldo/shared-ui';
+import { percentToPixels } from '@wheres-waldo/shared-ui';
 import styles from './app.module.css';
 
 interface WaldoPosition {
@@ -16,6 +13,8 @@ export function App() {
   const [waldoPosition, setWaldoPosition] = useState<WaldoPosition | null>(null);
   const [imageOrientation, setImageOrientation] = useState<'landscape' | 'portrait'>('landscape');
   const [imageName, setImageName] = useState('');
+  const [originalFile, setOriginalFile] = useState<File | null>(null);
+  const [fileExtension, setFileExtension] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
@@ -23,11 +22,17 @@ export function App() {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    // Store original file and extract extension
+    setOriginalFile(file);
+    const extension = file.name.substring(file.name.lastIndexOf('.'));
+    setFileExtension(extension);
+
     const reader = new FileReader();
     reader.onload = (e) => {
       setSelectedImage(e.target?.result as string);
       setWaldoPosition(null);
-      setImageName(file.name.replace(/\.[^/.]+$/, '')); // Remove file extension
+      // Set default name without extension
+      setImageName(file.name.replace(/\.[^/.]+$/, ''));
     };
     reader.readAsDataURL(file);
   };
@@ -51,45 +56,49 @@ export function App() {
     });
   };
 
-  const handleConfirm = () => {
-    if (!waldoPosition || !imageName) return;
+  const handleConfirm = async () => {
+    if (!waldoPosition || !imageName || !originalFile || !selectedImage) return;
 
-    // Create the image data object
-    const imageData: WaldoImage = {
-      id: `image-${Date.now()}`,
-      src: `/images/${imageName}.svg`, // This would need to be adjusted
-      alt: `Find Amy and Dan in this ${imageOrientation} scene!`,
-      waldoLocation: waldoPosition,
-      orientation: imageOrientation,
-    };
+    const imageId = `image-${Date.now()}`;
+    const fileName = `${imageName}${fileExtension}`;
 
-    // Generate the code snippet
-    const codeSnippet = `{
-  id: '${imageData.id}',
-  src: '\${BASE_URL}images/${imageName}.svg',
-  alt: '${imageData.alt}',
-  waldoLocation: { x: ${waldoPosition.x.toFixed(2)}, y: ${waldoPosition.y.toFixed(2)}, tolerance: ${waldoPosition.tolerance} },
-  orientation: '${imageOrientation}',
-},`;
+    // Create the new entry for imageData.ts
+    const newEntry = `  {
+    id: '${imageId}',
+    src: \`\${BASE_URL}images/${fileName}\`,
+    alt: 'Find Amy and Dan in this ${imageOrientation} scene!',
+    waldoLocation: { x: ${waldoPosition.x.toFixed(2)}, y: ${waldoPosition.y.toFixed(2)}, tolerance: ${waldoPosition.tolerance} },
+    orientation: '${imageOrientation}',
+  },`;
 
-    // Display the code
-    alert(`Copy this code to add to imageData.ts:\n\n${codeSnippet}\n\nDon't forget to save the image file to apps/waldo-app/public/images/${imageName}.svg`);
-    
-    // Download the position data as JSON
-    const dataStr = JSON.stringify(imageData, null, 2);
-    const dataBlob = new Blob([dataStr], { type: 'application/json' });
-    const url = URL.createObjectURL(dataBlob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `${imageName}-data.json`;
-    link.click();
-    URL.revokeObjectURL(url);
+    // Download the renamed image file
+    const imageBlob = await fetch(selectedImage).then(r => r.blob());
+    const imageUrl = URL.createObjectURL(imageBlob);
+    const imageLink = document.createElement('a');
+    imageLink.href = imageUrl;
+    imageLink.download = fileName;
+    imageLink.click();
+    URL.revokeObjectURL(imageUrl);
+
+    // Download the imageData entry as a text file
+    const textBlob = new Blob([newEntry], { type: 'text/plain' });
+    const textUrl = URL.createObjectURL(textBlob);
+    const textLink = document.createElement('a');
+    textLink.href = textUrl;
+    textLink.download = `${imageName}-entry.txt`;
+    textLink.click();
+    URL.revokeObjectURL(textUrl);
+
+    // Show instructions
+    alert(`Files downloaded successfully!\n\nNext steps:\n1. Move "${fileName}" to: apps/waldo-app/public/images/\n2. Add the content from "${imageName}-entry.txt" to the waldoImages array in: apps/waldo-app/src/app/utils/imageData.ts\n\nThe new entry has been saved to your downloads folder.`);
   };
 
   const handleReset = () => {
     setSelectedImage(null);
     setWaldoPosition(null);
     setImageName('');
+    setOriginalFile(null);
+    setFileExtension('');
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -140,6 +149,9 @@ export function App() {
                     placeholder="e.g., waldo-3"
                   />
                 </label>
+                <p className={styles.controlHint}>
+                  File will be saved as: {imageName}{fileExtension}
+                </p>
               </div>
               
               <div className={styles.controlGroup}>
@@ -210,7 +222,7 @@ export function App() {
                 disabled={!waldoPosition || !imageName}
                 className={styles.confirmButton}
               >
-                Confirm & Export
+                Confirm & Download Files
               </button>
               <button onClick={handleReset} className={styles.resetButton}>
                 Reset

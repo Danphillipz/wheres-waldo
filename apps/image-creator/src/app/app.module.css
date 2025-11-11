@@ -90,6 +90,13 @@
   color: #333;
 }
 
+.controlHint {
+  font-size: 0.85rem;
+  color: #666;
+  margin-top: 0.25rem;
+  font-weight: 400;
+}
+
 .textInput,
 .numberInput,
 .select {
