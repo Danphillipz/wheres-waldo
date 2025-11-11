@@ -27,6 +27,30 @@
   font-size: 1.1rem;
 }
 
+.skipButton {
+  background: #ff9800;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.skipButton:hover:not(:disabled) {
+  background: #f57c00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.skipButton:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 /* Mobile adjustments */
 @media (max-width: 480px) {
   .scoreCounter {
@@ -40,5 +64,10 @@
 
   .scoreValue {
     font-size: 1rem;
+  }
+
+  .skipButton {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
   }
 }

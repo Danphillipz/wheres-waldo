@@ -13,10 +13,6 @@ interface ImageViewerProps {
   onWaldoFound: () => void;
   onImageClick: (coords: ClickCoordinates) => void;
   clearMarkers?: boolean;
-  onSkip: () => void;
-  onNext: () => void;
-  canSkip: boolean;
-  canNext: boolean;
 }
 
 interface ClickMarker {
@@ -30,14 +26,10 @@ export function ImageViewer({
   onWaldoFound,
   onImageClick,
   clearMarkers = false,
-  onSkip,
-  onNext,
-  canSkip,
-  canNext,
 }: ImageViewerProps) {
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { transform, handleZoom, handlePan, reset, setScale } = useZoomPan(1, 4);
+  const { transform, handleZoom, handlePan, setScale } = useZoomPan(1, 4);
   const [clickMarkers, setClickMarkers] = useState<ClickMarker[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -233,50 +225,6 @@ export function ImageViewer({
 
   return (
     <div className={styles.imageViewerContainer}>
-      <div className={styles.zoomControls}>
-        <button
-          className={styles.zoomButton}
-          onClick={() => handleZoom(0.5)}
-          disabled={transform.scale >= 4}
-          aria-label="Zoom in"
-        >
-          +
-        </button>
-        <span className={styles.zoomLevel}>
-          {Math.round(transform.scale * 100)}%
-        </span>
-        <button
-          className={styles.zoomButton}
-          onClick={() => handleZoom(-0.5)}
-          disabled={transform.scale <= 1}
-          aria-label="Zoom out"
-        >
-          −
-        </button>
-        <button
-          className={styles.resetButton}
-          onClick={reset}
-          disabled={transform.scale === 1}
-          aria-label="Reset zoom"
-        >
-          Reset
-        </button>
-        <button
-          className={styles.skipButton}
-          onClick={onSkip}
-          disabled={!canSkip}
-        >
-          Skip
-        </button>
-        <button
-          className={styles.nextButton}
-          onClick={onNext}
-          disabled={!canNext}
-        >
-          Next Image
-        </button>
-      </div>
-
       <div
         ref={containerRef}
         className={styles.imageContainer}

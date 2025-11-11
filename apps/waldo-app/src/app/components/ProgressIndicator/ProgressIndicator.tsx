@@ -15,9 +15,6 @@ export function ProgressIndicator({
 }: ProgressIndicatorProps) {
   return (
     <div className={styles.progressIndicator}>
-      <div className={styles.progressText}>
-        Image {currentIndex + 1} of {total}
-      </div>
       <div className={styles.progressDots}>
         {imageIds.map((id, index) => (
           <span

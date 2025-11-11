@@ -1,5 +1,5 @@
 module.exports = {
-  displayName: '@wheres-waldo/waldo-app',
+  displayName: '@wheres-waldo/shared-ui',
   preset: '../../jest.preset.js',
   transform: {
     '^(?!.*\\.(js|jsx|ts|tsx|css|json)$)': '@nx/react/plugins/jest',
