@@ -3,7 +3,6 @@ import { waldoImages } from '../../utils/imageData';
 import { useGameState } from '../../hooks/useGameState';
 import { getLeaderboard, updateLeaderboardScore } from '../../utils/leaderboard';
 import ImageViewer from '../ImageViewer/ImageViewer';
-import GameControls from '../GameControls/GameControls';
 import ProgressIndicator from '../ProgressIndicator/ProgressIndicator';
 import SuccessModal from '../SuccessModal/SuccessModal';
 import Leaderboard from '../Leaderboard/Leaderboard';
@@ -131,14 +130,6 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
           currentGame={state.currentImageIndex + 1}
           totalGames={waldoImages.length}
         />
-        <div className={styles.headerControls}>
-          <GameControls
-            onSkip={handleSkip}
-            onNext={handleNext}
-            canSkip={!state.isComplete}
-            canNext={!state.isComplete}
-          />
-        </div>
         <button className={styles.exitButtonHeader} onClick={onExit}>
           Exit
         </button>
@@ -150,6 +141,10 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
           onWaldoFound={handleWaldoFound}
           onImageClick={handleImageClick}
           clearMarkers={true}
+          onSkip={handleSkip}
+          onNext={handleNext}
+          canSkip={!state.isComplete}
+          canNext={!state.isComplete}
         />
       </main>
 

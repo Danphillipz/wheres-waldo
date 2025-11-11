@@ -15,12 +15,6 @@
   position: relative;
 }
 
-.headerControls {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-}
-
 .exitButtonHeader {
   position: absolute;
   top: 0;

@@ -13,6 +13,10 @@ interface ImageViewerProps {
   onWaldoFound: () => void;
   onImageClick: (coords: ClickCoordinates) => void;
   clearMarkers?: boolean;
+  onSkip: () => void;
+  onNext: () => void;
+  canSkip: boolean;
+  canNext: boolean;
 }
 
 interface ClickMarker {
@@ -26,6 +30,10 @@ export function ImageViewer({
   onWaldoFound,
   onImageClick,
   clearMarkers = false,
+  onSkip,
+  onNext,
+  canSkip,
+  canNext,
 }: ImageViewerProps) {
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -117,11 +125,17 @@ export function ImageViewer({
       // Add a marker for the missed click - store actual pixel position relative to container
       const markerX = clientX - containerRect.left;
       const markerY = clientY - containerRect.top;
+      const markerId = clickCounter.current++;
       
       setClickMarkers((prev) => [
         ...prev,
-        { id: clickCounter.current++, x: markerX, y: markerY },
+        { id: markerId, x: markerX, y: markerY },
       ]);
+      
+      // Remove the marker after 750ms
+      setTimeout(() => {
+        setClickMarkers((prev) => prev.filter((m) => m.id !== markerId));
+      }, 750);
     }
   };
 
@@ -247,6 +261,20 @@ export function ImageViewer({
         >
           Reset
         </button>
+        <button
+          className={styles.skipButton}
+          onClick={onSkip}
+          disabled={!canSkip}
+        >
+          Skip
+        </button>
+        <button
+          className={styles.nextButton}
+          onClick={onNext}
+          disabled={!canNext}
+        >
+          Next Image
+        </button>
       </div>
 
       <div
@@ -288,7 +316,9 @@ export function ImageViewer({
               left: `${marker.x}px`,
               top: `${marker.y}px`,
             }}
-          />
+          >
+            ✕
+          </div>
         ))}
       </div>
     </div>
