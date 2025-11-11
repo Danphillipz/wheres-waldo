@@ -42,7 +42,7 @@ export function Leaderboard({ entries, currentPlayerName }: LeaderboardProps) {
               <div className={styles.name}>{entry.name}</div>
               <div className={styles.stats}>
                 <span className={styles.score}>{entry.score} attempts</span>
-                <span className={styles.found}>{entry.foundImages} found</span>
+                <span className={styles.found}>{entry.foundImages} Waldo's found</span>
               </div>
             </div>
           );

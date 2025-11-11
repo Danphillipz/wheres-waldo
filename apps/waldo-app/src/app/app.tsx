@@ -11,11 +11,16 @@ export function App() {
     setHasStarted(true);
   };
 
+  const handleExit = () => {
+    setHasStarted(false);
+    setPlayerName('');
+  };
+
   if (!hasStarted) {
     return <StartScreen onStart={handleStart} />;
   }
 
-  return <GameBoard playerName={playerName} />;
+  return <GameBoard playerName={playerName} onExit={handleExit} />;
 }
 
 export default App;

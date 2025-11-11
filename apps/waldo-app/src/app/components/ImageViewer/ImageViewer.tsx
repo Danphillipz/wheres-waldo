@@ -46,9 +46,11 @@ export function ImageViewer({
       return;
     }
     
-    // Check if this was a quick tap (not a drag)
-    const timeSinceTouchStart = Date.now() - touchStartTime.current;
-    if (timeSinceTouchStart > 300) return; // Was a drag, not a tap
+    // For touch events, check if this was a quick tap (not a drag)
+    if ('touches' in event.nativeEvent) {
+      const timeSinceTouchStart = Date.now() - touchStartTime.current;
+      if (timeSinceTouchStart > 300) return; // Was a drag, not a tap
+    }
 
     const imgElement = imageRef.current;
     if (!imgElement) return;

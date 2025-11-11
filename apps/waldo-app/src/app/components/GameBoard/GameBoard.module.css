@@ -12,6 +12,42 @@
   flex-direction: column;
   gap: 1rem;
   align-items: center;
+  position: relative;
+}
+
+.exitButtonHeader {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 80px;
+  min-height: 40px;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.9);
+  color: #8b4513;
+  border: 2px solid #d4a574;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.exitButtonHeader:hover {
+  background: #f5ebe0;
+  border-color: #c9965f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.exitButtonHeader:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.exitButtonHeader:focus-visible {
+  outline: 3px solid #8b4513;
+  outline-offset: 2px;
 }
 
 .gameTitle {
@@ -96,19 +132,31 @@
   color: #d4a574;
 }
 
-.restartButton {
-  min-width: 160px;
+.buttonGroup {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.restartButton,
+.exitButton {
+  min-width: 140px;
   min-height: 44px;
   padding: 0.75rem 2rem;
   font-size: 1.125rem;
   font-weight: 600;
-  background: linear-gradient(135deg, #d4a574 0%, #c9965f 100%);
-  color: white;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.restartButton {
+  background: linear-gradient(135deg, #d4a574 0%, #c9965f 100%);
+  color: white;
 }
 
 .restartButton:hover {
@@ -123,6 +171,29 @@
 }
 
 .restartButton:focus-visible {
+  outline: 3px solid #8b4513;
+  outline-offset: 2px;
+}
+
+.exitButton {
+  background: rgba(255, 255, 255, 0.9);
+  color: #8b4513;
+  border: 2px solid #d4a574;
+}
+
+.exitButton:hover {
+  background: #f5ebe0;
+  border-color: #c9965f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.exitButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.exitButton:focus-visible {
   outline: 3px solid #8b4513;
   outline-offset: 2px;
 }

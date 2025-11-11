@@ -11,9 +11,10 @@ import styles from './GameBoard.module.css';
 
 interface GameBoardProps {
   playerName: string;
+  onExit: () => void;
 }
 
-export function GameBoard({ playerName }: GameBoardProps) {
+export function GameBoard({ playerName, onExit }: GameBoardProps) {
   const {
     state,
     nextImage,
@@ -102,9 +103,14 @@ export function GameBoard({ playerName }: GameBoardProps) {
         
         <Leaderboard entries={leaderboardEntries} currentPlayerName={playerName} />
         
-        <button className={styles.restartButton} onClick={handleRestart}>
-          Play Again
-        </button>
+        <div className={styles.buttonGroup}>
+          <button className={styles.restartButton} onClick={handleRestart}>
+            Play Again
+          </button>
+          <button className={styles.exitButton} onClick={onExit}>
+            Exit
+          </button>
+        </div>
       </div>
     );
   }
@@ -119,6 +125,9 @@ export function GameBoard({ playerName }: GameBoardProps) {
           foundImages={state.foundImages}
           imageIds={imageIds}
         />
+        <button className={styles.exitButtonHeader} onClick={onExit}>
+          Exit
+        </button>
       </header>
 
       <main className={styles.gameMain}>
