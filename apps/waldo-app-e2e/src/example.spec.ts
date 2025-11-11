@@ -92,10 +92,10 @@ test.describe('Where\'s Waldo App', () => {
     
     // Check that zoom buttons are not present
     const zoomInButton = page.locator('button[aria-label="Zoom in"]');
-    await expect(zoomInButton).not.toBeVisible();
+    await expect(zoomInButton).toBeHidden();
     
     const zoomOutButton = page.locator('button[aria-label="Zoom out"]');
-    await expect(zoomOutButton).not.toBeVisible();
+    await expect(zoomOutButton).toBeHidden();
   });
 
   test('should not have next image button visible', async ({ page }) => {
@@ -107,7 +107,7 @@ test.describe('Where\'s Waldo App', () => {
     
     // Check that next button is not present
     const nextButton = page.locator('button', { hasText: 'Next Image' });
-    await expect(nextButton).not.toBeVisible();
+    await expect(nextButton).toBeHidden();
   });
 
   test('should be mobile-friendly with proper viewport', async ({ page, isMobile }) => {
@@ -126,13 +126,13 @@ test.describe('Where\'s Waldo App', () => {
     const gameImage = page.locator('img[alt*="find Amy and Dan"]');
     await expect(gameImage).toBeVisible();
     
-    // If on mobile, verify the viewport is properly sized
-    if (isMobile) {
-      const viewport = page.viewportSize();
-      expect(viewport).toBeTruthy();
-      if (viewport) {
-        expect(viewport.width).toBeLessThanOrEqual(500);
-      }
+    // Verify the viewport is properly sized for mobile
+    const viewport = page.viewportSize();
+    expect(viewport).toBeTruthy();
+    
+    // Only check mobile viewport width if running on a mobile device
+    if (isMobile && viewport) {
+      expect(viewport.width).toBeLessThanOrEqual(500);
     }
   });
 });

@@ -1,6 +1,5 @@
 import { useState, useRef } from 'react';
 import { 
-  isClickNearTarget,
   percentToPixels,
   WaldoImage
 } from '@wheres-waldo/shared-ui';
