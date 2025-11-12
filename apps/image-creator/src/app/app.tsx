@@ -9,12 +9,14 @@ interface WaldoPosition {
 }
 
 type CharacterType = 'Amy' | 'Dan' | 'Both';
+type Difficulty = 'Easy' | 'Hard' | 'Really Hard';
 
 export function App() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [waldoPosition, setWaldoPosition] = useState<WaldoPosition | null>(null);
   const [imageOrientation, setImageOrientation] = useState<'landscape' | 'portrait'>('landscape');
   const [characterType, setCharacterType] = useState<CharacterType>('Amy');
+  const [difficulty, setDifficulty] = useState<Difficulty>('Easy');
   const [imageName, setImageName] = useState('');
   const [originalFile, setOriginalFile] = useState<File | null>(null);
   const [fileExtension, setFileExtension] = useState('');
@@ -89,6 +91,7 @@ export function App() {
     waldoLocation: { x: ${waldoPosition.x.toFixed(2)}, y: ${waldoPosition.y.toFixed(2)}, tolerance: ${waldoPosition.tolerance} },
     orientation: '${imageOrientation}',
     characterType: CharacterType.${characterType},
+    difficulty: Difficulty.${difficulty.replace(' ', '')},
   },`;
 
     // Save image file to project directory using File System Access API
@@ -139,6 +142,7 @@ export function App() {
     setOriginalFile(null);
     setFileExtension('');
     setCharacterType('Amy');
+    setDifficulty('Easy');
     setShowCodeModal(false);
     setGeneratedCode('');
     if (fileInputRef.current) {
@@ -221,6 +225,21 @@ export function App() {
                     <option value="Amy">Amy</option>
                     <option value="Dan">Dan</option>
                     <option value="Both">Both (Amy and Dan)</option>
+                  </select>
+                </label>
+              </div>
+
+              <div className={styles.controlGroup}>
+                <label>
+                  Difficulty:
+                  <select
+                    value={difficulty}
+                    onChange={(e) => setDifficulty(e.target.value as Difficulty)}
+                    className={styles.select}
+                  >
+                    <option value="Easy">Easy</option>
+                    <option value="Hard">Hard</option>
+                    <option value="Really Hard">Really Hard</option>
                   </select>
                 </label>
               </div>

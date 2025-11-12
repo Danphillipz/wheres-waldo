@@ -1,0 +1,248 @@
+.toolbar {
+  display: flex;
+  gap: 1.5rem;
+  background: rgba(255, 255, 255, 0.95);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  justify-content: center;
+  align-items: center;
+}
+
+/* Difficulty Indicator inside toolbar */
+.difficultyIndicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.difficultyIcon {
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+}
+
+.difficultyText {
+  font-size: 0.85rem;
+}
+
+.easy {
+  background: linear-gradient(135deg, #4caf50, #81c784);
+  color: white;
+}
+
+.hard {
+  background: linear-gradient(135deg, #ff9800, #ffb74d);
+  color: white;
+}
+
+.reallyHard {
+  background: linear-gradient(135deg, #f44336, #e57373);
+  color: white;
+}
+
+/* Attempts Remaining with Waldo Avatars */
+.attemptsRemaining {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.waldoAvatar {
+  width: 24px;
+  height: 36px;
+  position: relative;
+  transition: opacity 0.3s ease;
+}
+
+.waldoAvatarUsed {
+  opacity: 0.3;
+  filter: grayscale(100%);
+}
+
+.miniWaldoHead {
+  width: 20px;
+  height: 20px;
+  background: #ffd7b5;
+  border-radius: 50%;
+  position: relative;
+  margin: 0 auto;
+  border: 2px solid #8b4513;
+}
+
+.miniWaldoHat {
+  position: absolute;
+  top: -6px;
+  left: 2px;
+  width: 16px;
+  height: 8px;
+  background: red;
+  border-radius: 4px 4px 0 0;
+  border: 1px solid #8b4513;
+}
+
+.miniWaldoHat::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 12px;
+  height: 3px;
+  background: white;
+  border-radius: 1px;
+}
+
+.miniWaldoGlasses {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 14px;
+  height: 5px;
+  border: 2px solid #333;
+  border-radius: 3px;
+  background: rgba(100, 200, 255, 0.3);
+}
+
+.miniWaldoBody {
+  width: 20px;
+  height: 16px;
+  background: white;
+  position: relative;
+  margin: 2px auto 0;
+  border-radius: 2px;
+  border: 1px solid #8b4513;
+}
+
+.miniWaldoStripes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    red 0px,
+    red 3px,
+    white 3px,
+    white 6px
+  );
+  border-radius: 2px;
+}
+
+.scoreItem {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.scoreLabel {
+  font-weight: 600;
+  color: #5d4037;
+  font-size: 0.95rem;
+}
+
+.scoreValue {
+  font-weight: 700;
+  color: #d4a574;
+  font-size: 1.1rem;
+}
+
+.skipButton {
+  background: #ff9800;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.skipButton:hover:not(:disabled) {
+  background: #f57c00;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.skipButton:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.exitButton {
+  background: rgba(255, 255, 255, 0.9);
+  color: #8b4513;
+  border: 2px solid #d4a574;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.exitButton:hover {
+  background: #f5ebe0;
+  border-color: #c9965f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.exitButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .toolbar {
+    gap: 0.8rem;
+    padding: 0.4rem 0.8rem;
+    flex-wrap: wrap;
+  }
+
+  .difficultyIndicator {
+    font-size: 0.75rem;
+    padding: 0.3rem 0.6rem;
+  }
+
+  .difficultyText {
+    font-size: 0.75rem;
+  }
+
+  .attemptsRemaining {
+    gap: 0.3rem;
+  }
+
+  .waldoAvatar {
+    width: 20px;
+    height: 30px;
+  }
+
+  .scoreLabel {
+    font-size: 0.75rem;
+  }
+
+  .scoreValue {
+    font-size: 0.9rem;
+  }
+
+  .skipButton {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .exitButton {
+    padding: 0.35rem 0.7rem;
+    font-size: 0.8rem;
+  }
+}

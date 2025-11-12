@@ -1,0 +1,130 @@
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modalContent {
+  background: white;
+  padding: 2rem;
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modalHeader {
+  margin-bottom: 1rem;
+}
+
+.modalTitle {
+  font-size: 3rem;
+  margin: 0;
+  animation: shake 0.5s ease-in-out;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-10px); }
+  75% { transform: translateX(10px); }
+}
+
+.modalBody {
+  margin-bottom: 2rem;
+}
+
+.unluckyMessage {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #d32f2f;
+  margin: 0 0 0.5rem 0;
+}
+
+.encouragementMessage {
+  font-size: 1.1rem;
+  color: #666;
+  margin: 0;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.nextButton {
+  min-width: 140px;
+  min-height: 44px;
+  padding: 0.75rem 2rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  background: linear-gradient(135deg, #d4a574 0%, #c9965f 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nextButton:hover {
+  background: linear-gradient(135deg, #c9965f 0%, #b8834a 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.nextButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.nextButton:focus-visible {
+  outline: 3px solid #8b4513;
+  outline-offset: 2px;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .modalContent {
+    padding: 1.5rem;
+  }
+
+  .modalTitle {
+    font-size: 2.5rem;
+  }
+
+  .unluckyMessage {
+    font-size: 1.25rem;
+  }
+
+  .encouragementMessage {
+    font-size: 1rem;
+  }
+
+  .nextButton {
+    min-width: 120px;
+    padding: 0.625rem 1.5rem;
+    font-size: 1rem;
+  }
+}

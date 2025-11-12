@@ -1,0 +1,107 @@
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  padding: 2rem;
+}
+
+.spinner {
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.waldoCharacter {
+  width: 80px;
+  height: 120px;
+  position: relative;
+}
+
+.waldoHead {
+  width: 50px;
+  height: 50px;
+  background: #ffd7b5;
+  border-radius: 50%;
+  position: relative;
+  margin: 0 auto;
+  border: 3px solid #8b4513;
+}
+
+.waldoHat {
+  position: absolute;
+  top: -15px;
+  left: 5px;
+  width: 40px;
+  height: 20px;
+  background: red;
+  border-radius: 10px 10px 0 0;
+  border: 2px solid #8b4513;
+}
+
+.waldoHat::before {
+  content: '';
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 8px;
+  background: white;
+  border-radius: 2px;
+}
+
+.waldoGlasses {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 35px;
+  height: 12px;
+  border: 3px solid #333;
+  border-radius: 8px;
+  background: rgba(100, 200, 255, 0.3);
+}
+
+.waldoBody {
+  width: 50px;
+  height: 60px;
+  background: white;
+  position: relative;
+  margin: 5px auto 0;
+  border-radius: 5px;
+  border: 2px solid #8b4513;
+}
+
+.waldoStripes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    red 0px,
+    red 8px,
+    white 8px,
+    white 16px
+  );
+  border-radius: 5px;
+}
+
+.loadingText {
+  margin-top: 1.5rem;
+  font-size: 1.2rem;
+  color: #8b4513;
+  font-weight: 600;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}

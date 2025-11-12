@@ -1,0 +1,50 @@
+.difficultyIndicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.difficultyIcon {
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+}
+
+.difficultyText {
+  font-size: 0.95rem;
+}
+
+.easy {
+  background: linear-gradient(135deg, #4caf50, #81c784);
+  color: white;
+}
+
+.hard {
+  background: linear-gradient(135deg, #ff9800, #ffb74d);
+  color: white;
+}
+
+.reallyHard {
+  background: linear-gradient(135deg, #f44336, #e57373);
+  color: white;
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .difficultyIndicator {
+    padding: 0.4rem 0.8rem;
+  }
+
+  .difficultyIcon {
+    font-size: 1rem;
+  }
+
+  .difficultyText {
+    font-size: 0.85rem;
+  }
+}
