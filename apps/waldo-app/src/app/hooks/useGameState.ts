@@ -5,6 +5,7 @@ export interface GameState {
   foundImages: Set<string>;
   skippedImages: Set<string>;
   attempts: number;
+  currentImageAttempts: number; // Track attempts for current image
   isComplete: boolean;
 }
 
@@ -14,6 +15,7 @@ export function useGameState(totalImages: number) {
     foundImages: new Set<string>(),
     skippedImages: new Set<string>(),
     attempts: 0,
+    currentImageAttempts: 0,
     isComplete: false,
   });
 
@@ -23,6 +25,7 @@ export function useGameState(totalImages: number) {
       return {
         ...prev,
         currentImageIndex: nextIndex,
+        currentImageAttempts: 0, // Reset per-image attempts
         isComplete: nextIndex >= totalImages,
       };
     });
@@ -55,6 +58,7 @@ export function useGameState(totalImages: number) {
     setState((prev) => ({
       ...prev,
       attempts: prev.attempts + 1,
+      currentImageAttempts: prev.currentImageAttempts + 1,
     }));
   }, []);
 
@@ -64,6 +68,7 @@ export function useGameState(totalImages: number) {
       foundImages: new Set<string>(),
       skippedImages: new Set<string>(),
       attempts: 0,
+      currentImageAttempts: 0,
       isComplete: false,
     });
   }, []);

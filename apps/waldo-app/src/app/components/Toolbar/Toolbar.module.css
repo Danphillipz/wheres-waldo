@@ -1,4 +1,4 @@
-.scoreCounter {
+.toolbar {
   display: flex;
   gap: 2rem;
   background: rgba(255, 255, 255, 0.95);
@@ -51,9 +51,33 @@
   opacity: 0.6;
 }
 
+.exitButton {
+  background: rgba(255, 255, 255, 0.9);
+  color: #8b4513;
+  border: 2px solid #d4a574;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.exitButton:hover {
+  background: #f5ebe0;
+  border-color: #c9965f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.exitButton:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
 /* Mobile adjustments */
 @media (max-width: 480px) {
-  .scoreCounter {
+  .toolbar {
     gap: 1rem;
     padding: 0.5rem 1rem;
   }
@@ -67,6 +91,11 @@
   }
 
   .skipButton {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+  }
+
+  .exitButton {
     padding: 0.4rem 0.8rem;
     font-size: 0.85rem;
   }

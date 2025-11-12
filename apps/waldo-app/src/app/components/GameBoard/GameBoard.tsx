@@ -5,9 +5,13 @@ import { getLeaderboard, updateLeaderboardScore } from '../../utils/leaderboard'
 import ImageViewer from '../ImageViewer/ImageViewer';
 import ProgressIndicator from '../ProgressIndicator/ProgressIndicator';
 import SuccessModal from '../SuccessModal/SuccessModal';
+import UnluckyModal from '../UnluckyModal/UnluckyModal';
 import Leaderboard from '../Leaderboard/Leaderboard';
-import ScoreCounter from '../ScoreCounter/ScoreCounter';
+import Toolbar from '../Toolbar/Toolbar';
+import DifficultyIndicator from '../DifficultyIndicator/DifficultyIndicator';
 import styles from './GameBoard.module.css';
+
+const MAX_ATTEMPTS_PER_IMAGE = 5;
 
 interface GameBoardProps {
   playerName: string;
@@ -25,11 +29,22 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
   } = useGameState(waldoImages.length);
   
   const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showUnluckyModal, setShowUnluckyModal] = useState(false);
   const [leaderboardEntries, setLeaderboardEntries] = useState(getLeaderboard());
   const [scoreAdded, setScoreAdded] = useState(false);
 
   const currentImage = waldoImages[state.currentImageIndex];
+  const nextImageData = state.currentImageIndex < waldoImages.length - 1 
+    ? waldoImages[state.currentImageIndex + 1] 
+    : undefined;
   const imageIds = waldoImages.map((img) => img.id);
+
+  // Check if max attempts reached
+  useEffect(() => {
+    if (state.currentImageAttempts >= MAX_ATTEMPTS_PER_IMAGE && !showSuccessModal) {
+      setShowUnluckyModal(true);
+    }
+  }, [state.currentImageAttempts, showSuccessModal]);
 
   const handleWaldoFound = () => {
     foundWaldo(currentImage.id);
@@ -48,7 +63,7 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
     nextImage();
   };
 
-  const handleCloseModal = () => {
+  const handleCloseSuccessModal = () => {
     setShowSuccessModal(false);
     // If this was the last image, advance to completion screen
     if (state.currentImageIndex === waldoImages.length - 1) {
@@ -56,9 +71,19 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
     }
   };
 
+  const handleCloseUnluckyModal = () => {
+    setShowUnluckyModal(false);
+  };
+
+  const handleUnluckyNext = () => {
+    skipImage(currentImage.id);
+    setShowUnluckyModal(false);
+  };
+
   const handleRestart = () => {
     reset();
     setShowSuccessModal(false);
+    setShowUnluckyModal(false);
     setScoreAdded(false);
   };
 
@@ -125,21 +150,21 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
           foundImages={state.foundImages}
           imageIds={imageIds}
         />
-        <ScoreCounter
-          attempts={state.attempts}
+        <Toolbar
+          attempts={state.currentImageAttempts}
           currentGame={state.currentImageIndex + 1}
           totalGames={waldoImages.length}
           onSkip={handleSkip}
-          canSkip={!state.isComplete}
+          canSkip={!state.isComplete && state.currentImageAttempts < MAX_ATTEMPTS_PER_IMAGE}
+          onExit={onExit}
         />
-        <button className={styles.exitButtonHeader} onClick={onExit}>
-          Exit
-        </button>
+        <DifficultyIndicator difficulty={currentImage.difficulty} />
       </header>
 
       <main className={styles.gameMain}>
         <ImageViewer
           image={currentImage}
+          nextImage={nextImageData}
           onWaldoFound={handleWaldoFound}
           onImageClick={handleImageClick}
           clearMarkers={true}
@@ -148,10 +173,17 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
 
       <SuccessModal
         isOpen={showSuccessModal}
-        onClose={handleCloseModal}
+        onClose={handleCloseSuccessModal}
         onNext={handleNext}
         isLastImage={state.currentImageIndex === waldoImages.length - 1}
         message={getCongratulationMessage(currentImage)}
+      />
+
+      <UnluckyModal
+        isOpen={showUnluckyModal}
+        onClose={handleCloseUnluckyModal}
+        onNext={handleUnluckyNext}
+        isLastImage={state.currentImageIndex === waldoImages.length - 1}
       />
     </div>
   );

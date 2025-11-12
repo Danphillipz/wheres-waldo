@@ -6,10 +6,12 @@ import {
   ClickCoordinates,
 } from '../../utils/clickDetection';
 import { useZoomPan } from '../../hooks/useZoomPan';
+import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import styles from './ImageViewer.module.css';
 
 interface ImageViewerProps {
   image: WaldoImage;
+  nextImage?: WaldoImage; // Next image to preload
   onWaldoFound: () => void;
   onImageClick: (coords: ClickCoordinates) => void;
   clearMarkers?: boolean;
@@ -23,6 +25,7 @@ interface ClickMarker {
 
 export function ImageViewer({
   image,
+  nextImage,
   onWaldoFound,
   onImageClick,
   clearMarkers = false,
@@ -37,10 +40,24 @@ export function ImageViewer({
   const [lastTouchDistance, setLastTouchDistance] = useState<number | null>(null);
   const clickCounter = useRef(0);
   const touchStartTime = useRef<number>(0);
+  const [isLoading, setIsLoading] = useState(true);
   
   // Anti-cheat: Track clicks for rapid clicking detection
   const recentClicks = useRef<number[]>([]);
   const [isInJail, setIsInJail] = useState(false);
+
+  // Image loading state
+  useEffect(() => {
+    setIsLoading(true);
+  }, [image.id]);
+
+  // Preload next image
+  useEffect(() => {
+    if (nextImage) {
+      const img = new Image();
+      img.src = nextImage.src;
+    }
+  }, [nextImage]);
 
   // Clear markers when clearMarkers prop changes or when image changes
   useEffect(() => {
@@ -274,6 +291,7 @@ export function ImageViewer({
 
   return (
     <div className={styles.imageViewerContainer}>
+      {isLoading && <LoadingSpinner />}
       <div
         ref={containerRef}
         className={styles.imageContainer}
@@ -287,6 +305,7 @@ export function ImageViewer({
         onTouchEnd={handleTouchEnd}
         style={{
           cursor: transform.scale > 1 ? (isDragging ? 'grabbing' : 'grab') : 'pointer',
+          display: isLoading ? 'none' : 'flex',
         }}
       >
         <div
@@ -302,6 +321,7 @@ export function ImageViewer({
             className={styles.waldoImage}
             onClick={handleImageClick}
             onTouchEnd={handleImageClick}
+            onLoad={() => setIsLoading(false)}
             draggable={false}
           />
         </div>

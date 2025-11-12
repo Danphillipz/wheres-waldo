@@ -4,6 +4,12 @@ export enum CharacterType {
   Both = 'Both'
 }
 
+export enum Difficulty {
+  Easy = 'Easy',
+  Hard = 'Hard',
+  ReallyHard = 'Really Hard'
+}
+
 export interface WaldoImage {
   id: string;
   src: string;
@@ -15,6 +21,7 @@ export interface WaldoImage {
   };
   orientation: 'landscape' | 'portrait';
   characterType: CharacterType; // Which character(s) to find in this image
+  difficulty: Difficulty; // Difficulty level of finding character(s)
 }
 
 // Get base URL from Vite's define config
@@ -31,6 +38,7 @@ export const waldoImages: WaldoImage[] = [
     waldoLocation: { x: 54.99, y: 59.38, tolerance: 100 },
     orientation: 'portrait',
     characterType: CharacterType.Amy,
+    difficulty: Difficulty.Easy,
   },
     {
     id: 'image-1762897138879',
@@ -39,6 +47,7 @@ export const waldoImages: WaldoImage[] = [
     waldoLocation: { x: 46.45, y: 49.56, tolerance: 70 },
     orientation: 'portrait',
     characterType: CharacterType.Dan,
+    difficulty: Difficulty.Easy,
   },
 ];
 

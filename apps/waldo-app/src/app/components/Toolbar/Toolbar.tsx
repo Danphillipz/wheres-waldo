@@ -1,22 +1,24 @@
-import styles from './ScoreCounter.module.css';
+import styles from './Toolbar.module.css';
 
-interface ScoreCounterProps {
+interface ToolbarProps {
   attempts: number;
   currentGame: number;
   totalGames: number;
   onSkip?: () => void;
   canSkip?: boolean;
+  onExit: () => void;
 }
 
-export function ScoreCounter({ 
+export function Toolbar({ 
   attempts, 
   currentGame, 
   totalGames,
   onSkip,
-  canSkip = true
-}: ScoreCounterProps) {
+  canSkip = true,
+  onExit
+}: ToolbarProps) {
   return (
-    <div className={styles.scoreCounter}>
+    <div className={styles.toolbar}>
       <div className={styles.scoreItem}>
         <span className={styles.scoreLabel}>Attempts:</span>
         <span className={styles.scoreValue}>{attempts}</span>
@@ -35,8 +37,15 @@ export function ScoreCounter({
           Skip
         </button>
       )}
+      <button
+        className={styles.exitButton}
+        onClick={onExit}
+        aria-label="Exit game"
+      >
+        Exit
+      </button>
     </div>
   );
 }
 
-export default ScoreCounter;
+export default Toolbar;
