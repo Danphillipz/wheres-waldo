@@ -1,3 +1,9 @@
+export enum CharacterType {
+  Amy = 'Amy',
+  Dan = 'Dan',
+  Both = 'Both'
+}
+
 export interface WaldoImage {
   id: string;
   src: string;
@@ -8,7 +14,7 @@ export interface WaldoImage {
     tolerance: number; // Pixels
   };
   orientation: 'landscape' | 'portrait';
-  characters: ('Dan' | 'Amy' | 'both')[]; // Characters to find in this image
+  characterType: CharacterType; // Which character(s) to find in this image
 }
 
 // Get base URL from Vite's define config
@@ -24,7 +30,7 @@ export const waldoImages: WaldoImage[] = [
     alt: 'Find Amy in this portrait scene!',
     waldoLocation: { x: 54.99, y: 59.38, tolerance: 100 },
     orientation: 'portrait',
-    characters: ['Amy'],
+    characterType: CharacterType.Amy,
   },
     {
     id: 'image-1762897138879',
@@ -32,7 +38,7 @@ export const waldoImages: WaldoImage[] = [
     alt: 'Find Dan in this portrait scene!',
     waldoLocation: { x: 46.45, y: 49.56, tolerance: 70 },
     orientation: 'portrait',
-    characters: ['Dan'],
+    characterType: CharacterType.Dan,
   },
 ];
 
@@ -40,15 +46,14 @@ export const waldoImages: WaldoImage[] = [
  * Get congratulation message based on characters found in an image
  */
 export function getCongratulationMessage(image: WaldoImage): string {
-  const chars = image.characters;
-  if (chars.includes('both')) {
-    return 'Congratulations! You found both Dan and Amy!';
-  } else if (chars.includes('Dan') && chars.includes('Amy')) {
-    return 'Congratulations! You found both Dan and Amy!';
-  } else if (chars.includes('Dan')) {
-    return 'Congratulations! You found Dan!';
-  } else if (chars.includes('Amy')) {
-    return 'Congratulations! You found Amy!';
+  switch (image.characterType) {
+    case CharacterType.Both:
+      return 'Congratulations! You found both Dan and Amy!';
+    case CharacterType.Dan:
+      return 'Congratulations! You found Dan!';
+    case CharacterType.Amy:
+      return 'Congratulations! You found Amy!';
+    default:
+      return 'Congratulations!';
   }
-  return 'Congratulations!';
 }
