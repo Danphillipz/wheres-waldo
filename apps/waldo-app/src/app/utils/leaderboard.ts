@@ -30,13 +30,12 @@ export function addToLeaderboard(entry: Omit<LeaderboardEntry, 'timestamp'>): vo
   
   leaderboard.push(newEntry);
   
-  // Sort by score (lower is better - fewer attempts)
-  // Then by found images (higher is better)
+  // Sort by found images (higher is better), then by score (lower is better - fewer attempts)
   leaderboard.sort((a, b) => {
-    if (a.score !== b.score) {
-      return a.score - b.score;
+    if (a.foundImages !== b.foundImages) {
+      return b.foundImages - a.foundImages; // More found images is better
     }
-    return b.foundImages - a.foundImages;
+    return a.score - b.score; // Fewer attempts is better
   });
   
   // Keep only top entries
@@ -56,13 +55,19 @@ export function updateLeaderboardScore(playerName: string, newAttempts: number, 
   const existingIndex = leaderboard.findIndex(entry => entry.name === playerName);
   
   if (existingIndex !== -1) {
-    // Update existing entry - add attempts, keep best found images
-    leaderboard[existingIndex] = {
-      ...leaderboard[existingIndex],
-      score: leaderboard[existingIndex].score + newAttempts,
-      foundImages: Math.max(leaderboard[existingIndex].foundImages, newFoundImages),
-      timestamp: Date.now(),
-    };
+    // Update existing entry - use best score (most found, fewest attempts)
+    const existing = leaderboard[existingIndex];
+    const isBetterScore = newFoundImages > existing.foundImages || 
+      (newFoundImages === existing.foundImages && newAttempts < existing.score);
+    
+    if (isBetterScore) {
+      leaderboard[existingIndex] = {
+        ...existing,
+        score: newAttempts,
+        foundImages: newFoundImages,
+        timestamp: Date.now(),
+      };
+    }
   } else {
     // Add new entry
     leaderboard.push({
@@ -73,13 +78,12 @@ export function updateLeaderboardScore(playerName: string, newAttempts: number, 
     });
   }
   
-  // Sort by score (lower is better - fewer attempts)
-  // Then by found images (higher is better)
+  // Sort by found images (higher is better), then by score (lower is better - fewer attempts)
   leaderboard.sort((a, b) => {
-    if (a.score !== b.score) {
-      return a.score - b.score;
+    if (a.foundImages !== b.foundImages) {
+      return b.foundImages - a.foundImages; // More found images is better
     }
-    return b.foundImages - a.foundImages;
+    return a.score - b.score; // Fewer attempts is better
   });
   
   // Keep only top entries
