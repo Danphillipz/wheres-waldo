@@ -49,6 +49,24 @@ export const waldoImages: WaldoImage[] = [
     characterType: CharacterType.Dan,
     difficulty: Difficulty.Easy,
   },
+    {
+    id: 'image-1762984938168',
+    src: `${BASE_URL}images/Dan_ReallyHard.jpg`,
+    alt: 'Find Dan in this portrait scene!',
+    waldoLocation: { x: 34.91, y: 54.61, tolerance: 10 },
+    orientation: 'portrait',
+    characterType: CharacterType.Dan,
+    difficulty: Difficulty.ReallyHard,
+  },
+    {
+    id: 'image-1762985053101',
+    src: `${BASE_URL}images/Amy_2_Easy.jpg`,
+    alt: 'Find Amy in this portrait scene!',
+    waldoLocation: { x: 92.22, y: 69.34, tolerance: 20 },
+    orientation: 'portrait',
+    characterType: CharacterType.Amy,
+    difficulty: Difficulty.Easy,
+  },
 ];
 
 /**
