@@ -157,6 +157,20 @@
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
+.submitButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: #ccc;
+  transform: none;
+  box-shadow: none;
+}
+
+.submitButton:disabled:hover {
+  background: #ccc;
+  transform: none;
+  box-shadow: none;
+}
+
 .submitButton:focus-visible,
 .startButton:focus-visible {
   outline: 3px solid #8b4513;

@@ -8,13 +8,18 @@ interface WaldoPosition {
   tolerance: number;
 }
 
+type CharacterType = 'Amy' | 'Dan' | 'Both';
+
 export function App() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [waldoPosition, setWaldoPosition] = useState<WaldoPosition | null>(null);
   const [imageOrientation, setImageOrientation] = useState<'landscape' | 'portrait'>('landscape');
+  const [characterType, setCharacterType] = useState<CharacterType>('Amy');
   const [imageName, setImageName] = useState('');
   const [originalFile, setOriginalFile] = useState<File | null>(null);
   const [fileExtension, setFileExtension] = useState('');
+  const [showCodeModal, setShowCodeModal] = useState(false);
+  const [generatedCode, setGeneratedCode] = useState('');
   const fileInputRef = useRef<HTMLInputElement>(null);
   const imageRef = useRef<HTMLImageElement>(null);
 
@@ -62,35 +67,69 @@ export function App() {
     const imageId = `image-${Date.now()}`;
     const fileName = `${imageName}${fileExtension}`;
 
+    // Determine alt text based on character type
+    const getAltText = () => {
+      switch (characterType) {
+        case 'Both':
+          return 'Find Amy and Dan in this';
+        case 'Dan':
+          return 'Find Dan in this';
+        case 'Amy':
+          return 'Find Amy in this';
+        default:
+          return 'Find Amy and Dan in this';
+      }
+    };
+
     // Create the new entry for imageData.ts
     const newEntry = `  {
     id: '${imageId}',
     src: \`\${BASE_URL}images/${fileName}\`,
-    alt: 'Find Amy and Dan in this ${imageOrientation} scene!',
+    alt: '${getAltText()} ${imageOrientation} scene!',
     waldoLocation: { x: ${waldoPosition.x.toFixed(2)}, y: ${waldoPosition.y.toFixed(2)}, tolerance: ${waldoPosition.tolerance} },
     orientation: '${imageOrientation}',
+    characterType: CharacterType.${characterType},
   },`;
 
-    // Download the renamed image file
-    const imageBlob = await fetch(selectedImage).then(r => r.blob());
-    const imageUrl = URL.createObjectURL(imageBlob);
-    const imageLink = document.createElement('a');
-    imageLink.href = imageUrl;
-    imageLink.download = fileName;
-    imageLink.click();
-    URL.revokeObjectURL(imageUrl);
+    // Save image file to project directory using File System Access API
+    try {
+      // Request directory handle for the project images folder
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const directoryHandle = await (window as any).showDirectoryPicker({
+        id: 'wheres-waldo-images',
+        mode: 'readwrite',
+        startIn: 'documents',
+      });
 
-    // Download the imageData entry as a text file
-    const textBlob = new Blob([newEntry], { type: 'text/plain' });
-    const textUrl = URL.createObjectURL(textBlob);
-    const textLink = document.createElement('a');
-    textLink.href = textUrl;
-    textLink.download = `${imageName}-entry.txt`;
-    textLink.click();
-    URL.revokeObjectURL(textUrl);
+      // Create the file in the selected directory
+      const fileHandle = await directoryHandle.getFileHandle(fileName, { create: true });
+      const writable = await fileHandle.createWritable();
+      
+      // Write the image data
+      const imageBlob = await fetch(selectedImage).then(r => r.blob());
+      await writable.write(imageBlob);
+      await writable.close();
 
-    // Show instructions
-    alert(`Files downloaded successfully!\n\nNext steps:\n1. Move "${fileName}" to: apps/waldo-app/public/images/\n2. Add the content from "${imageName}-entry.txt" to the waldoImages array in: apps/waldo-app/src/app/utils/imageData.ts\n\nThe new entry has been saved to your downloads folder.`);
+      // Show the code modal instead of downloading
+      setGeneratedCode(newEntry);
+      setShowCodeModal(true);
+    } catch (error) {
+      // Fallback to download if File System Access API is not available or user cancels
+      console.error('Failed to save file directly:', error);
+      
+      // Download the image file
+      const imageBlob = await fetch(selectedImage).then(r => r.blob());
+      const imageUrl = URL.createObjectURL(imageBlob);
+      const imageLink = document.createElement('a');
+      imageLink.href = imageUrl;
+      imageLink.download = fileName;
+      imageLink.click();
+      URL.revokeObjectURL(imageUrl);
+
+      // Still show the code modal
+      setGeneratedCode(newEntry);
+      setShowCodeModal(true);
+    }
   };
 
   const handleReset = () => {
@@ -99,6 +138,9 @@ export function App() {
     setImageName('');
     setOriginalFile(null);
     setFileExtension('');
+    setCharacterType('Amy');
+    setShowCodeModal(false);
+    setGeneratedCode('');
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -168,6 +210,21 @@ export function App() {
                 </label>
               </div>
 
+              <div className={styles.controlGroup}>
+                <label>
+                  Character(s):
+                  <select
+                    value={characterType}
+                    onChange={(e) => setCharacterType(e.target.value as CharacterType)}
+                    className={styles.select}
+                  >
+                    <option value="Amy">Amy</option>
+                    <option value="Dan">Dan</option>
+                    <option value="Both">Both (Amy and Dan)</option>
+                  </select>
+                </label>
+              </div>
+
               {waldoPosition && (
                 <div className={styles.controlGroup}>
                   <label>
@@ -231,6 +288,39 @@ export function App() {
           </div>
         )}
       </main>
+
+      {/* Code Modal */}
+      {showCodeModal && (
+        <div className={styles.modalBackdrop} onClick={() => setShowCodeModal(false)}>
+          <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
+            <h2 className={styles.modalTitle}>Image Entry Code</h2>
+            <p className={styles.modalInstructions}>
+              Copy this code and add it to the <code>waldoImages</code> array in:<br />
+              <code>apps/waldo-app/src/app/utils/imageData.ts</code>
+            </p>
+            <pre className={styles.codeBlock}>
+              <code>{generatedCode}</code>
+            </pre>
+            <div className={styles.modalButtons}>
+              <button
+                className={styles.copyButton}
+                onClick={() => {
+                  navigator.clipboard.writeText(generatedCode);
+                  alert('Code copied to clipboard!');
+                }}
+              >
+                Copy to Clipboard
+              </button>
+              <button
+                className={styles.closeButton}
+                onClick={() => setShowCodeModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -13,12 +13,13 @@
   gap: 1rem;
   align-items: center;
   position: relative;
+  padding-top: 3rem; /* Space for absolute positioned exit button */
 }
 
 .exitButtonHeader {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 0.5rem;
+  right: 0.5rem;
   min-width: 80px;
   min-height: 40px;
   padding: 0.5rem 1rem;
@@ -31,6 +32,7 @@
   cursor: pointer;
   transition: all 0.2s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  z-index: 10;
 }
 
 .exitButtonHeader:hover {
