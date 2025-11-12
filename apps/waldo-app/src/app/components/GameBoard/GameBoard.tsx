@@ -8,7 +8,6 @@ import SuccessModal from '../SuccessModal/SuccessModal';
 import UnluckyModal from '../UnluckyModal/UnluckyModal';
 import Leaderboard from '../Leaderboard/Leaderboard';
 import Toolbar from '../Toolbar/Toolbar';
-import DifficultyIndicator from '../DifficultyIndicator/DifficultyIndicator';
 import styles from './GameBoard.module.css';
 
 const MAX_ATTEMPTS_PER_IMAGE = 5;
@@ -152,13 +151,14 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
         />
         <Toolbar
           attempts={state.currentImageAttempts}
+          maxAttempts={MAX_ATTEMPTS_PER_IMAGE}
           currentGame={state.currentImageIndex + 1}
           totalGames={waldoImages.length}
+          difficulty={currentImage.difficulty}
           onSkip={handleSkip}
           canSkip={!state.isComplete && state.currentImageAttempts < MAX_ATTEMPTS_PER_IMAGE}
           onExit={onExit}
         />
-        <DifficultyIndicator difficulty={currentImage.difficulty} />
       </header>
 
       <main className={styles.gameMain}>
