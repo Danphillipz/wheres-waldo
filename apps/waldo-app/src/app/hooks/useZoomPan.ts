@@ -51,8 +51,9 @@ export function useZoomPan(minScale = 1, maxScale = 4) {
 
   const handlePan = useCallback((deltaX: number, deltaY: number) => {
     setTransform((prev) => {
-      // Limit pan based on scale
-      const maxTranslate = (prev.scale - 1) * 50;
+      // Increase pan limit to allow seeing entire image
+      // At higher zoom levels, we need more pan range
+      const maxTranslate = (prev.scale - 1) * 100;
 
       return {
         ...prev,

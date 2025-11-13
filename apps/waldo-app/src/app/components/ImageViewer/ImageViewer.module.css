@@ -89,6 +89,7 @@
   position: relative;
   width: 100%;
   min-height: 0;
+  flex: 1;
   overflow: hidden;
   border-radius: 8px;
   background-color: #f5f5f5;
@@ -205,10 +206,6 @@
 
 /* Tablet and up */
 @media (min-width: 768px) {
-  .imageContainer {
-    height: 70vh;
-  }
-
   .zoomButton,
   .resetButton {
     min-width: 48px;
@@ -218,7 +215,4 @@
 
 /* Desktop */
 @media (min-width: 1024px) {
-  .imageContainer {
-    height: 75vh;
-  }
 }
