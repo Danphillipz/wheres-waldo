@@ -9,6 +9,29 @@ This project demonstrates a modern development setup combining:
 - **React application** built with Vite
 - **GitHub Spec Kit** for spec-driven development workflows
 - **GitHub Pages** for automated deployment
+- **Cloud-ready leaderboard** for cross-device score persistence
+
+## Features
+
+- 🎯 Interactive "Where's Waldo" game with Amy and Dan
+- 📱 Mobile-optimized with pinch zoom and pan support
+- 🏆 Leaderboard system (localStorage by default, cloud-ready)
+- 🎨 Responsive design that works on all devices
+- ⚡ Fast performance with Vite and React 19
+
+## Cloud Leaderboard
+
+By default, the leaderboard uses localStorage (device-only storage). To enable cross-device score sharing:
+
+1. See [CLOUD_LEADERBOARD.md](./CLOUD_LEADERBOARD.md) for detailed setup instructions
+2. Choose from Firebase, Supabase, or your own backend
+3. Free tier options available for all platforms
+
+Quick start with Firebase:
+```bash
+npm install firebase
+# Follow instructions in CLOUD_LEADERBOARD.md
+```
 
 ## Getting Started
 
