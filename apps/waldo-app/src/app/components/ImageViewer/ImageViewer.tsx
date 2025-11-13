@@ -43,14 +43,16 @@ export function ImageViewer({
   const touchStartTime = useRef<number>(0);
   const touchStartPosition = useRef<{ x: number; y: number } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const loadStartTimeRef = useRef<number>(0);
   
   // Anti-cheat: Track clicks for rapid clicking detection
   const recentClicks = useRef<number[]>([]);
   const [isInJail, setIsInJail] = useState(false);
 
-  // Image loading state
+  // Image loading state - show spinner for minimum 1 second
   useEffect(() => {
     setIsLoading(true);
+    loadStartTimeRef.current = Date.now();
   }, [image.id]);
 
   // Preload next image
@@ -364,7 +366,15 @@ export function ImageViewer({
             className={styles.waldoImage}
             onClick={handleImageClick}
             onTouchEnd={handleImageClick}
-            onLoad={() => setIsLoading(false)}
+            onLoad={() => {
+              const elapsed = Date.now() - loadStartTimeRef.current;
+              const minDisplayTime = 1000; // 1 second minimum
+              if (elapsed < minDisplayTime) {
+                setTimeout(() => setIsLoading(false), minDisplayTime - elapsed);
+              } else {
+                setIsLoading(false);
+              }
+            }}
             draggable={false}
           />
         </div>
