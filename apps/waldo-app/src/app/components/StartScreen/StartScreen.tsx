@@ -7,6 +7,7 @@ interface StartScreenProps {
 
 export function StartScreen({ onStart }: StartScreenProps) {
   const [playerName, setPlayerName] = useState('');
+  const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
 
   const handleSubmitName = (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,14 +28,23 @@ export function StartScreen({ onStart }: StartScreenProps) {
         </p>
 
         <div className={styles.howToPlay}>
-          <h2 className={styles.howToPlayTitle}>How to Play</h2>
-          <ol className={styles.instructions}>
-            <li>Click on the image where you think Amy and Dan are hiding</li>
-            <li>Use zoom controls to get a closer look at the crowd</li>
-            <li>Keep clicking until you find them!</li>
-            <li>Try to find them in as few attempts as possible</li>
-            <li>Your score will be added to the leaderboard at the end</li>
-          </ol>
+          <button 
+            className={styles.howToPlayToggle}
+            onClick={() => setIsHowToPlayOpen(!isHowToPlayOpen)}
+            aria-expanded={isHowToPlayOpen}
+          >
+            <h2 className={styles.howToPlayTitle}>How to Play?</h2>
+            <span className={styles.toggleIcon}>{isHowToPlayOpen ? '−' : '+'}</span>
+          </button>
+          {isHowToPlayOpen && (
+            <ol className={styles.instructions}>
+              <li>Click on the image where you think Amy and Dan are hiding</li>
+              <li>Use zoom controls to get a closer look at the crowd</li>
+              <li>Keep clicking until you find them!</li>
+              <li>Try to find them in as few attempts as possible</li>
+              <li>Your score will be added to the leaderboard at the end</li>
+            </ol>
+          )}
         </div>
 
         <form className={styles.nameForm} onSubmit={handleSubmitName}>

@@ -5,14 +5,20 @@
   max-height: 100vh;
   background: linear-gradient(to bottom, #fef5e7, #fad7a0);
   padding: 0.5rem;
-  gap: 0.5rem;
+  gap: 0.25rem;
   overflow: hidden;
+  /* Ensure proper viewport on mobile */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
 
 .gameHeader {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: 0.25rem;
   align-items: center;
   flex-shrink: 0;
 }

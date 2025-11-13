@@ -38,8 +38,10 @@ export function ImageViewer({
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
   const [hasDragged, setHasDragged] = useState(false);
   const [lastTouchDistance, setLastTouchDistance] = useState<number | null>(null);
+  const [isPinching, setIsPinching] = useState(false);
   const clickCounter = useRef(0);
   const touchStartTime = useRef<number>(0);
+  const touchStartPosition = useRef<{ x: number; y: number } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   
   // Anti-cheat: Track clicks for rapid clicking detection
@@ -79,8 +81,8 @@ export function ImageViewer({
       return;
     }
     
-    // Don't register clicks if user was dragging
-    if (hasDragged) {
+    // Don't register clicks if user was dragging or pinching
+    if (hasDragged || isPinching) {
       return;
     }
     
@@ -93,6 +95,17 @@ export function ImageViewer({
     if ('touches' in event.nativeEvent) {
       const timeSinceTouchStart = Date.now() - touchStartTime.current;
       if (timeSinceTouchStart > 300) return; // Was a drag, not a tap
+      
+      // Check if finger moved significantly during touch
+      if (touchStartPosition.current) {
+        const touch = event.nativeEvent.touches[0] || event.nativeEvent.changedTouches[0];
+        if (touch) {
+          const dx = Math.abs(touch.clientX - touchStartPosition.current.x);
+          const dy = Math.abs(touch.clientY - touchStartPosition.current.y);
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          if (distance > 10) return; // Moved more than 10px, not a tap
+        }
+      }
     }
     
     // Anti-cheat: Track click timing
@@ -240,14 +253,21 @@ export function ImageViewer({
       const distance = getTouchDistance(event.touches);
       setLastTouchDistance(distance);
       setIsDragging(false);
+      setIsPinching(true);
+      setHasDragged(false); // Reset for new gesture
     } else if (event.touches.length === 1) {
-      // Single finger - allow dragging when zoomed
-      setIsDragging(true);
+      // Single finger - store starting position for tap detection
+      touchStartPosition.current = {
+        x: event.touches[0].clientX,
+        y: event.touches[0].clientY,
+      };
+      setIsDragging(transform.scale > 1);
       setDragStart({
         x: event.touches[0].clientX,
         y: event.touches[0].clientY,
       });
       setLastTouchDistance(null);
+      setIsPinching(false);
     }
   };
 
@@ -262,11 +282,23 @@ export function ImageViewer({
       const newScale = transform.scale + scaleDelta;
       setScale(newScale);
       setLastTouchDistance(currentDistance);
+      setHasDragged(true); // Mark as dragged to prevent click
     } else if (event.touches.length === 1 && isDragging) {
       // Pan/drag
       event.preventDefault();
       const deltaX = ((event.touches[0].clientX - dragStart.x) / transform.scale) * 2;
       const deltaY = ((event.touches[0].clientY - dragStart.y) / transform.scale) * 2;
+      
+      // Check if user has moved enough to count as dragging
+      if (touchStartPosition.current) {
+        const dx = Math.abs(event.touches[0].clientX - touchStartPosition.current.x);
+        const dy = Math.abs(event.touches[0].clientY - touchStartPosition.current.y);
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance > 10) {
+          setHasDragged(true);
+        }
+      }
+      
       handlePan(deltaX, deltaY);
       setDragStart({
         x: event.touches[0].clientX,
@@ -279,13 +311,24 @@ export function ImageViewer({
     if (event.touches.length === 0) {
       setIsDragging(false);
       setLastTouchDistance(null);
+      // Reset pinching flag after a delay to prevent immediate clicks
+      setTimeout(() => {
+        setIsPinching(false);
+        setHasDragged(false);
+        touchStartPosition.current = null;
+      }, 100);
     } else if (event.touches.length === 1) {
-      // One finger left, reset for potential drag
+      // One finger left after pinch, reset for potential drag
       setDragStart({
         x: event.touches[0].clientX,
         y: event.touches[0].clientY,
       });
+      touchStartPosition.current = {
+        x: event.touches[0].clientX,
+        y: event.touches[0].clientY,
+      };
       setLastTouchDistance(null);
+      setIsPinching(false);
     }
   };
 
