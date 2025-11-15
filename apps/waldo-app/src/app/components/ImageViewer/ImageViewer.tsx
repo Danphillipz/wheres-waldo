@@ -33,7 +33,7 @@ export function ImageViewer({
 }: ImageViewerProps) {
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { transform, handleZoom, handlePan, setScale, reset } = useZoomPan(1, 4);
+  const { transform, handleZoom, handlePan, setScale, reset } = useZoomPan(1, 8);
   const [clickMarkers, setClickMarkers] = useState<ClickMarker[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
