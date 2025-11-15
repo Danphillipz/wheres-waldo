@@ -204,8 +204,8 @@ export function ImageViewer({
 
   const handleMouseMove = (event: React.MouseEvent) => {
     if (isDragging) {
-      const deltaX = ((event.clientX - dragStart.x) / transform.scale) * 0.5;
-      const deltaY = ((event.clientY - dragStart.y) / transform.scale) * 0.5;
+      const deltaX = (event.clientX - dragStart.x) / transform.scale;
+      const deltaY = (event.clientY - dragStart.y) / transform.scale;
       
       // If user moved more than 5 pixels, consider it a drag
       const distance = Math.sqrt(Math.pow(event.clientX - dragStart.x, 2) + Math.pow(event.clientY - dragStart.y, 2));
@@ -274,8 +274,8 @@ export function ImageViewer({
     } else if (event.touches.length === 1 && isDragging) {
       // Pan/drag
       event.preventDefault();
-      const deltaX = ((event.touches[0].clientX - dragStart.x) / transform.scale) * 2;
-      const deltaY = ((event.touches[0].clientY - dragStart.y) / transform.scale) * 2;
+      const deltaX = (event.touches[0].clientX - dragStart.x) / transform.scale;
+      const deltaY = (event.touches[0].clientY - dragStart.y) / transform.scale;
       
       // Check if user has moved enough to count as dragging
       if (touchStartPosition.current) {

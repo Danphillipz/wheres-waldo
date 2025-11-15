@@ -86,7 +86,7 @@ export const waldoImages: WaldoImage[] = [
   },
   {
     id: 'image-1763239402000',
-    src: `${BASE_URL}images/Amy_and_dan.jpg`,
+    src: `${BASE_URL}images/Amy_and_dan_petal_fields.jpg`,
     alt: 'Find Amy and Dan in this portrait scene!',
     waldoLocation: { x1: 54.8, y1: 44.32, x2: 29.45, y2: 56.37 },
     detectionType: 'rectangle',
