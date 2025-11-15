@@ -8,7 +8,6 @@ import {
 } from '../../utils/clickDetection';
 import { useZoomPan } from '../../hooks/useZoomPan';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
-import WaldoFoundAnimation from '../WaldoFoundAnimation/WaldoFoundAnimation';
 import styles from './ImageViewer.module.css';
 
 interface ImageViewerProps {
@@ -46,15 +45,11 @@ export function ImageViewer({
   const touchStartPosition = useRef<{ x: number; y: number } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const loadStartTimeRef = useRef<number>(0);
-  const [showAnimation, setShowAnimation] = useState(false);
-  const [waldoFoundLocation, setWaldoFoundLocation] = useState<{ x: number; y: number } | null>(null);
 
   // Image loading state - show spinner for minimum 1 second
   useEffect(() => {
     setIsLoading(true);
     loadStartTimeRef.current = Date.now();
-    setShowAnimation(false);
-    setWaldoFoundLocation(null);
   }, [image.id]);
 
   // Preload next image
@@ -149,16 +144,10 @@ export function ImageViewer({
 
     // Check if click found Waldo based on detection type
     let waldoFound = false;
-    let foundX = clickCoords.x;
-    let foundY = clickCoords.y;
     
     if (image.detectionType === 'rectangle') {
       // Rectangle detection - click coordinates are already in percentages
       waldoFound = isClickInRectangle(clickCoords, image.waldoLocation as { x1: number; y1: number; x2: number; y2: number });
-      // Use center of rectangle for animation
-      const rect = image.waldoLocation as { x1: number; y1: number; x2: number; y2: number };
-      foundX = (rect.x1 + rect.x2) / 2;
-      foundY = (rect.y1 + rect.y2) / 2;
     } else {
       // Circle detection - use pixel calculations
       const clickPixels = percentToPixels(clickCoords, imgRect.width, imgRect.height);
@@ -176,15 +165,11 @@ export function ImageViewer({
       const scaledTolerance = waldoLocation.tolerance * toleranceScale;
 
       waldoFound = isClickNearTarget(clickPixels, waldoPixels, scaledTolerance);
-      foundX = waldoLocation.x;
-      foundY = waldoLocation.y;
     }
 
     // Check if click is near Waldo
     if (waldoFound) {
-      // Show animation at Waldo's location
-      setWaldoFoundLocation({ x: foundX, y: foundY });
-      setShowAnimation(true);
+      onWaldoFound();
     } else {
       // Add a marker for the missed click - store actual pixel position relative to container
       const markerX = clientX - containerRect.left;
@@ -335,22 +320,9 @@ export function ImageViewer({
     }
   };
 
-  const handleAnimationComplete = () => {
-    setShowAnimation(false);
-    setWaldoFoundLocation(null);
-    onWaldoFound();
-  };
-
   return (
     <div className={styles.imageViewerContainer}>
       {isLoading && <LoadingSpinner />}
-      {showAnimation && waldoFoundLocation && (
-        <WaldoFoundAnimation
-          targetX={waldoFoundLocation.x}
-          targetY={waldoFoundLocation.y}
-          onComplete={handleAnimationComplete}
-        />
-      )}
       <div
         ref={containerRef}
         className={styles.imageContainer}
