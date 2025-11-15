@@ -8,12 +8,21 @@
 }
 
 .spinner {
-  animation: spin 2s linear infinite;
+  animation: spin 2s linear infinite, colorShift 3s ease-in-out infinite;
 }
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+@keyframes colorShift {
+  0%, 100% {
+    filter: hue-rotate(0deg) drop-shadow(0 4px 12px rgba(16, 185, 129, 0.4));
+  }
+  50% {
+    filter: hue-rotate(30deg) drop-shadow(0 4px 12px rgba(236, 72, 153, 0.4));
+  }
 }
 
 .waldoCharacter {
@@ -38,9 +47,10 @@
   left: 5px;
   width: 40px;
   height: 20px;
-  background: red;
+  background: var(--pink-500);
   border-radius: 10px 10px 0 0;
-  border: 2px solid #8b4513;
+  border: 2px solid var(--gray-800);
+  box-shadow: 0 2px 8px rgba(236, 72, 153, 0.3);
 }
 
 .waldoHat::before {
@@ -85,8 +95,8 @@
   height: 100%;
   background: repeating-linear-gradient(
     0deg,
-    red 0px,
-    red 8px,
+    var(--pink-500) 0px,
+    var(--pink-500) 8px,
     white 8px,
     white 16px
   );
@@ -94,14 +104,25 @@
 }
 
 .loadingText {
+  font-family: var(--font-body);
   margin-top: 1.5rem;
-  font-size: 1.2rem;
-  color: #8b4513;
-  font-weight: 600;
-  animation: pulse 1.5s ease-in-out infinite;
+  font-size: 1.3rem;
+  font-weight: 700;
+  animation: textPulse 1.5s ease-in-out infinite;
+  background: linear-gradient(135deg, var(--emerald-600), var(--pink-600));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 0.02em;
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+@keyframes textPulse {
+  0%, 100% { 
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% { 
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
 }
