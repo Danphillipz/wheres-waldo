@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 
 /**
  * Hook to preload images in the background
@@ -8,21 +8,15 @@ import { useEffect, useState, useRef } from 'react';
 export function useImagePreloader(imageSrcs: string[]) {
   const [loadedCount, setLoadedCount] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const hasPreloaded = useRef(false);
 
   useEffect(() => {
-    // Prevent multiple preload attempts
-    if (hasPreloaded.current) {
-      return;
-    }
-
     if (imageSrcs.length === 0) {
       setIsLoading(false);
       return;
     }
 
-    hasPreloaded.current = true;
     let loadedImages = 0;
+    let isMounted = true;
     const imageElements: HTMLImageElement[] = [];
 
     imageSrcs.forEach((src) => {
@@ -30,6 +24,8 @@ export function useImagePreloader(imageSrcs: string[]) {
       imageElements.push(img);
 
       img.onload = () => {
+        if (!isMounted) return;
+        
         loadedImages++;
         setLoadedCount(loadedImages);
         
@@ -39,6 +35,8 @@ export function useImagePreloader(imageSrcs: string[]) {
       };
 
       img.onerror = (error) => {
+        if (!isMounted) return;
+        
         console.error('Failed to load image:', src, error);
         // Count errors as loaded to prevent infinite loading
         loadedImages++;
@@ -54,13 +52,13 @@ export function useImagePreloader(imageSrcs: string[]) {
 
     // Cleanup function
     return () => {
+      isMounted = false;
       imageElements.forEach((img) => {
         img.onload = null;
         img.onerror = null;
       });
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // Empty dependency array - only run once
+  }, [imageSrcs.length]); // Use length instead of the array itself to avoid infinite loops
 
   return { isLoading, loadedCount, totalCount: imageSrcs.length };
 }
