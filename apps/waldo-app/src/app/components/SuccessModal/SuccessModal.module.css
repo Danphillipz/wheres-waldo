@@ -11,22 +11,32 @@
   z-index: 1000;
   padding: 1rem;
   overflow: hidden;
+  animation: backdropFadeIn 0.3s ease-out;
 }
 
-/* Firework animations */
+@keyframes backdropFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+/* Enhanced Firework animations with trails */
 .firework {
   position: absolute;
-  width: 4px;
-  height: 4px;
+  width: 6px;
+  height: 6px;
   background: transparent;
   border-radius: 50%;
-  animation: fireworkExplode 1.5s ease-out infinite;
+  animation: fireworkBurst 2s cubic-bezier(0.25, 0.46, 0.45, 0.94) infinite;
   pointer-events: none;
 }
 
-@keyframes fireworkExplode {
+@keyframes fireworkBurst {
   0% {
-    transform: scale(0);
+    transform: scale(0) rotate(0deg);
     opacity: 1;
     box-shadow: 
       0 0 0 0 #ff0000,
@@ -36,30 +46,42 @@
       0 0 0 0 #0088ff,
       0 0 0 0 #ff00ff;
   }
-  20% {
-    transform: scale(1);
+  15% {
+    transform: scale(1) rotate(45deg);
     box-shadow:
-      0 -80px 10px 2px #ff0000,
-      60px -60px 10px 2px #ff7700,
-      80px 0 10px 2px #ffdd00,
-      60px 60px 10px 2px #00ff00,
-      0 80px 10px 2px #0088ff,
-      -60px 60px 10px 2px #ff00ff,
-      -80px 0 10px 2px #ff0000,
-      -60px -60px 10px 2px #ff7700;
+      0 -100px 15px 4px #ff0000,
+      70px -70px 15px 4px #ff7700,
+      100px 0 15px 4px #ffdd00,
+      70px 70px 15px 4px #00ff00,
+      0 100px 15px 4px #0088ff,
+      -70px 70px 15px 4px #ff00ff,
+      -100px 0 15px 4px #ff0000,
+      -70px -70px 15px 4px #ff7700;
+  }
+  30% {
+    transform: scale(1.2) rotate(90deg);
+    box-shadow:
+      0 -140px 25px 3px #ff0000,
+      100px -100px 25px 3px #ff7700,
+      140px 0 25px 3px #ffdd00,
+      100px 100px 25px 3px #00ff00,
+      0 140px 25px 3px #0088ff,
+      -100px 100px 25px 3px #ff00ff,
+      -140px 0 25px 3px #ff0000,
+      -100px -100px 25px 3px #ff7700;
   }
   100% {
-    transform: scale(1);
+    transform: scale(1.5) rotate(180deg);
     opacity: 0;
     box-shadow:
-      0 -120px 20px 0 transparent,
-      90px -90px 20px 0 transparent,
-      120px 0 20px 0 transparent,
-      90px 90px 20px 0 transparent,
-      0 120px 20px 0 transparent,
-      -90px 90px 20px 0 transparent,
-      -120px 0 20px 0 transparent,
-      -90px -90px 20px 0 transparent;
+      0 -200px 40px 0 transparent,
+      140px -140px 40px 0 transparent,
+      200px 0 40px 0 transparent,
+      140px 140px 40px 0 transparent,
+      0 200px 40px 0 transparent,
+      -140px 140px 40px 0 transparent,
+      -200px 0 40px 0 transparent,
+      -140px -140px 40px 0 transparent;
   }
 }
 
@@ -71,17 +93,25 @@
   width: 100%;
   text-align: center;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
-  animation: slideIn 0.3s ease-out;
+  animation: modalPopIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  position: relative;
+  transform-origin: center;
 }
 
-@keyframes slideIn {
-  from {
-    transform: translateY(-50px);
+@keyframes modalPopIn {
+  0% {
     opacity: 0;
+    transform: scale(0.3) rotate(-10deg);
   }
-  to {
-    transform: translateY(0);
+  50% {
+    transform: scale(1.1) rotate(5deg);
+  }
+  70% {
+    transform: scale(0.95) rotate(-2deg);
+  }
+  100% {
     opacity: 1;
+    transform: scale(1) rotate(0deg);
   }
 }
 
@@ -90,6 +120,21 @@
   margin: 0 0 1rem 0;
   color: #8b4513;
   word-wrap: break-word;
+  animation: titleBounce 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.2s backwards;
+}
+
+@keyframes titleBounce {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.8);
+  }
+  60% {
+    transform: translateY(5px) scale(1.05);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 .modalMessage {
@@ -115,19 +160,39 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.modalButton::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.modalButton:hover::after {
+  width: 300px;
+  height: 300px;
 }
 
 .modalButton:hover {
   background: linear-gradient(135deg, #c9965f 0%, #b8834a 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
 .modalButton:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px) scale(1.02);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
 .modalButton:focus-visible {

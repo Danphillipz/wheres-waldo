@@ -34,7 +34,25 @@
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+.zoomButton::before,
+.resetButton::before,
+.skipButton::before,
+.nextButton::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.3);
+  transform: translate(-50%, -50%);
+  transition: width 0.4s, height 0.4s;
 }
 
 .zoomButton:hover:not(:disabled),
@@ -42,6 +60,23 @@
 .skipButton:hover:not(:disabled),
 .nextButton:hover:not(:disabled) {
   background: linear-gradient(135deg, #c9965f 0%, #b8834a 100%);
+  transform: translateY(-3px) scale(1.1) rotate(5deg);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+.zoomButton:hover:not(:disabled)::before,
+.resetButton:hover:not(:disabled)::before,
+.skipButton:hover:not(:disabled)::before,
+.nextButton:hover:not(:disabled)::before {
+  width: 200px;
+  height: 200px;
+}
+
+.zoomButton:active:not(:disabled),
+.resetButton:active:not(:disabled),
+.skipButton:active:not(:disabled),
+.nextButton:active:not(:disabled) {
+  transform: scale(0.95);
 }
 
 .zoomButton:disabled,
@@ -137,7 +172,7 @@
   color: #ff4444;
   transform: translate(-50%, -50%);
   pointer-events: none;
-  animation: fadeOut 750ms ease-out forwards;
+  animation: markerExplode 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -145,14 +180,20 @@
   text-shadow: 0 0 3px rgba(255, 255, 255, 0.8);
 }
 
-@keyframes fadeOut {
+@keyframes markerExplode {
   0% {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: translate(-50%, -50%) scale(0) rotate(0deg);
+  }
+  30% {
+    transform: translate(-50%, -50%) scale(1.5) rotate(180deg);
+  }
+  60% {
+    transform: translate(-50%, -50%) scale(1.2) rotate(270deg);
   }
   100% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.5);
+    transform: translate(-50%, -50%) scale(0.3) rotate(360deg);
   }
 }
 

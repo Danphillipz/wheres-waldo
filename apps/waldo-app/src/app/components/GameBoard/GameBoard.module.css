@@ -56,18 +56,55 @@
   background: linear-gradient(135deg, #fef5e7 0%, #fad7a0 50%, #f8b88b 100%);
   padding: 2rem;
   text-align: center;
+  animation: screenFadeIn 0.8s ease-out;
+}
+
+@keyframes screenFadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .completionTitle {
   font-size: 2rem;
   color: #8b4513;
   margin: 0 0 1rem 0;
+  animation: titleZoomIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes titleZoomIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3) rotateY(-90deg);
+  }
+  60% {
+    transform: scale(1.1) rotateY(10deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotateY(0deg);
+  }
 }
 
 .completionMessage {
   font-size: 1.25rem;
   color: #333;
   margin: 0 0 2rem 0;
+  animation: messageSlide 0.6s ease-out 0.3s backwards;
+}
+
+@keyframes messageSlide {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .completionStats {
@@ -82,6 +119,21 @@
   min-width: 280px;
   max-width: 500px;
   width: 100%;
+  animation: statsPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.5s backwards;
+}
+
+@keyframes statsPop {
+  0% {
+    opacity: 0;
+    transform: scale(0.8) translateY(30px);
+  }
+  60% {
+    transform: scale(1.05) translateY(-5px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .statItem {
@@ -90,6 +142,22 @@
   align-items: center;
   padding: 0.5rem 0;
   border-bottom: 1px solid #e0e0e0;
+  animation: statItemSlide 0.4s ease-out backwards;
+}
+
+.statItem:nth-child(1) { animation-delay: 0.7s; }
+.statItem:nth-child(2) { animation-delay: 0.8s; }
+.statItem:nth-child(3) { animation-delay: 0.9s; }
+
+@keyframes statItemSlide {
+  0% {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
 }
 
 .statItem:last-child {
@@ -105,6 +173,21 @@
   font-size: 1.25rem;
   font-weight: bold;
   color: #d4a574;
+  animation: valueCount 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
+}
+
+@keyframes valueCount {
+  0% {
+    opacity: 0;
+    transform: scale(0.5) rotate(-180deg);
+  }
+  60% {
+    transform: scale(1.2) rotate(20deg);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
 }
 
 .buttonGroup {
@@ -113,6 +196,18 @@
   margin-top: 1rem;
   flex-wrap: wrap;
   justify-content: center;
+  animation: buttonGroupFade 0.6s ease-out 1.2s backwards;
+}
+
+@keyframes buttonGroupFade {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .restartButton,
@@ -125,8 +220,30 @@
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  position: relative;
+  overflow: hidden;
+}
+
+.restartButton::before,
+.exitButton::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.restartButton:hover::before,
+.exitButton:hover::before {
+  width: 300px;
+  height: 300px;
 }
 
 .restartButton {
@@ -136,13 +253,13 @@
 
 .restartButton:hover {
   background: linear-gradient(135deg, #c9965f 0%, #b8834a 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px) scale(1.05) rotate(2deg);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
 .restartButton:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
 .restartButton:focus-visible {
@@ -159,13 +276,13 @@
 .exitButton:hover {
   background: #f5ebe0;
   border-color: #c9965f;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(-4px) scale(1.05) rotate(-2deg);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
 }
 
 .exitButton:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px) scale(1.02);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
 }
 
 .exitButton:focus-visible {
