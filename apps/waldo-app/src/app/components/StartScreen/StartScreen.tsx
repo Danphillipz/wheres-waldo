@@ -18,6 +18,46 @@ export function StartScreen({ onStart }: StartScreenProps) {
 
   return (
     <div className={styles.startScreen}>
+      {/* Floating Waldos in background */}
+      <div className={styles.floatingWaldo} style={{ top: '10%', left: '5%', animationDelay: '0s' }}>
+        <div className={styles.waldoCharacter}>
+          <div className={styles.waldoHead}>
+            <div className={styles.waldoHat}>
+              <div className={styles.waldoHatStripe}></div>
+            </div>
+            <div className={styles.waldoGlasses}></div>
+          </div>
+          <div className={styles.waldoBody}>
+            <div className={styles.waldoStripes}></div>
+          </div>
+        </div>
+      </div>
+      <div className={styles.floatingWaldo} style={{ top: '60%', right: '8%', animationDelay: '2s' }}>
+        <div className={styles.waldoCharacter}>
+          <div className={styles.waldoHead}>
+            <div className={styles.waldoHat}>
+              <div className={styles.waldoHatStripe}></div>
+            </div>
+            <div className={styles.waldoGlasses}></div>
+          </div>
+          <div className={styles.waldoBody}>
+            <div className={styles.waldoStripes}></div>
+          </div>
+        </div>
+      </div>
+      <div className={styles.floatingWaldo} style={{ bottom: '15%', left: '10%', animationDelay: '4s' }}>
+        <div className={styles.waldoCharacter}>
+          <div className={styles.waldoHead}>
+            <div className={styles.waldoHat}>
+              <div className={styles.waldoHatStripe}></div>
+            </div>
+            <div className={styles.waldoGlasses}></div>
+          </div>
+          <div className={styles.waldoBody}>
+            <div className={styles.waldoStripes}></div>
+          </div>
+        </div>
+      </div>
       <div className={styles.content}>
         <h1 className={styles.title}>
           Where's <span className={styles.strikethrough}>Waldo</span> Amy and Dan?
