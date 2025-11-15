@@ -116,7 +116,7 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
             <span className={styles.statValue}>{state.foundImages.size}</span>
           </div>
           <div className={styles.statItem}>
-            <span className={styles.statLabel}>Images Skipped:</span>
+            <span className={styles.statLabel}>Waldos Missed:</span>
             <span className={styles.statValue}>{state.skippedImages.size}</span>
           </div>
           <div className={styles.statItem}>

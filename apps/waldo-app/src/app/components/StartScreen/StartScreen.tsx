@@ -38,11 +38,11 @@ export function StartScreen({ onStart }: StartScreenProps) {
           </button>
           {isHowToPlayOpen && (
             <ol className={styles.instructions}>
-              <li>Click on the image where you think Amy and Dan are hiding</li>
-              <li>Use zoom controls to get a closer look at the crowd</li>
-              <li>Keep clicking until you find them!</li>
-              <li>Try to find them in as few attempts as possible</li>
-              <li>Your score will be added to the leaderboard at the end</li>
+              <li>Somewhere in the picture Amy and Dan are hiding.</li>
+              <li>Zoom in to get a closer look at the picture.</li>
+              <li>If you think you've found them, click on their location.</li>
+              <li>Try to find them in as few attempts as possible.</li>
+              <li>If you've not found them in 5 attempts, game over!</li>
             </ol>
           )}
         </div>
@@ -66,7 +66,7 @@ export function StartScreen({ onStart }: StartScreenProps) {
             className={styles.submitButton}
             disabled={!playerName.trim()}
           >
-            Start Game
+            Let's Find Waldo!
           </button>
         </form>
       </div>

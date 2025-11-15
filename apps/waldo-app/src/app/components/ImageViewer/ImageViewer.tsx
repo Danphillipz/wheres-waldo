@@ -44,10 +44,6 @@ export function ImageViewer({
   const touchStartPosition = useRef<{ x: number; y: number } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const loadStartTimeRef = useRef<number>(0);
-  
-  // Anti-cheat: Track clicks for rapid clicking detection
-  const recentClicks = useRef<number[]>([]);
-  const [isInJail, setIsInJail] = useState(false);
 
   // Image loading state - show spinner for minimum 1 second
   useEffect(() => {
@@ -78,11 +74,6 @@ export function ImageViewer({
   const handleImageClick = (
     event: React.MouseEvent<HTMLImageElement> | React.TouchEvent<HTMLImageElement>
   ) => {
-    // Don't allow clicks if in jail
-    if (isInJail) {
-      return;
-    }
-    
     // Don't register clicks if user was dragging or pinching
     if (hasDragged || isPinching) {
       return;
@@ -108,21 +99,6 @@ export function ImageViewer({
           if (distance > 10) return; // Moved more than 10px, not a tap
         }
       }
-    }
-    
-    // Anti-cheat: Track click timing
-    const now = Date.now();
-    recentClicks.current.push(now);
-    
-    // Keep only clicks from the last 2 seconds
-    recentClicks.current = recentClicks.current.filter(time => now - time < 2000);
-    
-    // If more than 5 clicks in 2 seconds, put them in jail
-    if (recentClicks.current.length > 5) {
-      setIsInJail(true);
-      recentClicks.current = [];
-      setTimeout(() => setIsInJail(false), 3000); // 3 second timeout
-      return;
     }
 
     const imgElement = imageRef.current;
@@ -368,7 +344,7 @@ export function ImageViewer({
             onTouchEnd={handleImageClick}
             onLoad={() => {
               const elapsed = Date.now() - loadStartTimeRef.current;
-              const minDisplayTime = 1000; // 1 second minimum
+              const minDisplayTime =  500; // 0.5 second minimum
               if (elapsed < minDisplayTime) {
                 setTimeout(() => setIsLoading(false), minDisplayTime - elapsed);
               } else {
@@ -390,13 +366,6 @@ export function ImageViewer({
             ✕
           </div>
         ))}
-        {isInJail && (
-          <div className={styles.jailOverlay}>
-            <div className={styles.jailMessage}>
-              <span role="img" aria-label="alert">🚨</span> Trying to cheat are we? <span role="img" aria-label="alert">🚨</span>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
