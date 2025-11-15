@@ -8,12 +8,23 @@ interface WaldoPosition {
   tolerance: number;
 }
 
+interface RectanglePosition {
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+}
+
+type DetectionType = 'circle' | 'rectangle';
 type CharacterType = 'Amy' | 'Dan' | 'Both';
-type Difficulty = 'Easy' | 'Hard' | 'Really Hard';
+type Difficulty = 'Practice' | 'Easy' | 'Hard' | 'Really Hard';
 
 export function App() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [waldoPosition, setWaldoPosition] = useState<WaldoPosition | null>(null);
+  const [rectanglePosition, setRectanglePosition] = useState<RectanglePosition | null>(null);
+  const [firstCorner, setFirstCorner] = useState<{ x: number; y: number } | null>(null);
+  const [detectionType, setDetectionType] = useState<DetectionType>('circle');
   const [imageOrientation, setImageOrientation] = useState<'landscape' | 'portrait'>('landscape');
   const [characterType, setCharacterType] = useState<CharacterType>('Amy');
   const [difficulty, setDifficulty] = useState<Difficulty>('Easy');
@@ -38,6 +49,8 @@ export function App() {
     reader.onload = (e) => {
       setSelectedImage(e.target?.result as string);
       setWaldoPosition(null);
+      setRectanglePosition(null);
+      setFirstCorner(null);
       // Set default name without extension
       setImageName(file.name.replace(/\.[^/.]+$/, ''));
     };
@@ -56,15 +69,40 @@ export function App() {
     const xPercent = (x / rect.width) * 100;
     const yPercent = (y / rect.height) * 100;
 
-    setWaldoPosition({
-      x: Math.max(0, Math.min(100, xPercent)),
-      y: Math.max(0, Math.min(100, yPercent)),
-      tolerance: 30, // Default tolerance
-    });
+    const normalizedX = Math.max(0, Math.min(100, xPercent));
+    const normalizedY = Math.max(0, Math.min(100, yPercent));
+
+    if (detectionType === 'circle') {
+      setWaldoPosition({
+        x: normalizedX,
+        y: normalizedY,
+        tolerance: 30, // Default tolerance
+      });
+      setRectanglePosition(null);
+      setFirstCorner(null);
+    } else {
+      // Rectangle mode - two clicks required
+      if (!firstCorner) {
+        // First click - store corner
+        setFirstCorner({ x: normalizedX, y: normalizedY });
+        setWaldoPosition(null);
+        setRectanglePosition(null);
+      } else {
+        // Second click - complete rectangle
+        setRectanglePosition({
+          x1: firstCorner.x,
+          y1: firstCorner.y,
+          x2: normalizedX,
+          y2: normalizedY,
+        });
+        setFirstCorner(null);
+        setWaldoPosition(null);
+      }
+    }
   };
 
   const handleConfirm = async () => {
-    if (!waldoPosition || !imageName || !originalFile || !selectedImage) return;
+    if ((!waldoPosition && !rectanglePosition) || !imageName || !originalFile || !selectedImage) return;
 
     const imageId = `image-${Date.now()}`;
     const fileName = `${imageName}${fileExtension}`;
@@ -83,12 +121,20 @@ export function App() {
       }
     };
 
+    // Create the waldoLocation based on detection type
+    const waldoLocationCode = detectionType === 'circle' && waldoPosition
+      ? `{ x: ${waldoPosition.x.toFixed(2)}, y: ${waldoPosition.y.toFixed(2)}, tolerance: ${waldoPosition.tolerance} }`
+      : rectanglePosition
+      ? `{ x1: ${rectanglePosition.x1.toFixed(2)}, y1: ${rectanglePosition.y1.toFixed(2)}, x2: ${rectanglePosition.x2.toFixed(2)}, y2: ${rectanglePosition.y2.toFixed(2)} }`
+      : '{}';
+
     // Create the new entry for imageData.ts
     const newEntry = `  {
     id: '${imageId}',
     src: \`\${BASE_URL}images/${fileName}\`,
     alt: '${getAltText()} ${imageOrientation} scene!',
-    waldoLocation: { x: ${waldoPosition.x.toFixed(2)}, y: ${waldoPosition.y.toFixed(2)}, tolerance: ${waldoPosition.tolerance} },
+    waldoLocation: ${waldoLocationCode},
+    detectionType: '${detectionType}',
     orientation: '${imageOrientation}',
     characterType: CharacterType.${characterType},
     difficulty: Difficulty.${difficulty.replace(' ', '')},
@@ -138,11 +184,14 @@ export function App() {
   const handleReset = () => {
     setSelectedImage(null);
     setWaldoPosition(null);
+    setRectanglePosition(null);
+    setFirstCorner(null);
     setImageName('');
     setOriginalFile(null);
     setFileExtension('');
     setCharacterType('Amy');
     setDifficulty('Easy');
+    setDetectionType('circle');
     setShowCodeModal(false);
     setGeneratedCode('');
     if (fileInputRef.current) {
@@ -157,6 +206,9 @@ export function App() {
   };
 
   const waldoPixels = getWaldoPixelPosition();
+  
+  const hasValidLocation = (detectionType === 'circle' && waldoPosition) || 
+                           (detectionType === 'rectangle' && rectanglePosition);
 
   return (
     <div className={styles.app}>
@@ -237,6 +289,7 @@ export function App() {
                     onChange={(e) => setDifficulty(e.target.value as Difficulty)}
                     className={styles.select}
                   >
+                    <option value="Practice">Practice</option>
                     <option value="Easy">Easy</option>
                     <option value="Hard">Hard</option>
                     <option value="Really Hard">Really Hard</option>
@@ -244,7 +297,26 @@ export function App() {
                 </label>
               </div>
 
-              {waldoPosition && (
+              <div className={styles.controlGroup}>
+                <label>
+                  Detection Type:
+                  <select
+                    value={detectionType}
+                    onChange={(e) => {
+                      setDetectionType(e.target.value as DetectionType);
+                      setWaldoPosition(null);
+                      setRectanglePosition(null);
+                      setFirstCorner(null);
+                    }}
+                    className={styles.select}
+                  >
+                    <option value="circle">Circle (Click once)</option>
+                    <option value="rectangle">Rectangle (Click twice)</option>
+                  </select>
+                </label>
+              </div>
+
+              {waldoPosition && detectionType === 'circle' && (
                 <div className={styles.controlGroup}>
                   <label>
                     Tolerance (pixels):
@@ -273,7 +345,8 @@ export function App() {
                   onClick={handleImageClick}
                   className={styles.image}
                 />
-                {waldoPosition && waldoPixels && (
+                {/* Circle detection marker */}
+                {waldoPosition && waldoPixels && detectionType === 'circle' && (
                   <div
                     className={styles.waldoMarker}
                     style={{
@@ -284,18 +357,47 @@ export function App() {
                     }}
                   />
                 )}
+                {/* Rectangle detection marker */}
+                {rectanglePosition && detectionType === 'rectangle' && imageRef.current && (
+                  <div
+                    className={styles.rectangleMarker}
+                    style={{
+                      left: `${Math.min(rectanglePosition.x1, rectanglePosition.x2)}%`,
+                      top: `${Math.min(rectanglePosition.y1, rectanglePosition.y2)}%`,
+                      width: `${Math.abs(rectanglePosition.x2 - rectanglePosition.x1)}%`,
+                      height: `${Math.abs(rectanglePosition.y2 - rectanglePosition.y1)}%`,
+                    }}
+                  />
+                )}
+                {/* First corner marker for rectangle */}
+                {firstCorner && detectionType === 'rectangle' && imageRef.current && (
+                  <div
+                    className={styles.cornerMarker}
+                    style={{
+                      left: `${firstCorner.x}%`,
+                      top: `${firstCorner.y}%`,
+                    }}
+                  />
+                )}
               </div>
               <p className={styles.instruction}>
-                {waldoPosition 
-                  ? `Waldo position set at (${waldoPosition.x.toFixed(2)}%, ${waldoPosition.y.toFixed(2)}%). Click to adjust.`
-                  : 'Click on the image where Waldo is located'}
+                {detectionType === 'circle' 
+                  ? waldoPosition 
+                    ? `Circle position set at (${waldoPosition.x.toFixed(2)}%, ${waldoPosition.y.toFixed(2)}%). Click to adjust.`
+                    : 'Click on the image where Waldo is located'
+                  : firstCorner
+                    ? `First corner set at (${firstCorner.x.toFixed(2)}%, ${firstCorner.y.toFixed(2)}%). Click again to complete rectangle.`
+                    : rectanglePosition
+                      ? `Rectangle created. Click to reset and create new rectangle.`
+                      : 'Click twice on the image to create a rectangle around Waldo'
+                }
               </p>
             </div>
 
             <div className={styles.actionButtons}>
               <button
                 onClick={handleConfirm}
-                disabled={!waldoPosition || !imageName}
+                disabled={!hasValidLocation || !imageName}
                 className={styles.confirmButton}
               >
                 Confirm & Download Files

@@ -5,20 +5,33 @@ export enum CharacterType {
 }
 
 export enum Difficulty {
+  Practice = 'Practice',
   Easy = 'Easy',
   Hard = 'Hard',
   ReallyHard = 'Really Hard'
+}
+
+export type DetectionType = 'circle' | 'rectangle';
+
+export interface CircleLocation {
+  x: number; // Percentage (0-100) of image width
+  y: number; // Percentage (0-100) of image height
+  tolerance: number; // Pixels
+}
+
+export interface RectangleLocation {
+  x1: number; // Percentage (0-100) - top left x
+  y1: number; // Percentage (0-100) - top left y
+  x2: number; // Percentage (0-100) - bottom right x
+  y2: number; // Percentage (0-100) - bottom right y
 }
 
 export interface WaldoImage {
   id: string;
   src: string;
   alt: string;
-  waldoLocation: {
-    x: number; // Percentage (0-100) of image width
-    y: number; // Percentage (0-100) of image height
-    tolerance: number; // Pixels
-  };
+  waldoLocation: CircleLocation | RectangleLocation;
+  detectionType: DetectionType;
   orientation: 'landscape' | 'portrait';
   characterType: CharacterType; // Which character(s) to find in this image
   difficulty: Difficulty; // Difficulty level of finding character(s)
@@ -36,6 +49,7 @@ export const waldoImages: WaldoImage[] = [
     src: `${BASE_URL}images/Amy_obvious.jpg`,
     alt: 'Find Amy in this portrait scene!',
     waldoLocation: { x: 54.99, y: 59.38, tolerance: 100 },
+    detectionType: 'circle',
     orientation: 'portrait',
     characterType: CharacterType.Amy,
     difficulty: Difficulty.Easy,
@@ -45,6 +59,7 @@ export const waldoImages: WaldoImage[] = [
     src: `${BASE_URL}images/Dan_Obvious.jpg`,
     alt: 'Find Dan in this portrait scene!',
     waldoLocation: { x: 46.45, y: 49.56, tolerance: 70 },
+    detectionType: 'circle',
     orientation: 'portrait',
     characterType: CharacterType.Dan,
     difficulty: Difficulty.Easy,
@@ -54,6 +69,7 @@ export const waldoImages: WaldoImage[] = [
     src: `${BASE_URL}images/Dan_ReallyHard.jpg`,
     alt: 'Find Dan in this portrait scene!',
     waldoLocation: { x: 34.91, y: 54.61, tolerance: 10 },
+    detectionType: 'circle',
     orientation: 'portrait',
     characterType: CharacterType.Dan,
     difficulty: Difficulty.ReallyHard,
@@ -63,6 +79,7 @@ export const waldoImages: WaldoImage[] = [
     src: `${BASE_URL}images/Amy_2_Easy.jpg`,
     alt: 'Find Amy in this portrait scene!',
     waldoLocation: { x: 92.22, y: 69.34, tolerance: 20 },
+    detectionType: 'circle',
     orientation: 'portrait',
     characterType: CharacterType.Amy,
     difficulty: Difficulty.Easy,
@@ -72,6 +89,7 @@ export const waldoImages: WaldoImage[] = [
     src: `${BASE_URL}images/Amy_and_Dan.jpg`,
     alt: 'Find Amy and Dan in this portrait scene!',
     waldoLocation: { x: 42.94, y: 52.89, tolerance: 150 },
+    detectionType: 'circle',
     orientation: 'portrait',
     characterType: CharacterType.Both,
     difficulty: Difficulty.Easy,
@@ -81,6 +99,7 @@ export const waldoImages: WaldoImage[] = [
     src: `${BASE_URL}images/Dans_head_in_bush.jpg`,
     alt: 'Find Dan in this portrait scene!',
     waldoLocation: { x: 55.66, y: 64.81, tolerance: 10 },
+    detectionType: 'circle',
     orientation: 'portrait',
     characterType: CharacterType.Dan,
     difficulty: Difficulty.Hard,
@@ -90,6 +109,7 @@ export const waldoImages: WaldoImage[] = [
     src: `${BASE_URL}images/Amy_in_a_bush.jpg`,
     alt: 'Find Amy in this portrait scene!',
     waldoLocation: { x: 71.89, y: 48.78, tolerance: 20 },
+    detectionType: 'circle',
     orientation: 'portrait',
     characterType: CharacterType.Amy,
     difficulty: Difficulty.Hard,
@@ -99,6 +119,7 @@ export const waldoImages: WaldoImage[] = [
     src: `${BASE_URL}images/Dan_peaking_round_tree.jpg`,
     alt: 'Find Dan in this portrait scene!',
     waldoLocation: { x: 55.99, y: 61.75, tolerance: 10 },
+    detectionType: 'circle',
     orientation: 'portrait',
     characterType: CharacterType.Dan,
     difficulty: Difficulty.Hard,
@@ -108,6 +129,7 @@ export const waldoImages: WaldoImage[] = [
     src: `${BASE_URL}images/Dan_among_the_flowers.jpg`,
     alt: 'Find Dan in this portrait scene!',
     waldoLocation: { x: 60.76, y: 50.97, tolerance: 50 },
+    detectionType: 'circle',
     orientation: 'portrait',
     characterType: CharacterType.Dan,
     difficulty: Difficulty.Easy,
@@ -117,6 +139,7 @@ export const waldoImages: WaldoImage[] = [
     src: `${BASE_URL}images/Amy_behind_bush.jpg`,
     alt: 'Find Amy in this portrait scene!',
     waldoLocation: { x: 40.93, y: 55.21, tolerance: 50 },
+    detectionType: 'circle',
     orientation: 'portrait',
     characterType: CharacterType.Amy,
     difficulty: Difficulty.Easy,

@@ -146,6 +146,26 @@
   animation: pulse 1.5s ease-in-out infinite;
 }
 
+.rectangleMarker {
+  position: absolute;
+  border: 3px solid blue;
+  background: rgba(0, 0, 255, 0.2);
+  pointer-events: none;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.cornerMarker {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border: 3px solid green;
+  border-radius: 50%;
+  background: rgba(0, 255, 0, 0.5);
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
 @keyframes pulse {
   0%, 100% {
     opacity: 1;

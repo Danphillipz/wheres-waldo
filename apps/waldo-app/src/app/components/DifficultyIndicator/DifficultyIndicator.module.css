@@ -19,6 +19,11 @@
   font-size: 0.95rem;
 }
 
+.practice {
+  background: linear-gradient(135deg, #2196f3, #64b5f6);
+  color: white;
+}
+
 .easy {
   background: linear-gradient(135deg, #4caf50, #81c784);
   color: white;

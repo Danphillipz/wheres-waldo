@@ -8,6 +8,8 @@ interface DifficultyIndicatorProps {
 export function DifficultyIndicator({ difficulty }: DifficultyIndicatorProps) {
   const getDifficultyClass = () => {
     switch (difficulty) {
+      case Difficulty.Practice:
+        return styles.practice;
       case Difficulty.Easy:
         return styles.easy;
       case Difficulty.Hard:
@@ -21,6 +23,8 @@ export function DifficultyIndicator({ difficulty }: DifficultyIndicatorProps) {
 
   const getDifficultyIcon = () => {
     switch (difficulty) {
+      case Difficulty.Practice:
+        return '📚';
       case Difficulty.Easy:
         return '⭐';
       case Difficulty.Hard:
