@@ -82,9 +82,9 @@ export function WaldoFoundAnimation({
 
       {/* Success message */}
       <div className={styles.successMessage}>
-        <span className={styles.successIcon}>🎉</span>
+        <span role="img" aria-label="celebration" className={styles.successIcon}>🎉</span>
         <span className={styles.successText}>Found!</span>
-        <span className={styles.successIcon}>🎉</span>
+        <span role="img" aria-label="celebration" className={styles.successIcon}>🎉</span>
       </div>
     </div>
   );
