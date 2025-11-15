@@ -38,7 +38,7 @@ export function StartScreen({ onStart }: StartScreenProps) {
           </button>
           {isHowToPlayOpen && (
             <ol className={styles.instructions}>
-              <li>Somewhere in the picture Amy and Dan are hiding.</li>
+              <li>Somewhere in the picture Amy and/or Dan are hiding.</li>
               <li>Zoom in to get a closer look at the picture.</li>
               <li>If you think you've found them, click on their location.</li>
               <li>Try to find them in as few attempts as possible.</li>
