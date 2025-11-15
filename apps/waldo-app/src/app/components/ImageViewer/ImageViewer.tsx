@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from 'react';
 import { WaldoImage } from '../../utils/imageData';
 import {
   isClickNearTarget,
+  isClickInRectangle,
   percentToPixels,
   ClickCoordinates,
 } from '../../utils/clickDetection';
@@ -32,7 +33,7 @@ export function ImageViewer({
 }: ImageViewerProps) {
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { transform, handleZoom, handlePan, setScale, reset } = useZoomPan(1, 4);
+  const { transform, handleZoom, handlePan, setScale, reset } = useZoomPan(1, 8);
   const [clickMarkers, setClickMarkers] = useState<ClickMarker[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -141,24 +142,33 @@ export function ImageViewer({
 
     onImageClick(clickCoords);
 
-    // For Waldo detection, use pixel calculations
-    const clickPixels = percentToPixels(clickCoords, imgRect.width, imgRect.height);
-    const waldoPixels = percentToPixels(
-      image.waldoLocation,
-      imgRect.width,
-      imgRect.height
-    );
+    // Check if click found Waldo based on detection type
+    let waldoFound = false;
+    
+    if (image.detectionType === 'rectangle') {
+      // Rectangle detection - click coordinates are already in percentages
+      waldoFound = isClickInRectangle(clickCoords, image.waldoLocation as { x1: number; y1: number; x2: number; y2: number });
+    } else {
+      // Circle detection - use pixel calculations
+      const clickPixels = percentToPixels(clickCoords, imgRect.width, imgRect.height);
+      const waldoLocation = image.waldoLocation as { x: number; y: number; tolerance: number };
+      const waldoPixels = percentToPixels(
+        { x: waldoLocation.x, y: waldoLocation.y },
+        imgRect.width,
+        imgRect.height
+      );
 
-    // Scale tolerance based on zoom level - when zoomed out, reduce tolerance
-    // At scale 1 (zoomed out), use 50% of tolerance for tighter accuracy
-    // At scale 4 (fully zoomed in), use 100% of tolerance
-    const toleranceScale = 0.5 + (transform.scale - 1) * (0.5 / 3); // Linear scale from 0.5 to 1.0
-    const scaledTolerance = image.waldoLocation.tolerance * toleranceScale;
+      // Scale tolerance based on zoom level - when zoomed out, reduce tolerance
+      // At scale 1 (zoomed out), use 50% of tolerance for tighter accuracy
+      // At scale 4 (fully zoomed in), use 100% of tolerance
+      const toleranceScale = 0.5 + (transform.scale - 1) * (0.5 / 3); // Linear scale from 0.5 to 1.0
+      const scaledTolerance = waldoLocation.tolerance * toleranceScale;
+
+      waldoFound = isClickNearTarget(clickPixels, waldoPixels, scaledTolerance);
+    }
 
     // Check if click is near Waldo
-    if (
-      isClickNearTarget(clickPixels, waldoPixels, scaledTolerance)
-    ) {
+    if (waldoFound) {
       onWaldoFound();
     } else {
       // Add a marker for the missed click - store actual pixel position relative to container

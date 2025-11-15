@@ -18,6 +18,23 @@ export function isClickNearTarget(
 }
 
 /**
+ * Calculate if a click is within a rectangular area
+ * Rectangle coordinates are in percentages (0-100)
+ */
+export function isClickInRectangle(
+  click: ClickCoordinates,
+  rect: { x1: number; y1: number; x2: number; y2: number }
+): boolean {
+  // Ensure x1,y1 is top-left and x2,y2 is bottom-right
+  const minX = Math.min(rect.x1, rect.x2);
+  const maxX = Math.max(rect.x1, rect.x2);
+  const minY = Math.min(rect.y1, rect.y2);
+  const maxY = Math.max(rect.y1, rect.y2);
+  
+  return click.x >= minX && click.x <= maxX && click.y >= minY && click.y <= maxY;
+}
+
+/**
  * Get relative coordinates from a click/touch event on an image element
  * Returns coordinates as percentages (0-100) of the image dimensions
  */
