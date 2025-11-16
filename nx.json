@@ -63,6 +63,9 @@
     }
   ],
   "targetDefaults": {
+    "build": {
+      "outputs": ["{options.outputPath}"]
+    },
     "test": {
       "dependsOn": ["^build"]
     }

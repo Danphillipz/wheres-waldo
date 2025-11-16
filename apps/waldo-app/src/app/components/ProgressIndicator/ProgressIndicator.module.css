@@ -26,7 +26,22 @@
   border-radius: 50%;
   background-color: #f5ebe0;
   border: 2px solid #d4a574;
-  transition: all 0.3s ease;
+  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  position: relative;
+}
+
+.progress-dot::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(212, 165, 116, 0.5) 0%, transparent 70%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
 }
 
 .progress-dot.current {
@@ -34,11 +49,40 @@
   height: 16px;
   border-color: #c9965f;
   box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.3);
+  animation: dotPulse 1.5s cubic-bezier(0.455, 0.030, 0.515, 0.955) infinite;
+}
+
+@keyframes dotPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 3px rgba(212, 165, 116, 0.3);
+  }
+  50% {
+    transform: scale(1.2);
+    box-shadow: 0 0 0 6px rgba(212, 165, 116, 0.6);
+  }
+}
+
+.progress-dot.current::after {
+  opacity: 1;
 }
 
 .progress-dot.found {
   background-color: #d4a574;
   border-color: #c9965f;
+  animation: dotFound 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes dotFound {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.5) rotate(180deg);
+  }
+  100% {
+    transform: scale(1) rotate(360deg);
+  }
 }
 
 /* Tablet and up */

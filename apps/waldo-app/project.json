@@ -1,0 +1,36 @@
+{
+  "name": "@wheres-waldo/waldo-app",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "apps/waldo-app/src",
+  "projectType": "application",
+  "targets": {
+    "vite-build": {
+      "executor": "@nx/vite:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/waldo-app"
+      },
+      "configurations": {
+        "production": {
+          "mode": "production"
+        }
+      }
+    },
+    "optimize-images": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["vite-build"],
+      "options": {
+        "command": "node apps/waldo-app/scripts/optimize-dist-images.mjs"
+      }
+    },
+    "build": {
+      "executor": "nx:run-commands",
+      "dependsOn": ["vite-build", "optimize-images"],
+      "options": {
+        "commands": [
+          "echo Build and optimization complete!"
+        ]
+      }
+    }
+  }
+}

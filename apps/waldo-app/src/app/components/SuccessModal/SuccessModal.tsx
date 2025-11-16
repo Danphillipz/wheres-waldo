@@ -39,6 +39,13 @@ export function SuccessModal({
 
   return (
     <div className={styles.modalBackdrop} onClick={onClose}>
+      {/* Firework animations */}
+      <div className={styles.firework} style={{ left: '20%', top: '20%', animationDelay: '0s' }}></div>
+      <div className={styles.firework} style={{ left: '80%', top: '30%', animationDelay: '0.3s' }}></div>
+      <div className={styles.firework} style={{ left: '50%', top: '10%', animationDelay: '0.6s' }}></div>
+      <div className={styles.firework} style={{ left: '10%', top: '60%', animationDelay: '0.9s' }}></div>
+      <div className={styles.firework} style={{ left: '90%', top: '70%', animationDelay: '1.2s' }}></div>
+      
       <div
         className={styles.modalContent}
         onClick={(e) => e.stopPropagation()}
@@ -47,14 +54,7 @@ export function SuccessModal({
         aria-labelledby="modal-title"
       >
         <h2 id="modal-title" className={styles.modalTitle}>
-          <span role="img" aria-label="celebration">
-            🎉
-          </span>{' '}
           {message}
-          {' '}
-          <span role="img" aria-label="celebration">
-            🎉
-          </span>
         </h2>
         {isLastImage ? (
           <>

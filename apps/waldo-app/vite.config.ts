@@ -17,13 +17,15 @@ export default defineConfig(() => ({
     port: 4300,
     host: 'localhost',
   },
-  plugins: [react()],
+  plugins: [
+    react(),
+  ],
   // Uncomment this if you are using workers.
   // worker: {
   //  plugins: [],
   // },
   build: {
-    outDir: './dist',
+    outDir: '../../dist/apps/waldo-app',
     emptyOutDir: true,
     reportCompressedSize: true,
     commonjsOptions: {
