@@ -44,21 +44,35 @@ export function ImageViewer({
   const touchStartTime = useRef<number>(0);
   const touchStartPosition = useRef<{ x: number; y: number } | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [currentImageLoaded, setCurrentImageLoaded] = useState(false);
   const loadStartTimeRef = useRef<number>(0);
+  const preloadedImages = useRef<Set<string>>(new Set());
 
   // Image loading state - show spinner for minimum 1 second
   useEffect(() => {
     setIsLoading(true);
+    setCurrentImageLoaded(false);
     loadStartTimeRef.current = Date.now();
   }, [image.id]);
 
-  // Preload next image
+  // Preload next image - only after current image has loaded and only once per unique src
   useEffect(() => {
-    if (nextImage) {
-      const img = new Image();
-      img.src = nextImage.src;
+    if (currentImageLoaded && nextImage && !preloadedImages.current.has(nextImage.src)) {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = nextImage.src;
+      document.head.appendChild(link);
+      
+      // Track that we've preloaded this image
+      preloadedImages.current.add(nextImage.src);
+      
+      // Cleanup: remove the link after it's loaded (optional, browser will still cache)
+      link.onload = () => {
+        // Keep the link in DOM for better caching
+      };
     }
-  }, [nextImage]);
+  }, [currentImageLoaded, nextImage]);
 
   // Clear markers when clearMarkers prop changes or when image changes
   useEffect(() => {
@@ -356,9 +370,13 @@ export function ImageViewer({
               const elapsed = Date.now() - loadStartTimeRef.current;
               const minDisplayTime =  500; // 0.5 second minimum
               if (elapsed < minDisplayTime) {
-                setTimeout(() => setIsLoading(false), minDisplayTime - elapsed);
+                setTimeout(() => {
+                  setIsLoading(false);
+                  setCurrentImageLoaded(true);
+                }, minDisplayTime - elapsed);
               } else {
                 setIsLoading(false);
+                setCurrentImageLoaded(true);
               }
             }}
             draggable={false}
