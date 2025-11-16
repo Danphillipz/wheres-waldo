@@ -25,7 +25,7 @@ export default defineConfig(() => ({
   //  plugins: [],
   // },
   build: {
-    outDir: './dist',
+    outDir: '../../dist/apps/waldo-app',
     emptyOutDir: true,
     reportCompressedSize: true,
     commonjsOptions: {
