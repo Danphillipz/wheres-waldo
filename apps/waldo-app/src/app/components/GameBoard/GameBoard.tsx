@@ -1,7 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { waldoImages, getCongratulationMessage, Difficulty } from '../../utils/imageData';
 import { useGameState } from '../../hooks/useGameState';
-import { useImagePreloader } from '../../hooks/useImagePreloader';
 import { getLeaderboard, updateLeaderboardScore } from '../../utils/leaderboard';
 import ImageViewer from '../ImageViewer/ImageViewer';
 import ProgressIndicator from '../ProgressIndicator/ProgressIndicator';
@@ -9,7 +8,6 @@ import SuccessModal from '../SuccessModal/SuccessModal';
 import UnluckyModal from '../UnluckyModal/UnluckyModal';
 import Leaderboard from '../Leaderboard/Leaderboard';
 import Toolbar from '../Toolbar/Toolbar';
-import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import styles from './GameBoard.module.css';
 
 const MAX_ATTEMPTS_PER_IMAGE = 5;
@@ -44,10 +42,6 @@ function organizeImages() {
 export function GameBoard({ playerName, onExit }: GameBoardProps) {
   // Memoize the organized images so they don't shuffle on every render
   const organizedImages = useMemo(() => organizeImages(), []);
-  
-  // Preload all images in the background
-  const imageSources = useMemo(() => organizedImages.map(img => img.src), [organizedImages]);
-  const { isLoading: imagesLoading } = useImagePreloader(imageSources);
   
   const {
     state,
@@ -129,7 +123,15 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
   if (state.isComplete) {
     return (
       <div className={styles.completionScreen}>
-        <h1 className={styles.completionTitle}>Game Complete!</h1>
+        <h1 className={styles.completionTitle}>
+          <span role="img" aria-label="celebration">
+            🎉
+          </span>{' '}
+          Game Complete!{' '}
+          <span role="img" aria-label="celebration">
+            🎉
+          </span>
+        </h1>
         <p className={styles.completionMessage}>
           You've completed all {organizedImages.length} images!
         </p>
@@ -160,11 +162,6 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
         </div>
       </div>
     );
-  }
-
-  // Show loading spinner while images are being preloaded
-  if (imagesLoading) {
-    return <LoadingSpinner />;
   }
 
   return (
