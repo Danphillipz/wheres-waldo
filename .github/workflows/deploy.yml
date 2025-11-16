@@ -42,7 +42,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: ./apps/waldo-app/dist
+          path: ./dist/apps/waldo-app
 
   deploy:
     environment:
