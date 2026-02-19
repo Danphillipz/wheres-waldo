@@ -40,45 +40,39 @@ export function Toolbar({
   const getDifficultyIcon = () => {
     switch (difficulty) {
       case Difficulty.Easy:
-        return '⭐';
+        return '♥';
       case Difficulty.Hard:
-        return '⭐⭐';
+        return '♥♥';
       case Difficulty.ReallyHard:
-        return '⭐⭐⭐';
+        return '♥♥♥';
       default:
-        return '⭐';
+        return '♥';
     }
   };
 
   return (
     <div className={styles.toolbar}>
-      {/* Difficulty Indicator - leftmost */}
+      {/* Difficulty Indicator */}
       <div className={`${styles.difficultyIndicator} ${getDifficultyClass()}`}>
         <span className={styles.difficultyIcon}>{getDifficultyIcon()}</span>
-        <span className={styles.difficultyText}>Difficulty: {difficulty}</span>
+        <span className={styles.difficultyText}>{difficulty}</span>
       </div>
 
-      {/* Attempts Remaining with Waldo avatars */}
+      {/* Attempts Remaining with hearts */}
       <div className={styles.attemptsRemaining}>
         {Array.from({ length: maxAttempts }).map((_, index) => (
-          <div
+          <span
             key={index}
-            className={`${styles.waldoAvatar} ${index >= attemptsRemaining ? styles.waldoAvatarUsed : ''}`}
+            className={`${styles.heartLife} ${index >= attemptsRemaining ? styles.heartUsed : ''}`}
           >
-            <div className={styles.miniWaldoHead}>
-              <div className={styles.miniWaldoHat}></div>
-              <div className={styles.miniWaldoGlasses}></div>
-            </div>
-            <div className={styles.miniWaldoBody}>
-              <div className={styles.miniWaldoStripes}></div>
-            </div>
-          </div>
+            ♥
+          </span>
         ))}
       </div>
 
       <div className={styles.scoreItem}>
-        <span className={styles.scoreLabel}>Game:</span>
-        <span className={styles.scoreValue}>{currentGame} of {totalGames}</span>
+        <span className={styles.scoreLabel}>Image</span>
+        <span className={styles.scoreValue}>{currentGame} / {totalGames}</span>
       </div>
       {onSkip && (
         <button

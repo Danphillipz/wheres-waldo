@@ -1,12 +1,13 @@
 .toolbar {
   display: flex;
-  gap: 1.5rem;
-  background: rgba(255, 255, 255, 0.95);
+  gap: 1rem;
+  background: rgba(255, 255, 255, 0.92);
   padding: 0.5rem 1rem;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  box-shadow: 0 1px 8px rgba(0, 0, 0, 0.05);
   justify-content: center;
   align-items: center;
+  border: 1px solid rgba(200, 180, 160, 0.15);
 }
 
 /* Difficulty Indicator inside toolbar */
@@ -15,264 +16,197 @@
   align-items: center;
   gap: 0.4rem;
   padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  font-weight: 600;
-  font-size: 0.85rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  font-weight: 500;
+  font-size: 0.8rem;
   height: 44px;
   box-sizing: border-box;
+  letter-spacing: 0.03em;
 }
 
 .difficultyIcon {
-  font-size: 1rem;
+  font-size: 0.85rem;
   display: flex;
   align-items: center;
 }
 
 .difficultyText {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 
 .easy {
-  background: linear-gradient(135deg, #4caf50, #81c784);
+  background: linear-gradient(135deg, #7d9e7d, #96b896);
   color: white;
 }
 
 .hard {
-  background: linear-gradient(135deg, #ff9800, #ffb74d);
+  background: linear-gradient(135deg, #c9a060, #d4b478);
   color: white;
 }
 
 .reallyHard {
-  background: linear-gradient(135deg, #f44336, #e57373);
+  background: linear-gradient(135deg, #c07070, #d48888);
   color: white;
 }
 
-/* Attempts Remaining with Waldo Avatars */
+/* Attempts Remaining with Hearts */
 .attemptsRemaining {
   display: flex;
-  gap: 0.4rem;
+  gap: 0.3rem;
   align-items: center;
   padding: 0.4rem 0.8rem;
-  background: rgba(255, 255, 255, 0.5);
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: rgba(253, 248, 244, 0.8);
+  border-radius: 2px;
+  border: 1px solid rgba(200, 180, 160, 0.15);
   height: 44px;
   box-sizing: border-box;
 }
 
-.waldoAvatar {
-  width: 20px;
-  height: 30px;
-  position: relative;
-  transition: opacity 0.3s ease;
+.heartLife {
+  font-size: 1.2rem;
+  color: #c9a0a0;
+  transition: all 0.3s ease;
+  display: inline-block;
 }
 
-.waldoAvatarUsed {
-  opacity: 0.3;
+.heartUsed {
+  opacity: 0.2;
   filter: grayscale(100%);
-}
-
-.miniWaldoHead {
-  width: 16px;
-  height: 16px;
-  background: #ffd7b5;
-  border-radius: 50%;
-  position: relative;
-  margin: 0 auto;
-  border: 1.5px solid #8b4513;
-}
-
-.miniWaldoHat {
-  position: absolute;
-  top: -5px;
-  left: 1px;
-  width: 14px;
-  height: 7px;
-  background: red;
-  border-radius: 3px 3px 0 0;
-  border: 1px solid #8b4513;
-}
-
-.miniWaldoHat::before {
-  content: '';
-  position: absolute;
-  top: 1.5px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 10px;
-  height: 2.5px;
-  background: white;
-  border-radius: 1px;
-}
-
-.miniWaldoGlasses {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 12px;
-  height: 4px;
-  border: 1.5px solid #333;
-  border-radius: 2px;
-  background: rgba(100, 200, 255, 0.3);
-}
-
-.miniWaldoBody {
-  width: 16px;
-  height: 14px;
-  background: white;
-  position: relative;
-  margin: 1.5px auto 0;
-  border-radius: 2px;
-  border: 1px solid #8b4513;
-}
-
-.miniWaldoStripes {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: repeating-linear-gradient(
-    0deg,
-    red 0px,
-    red 3px,
-    white 3px,
-    white 6px
-  );
-  border-radius: 2px;
+  transform: scale(0.8);
 }
 
 .scoreItem {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.4rem;
   align-items: center;
   padding: 0.4rem 0.8rem;
-  background: rgba(255, 255, 255, 0.5);
-  border-radius: 6px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background: rgba(253, 248, 244, 0.8);
+  border-radius: 2px;
+  border: 1px solid rgba(200, 180, 160, 0.15);
   height: 44px;
   box-sizing: border-box;
 }
 
 .scoreLabel {
-  font-weight: 600;
-  color: #5d4037;
-  font-size: 0.95rem;
+  font-weight: 500;
+  color: #7a6a5a;
+  font-size: 0.85rem;
 }
 
 .scoreValue {
-  font-weight: 700;
-  color: #d4a574;
-  font-size: 1.1rem;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-weight: 600;
+  color: #8c7060;
+  font-size: 1.05rem;
 }
 
 .skipButton {
-  background: #ff9800;
+  background: #c9a060;
   color: white;
   border: none;
   padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 600;
+  border-radius: 2px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
   cursor: pointer;
   transition: all 0.3s ease;
   height: 44px;
   box-sizing: border-box;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .skipButton:hover:not(:disabled) {
-  background: #f57c00;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: #b89050;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .skipButton:disabled {
-  background: #ccc;
+  background: #d4d4d4;
   cursor: not-allowed;
   opacity: 0.6;
 }
 
 .exitButton {
   background: rgba(255, 255, 255, 0.9);
-  color: #8b4513;
-  border: 2px solid #d4a574;
+  color: #5c4a3a;
+  border: 1px solid #d4c4b4;
   padding: 0.4rem 0.8rem;
-  border-radius: 6px;
-  font-size: 0.9rem;
-  font-weight: 600;
+  border-radius: 2px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
   cursor: pointer;
   transition: all 0.3s ease;
   height: 44px;
   box-sizing: border-box;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
 .exitButton:hover {
-  background: #f5ebe0;
-  border-color: #c9965f;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background: #faf5f0;
+  border-color: #c0a898;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
 }
 
 .exitButton:active {
   transform: translateY(0);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* Mobile adjustments */
 @media (max-width: 480px) {
   .toolbar {
-    gap: 0.8rem;
-    padding: 0.4rem 0.8rem;
+    gap: 0.6rem;
+    padding: 0.4rem 0.6rem;
     flex-wrap: wrap;
   }
 
   .difficultyIndicator {
-    font-size: 0.75rem;
-    padding: 0.3rem 0.6rem;
+    font-size: 0.7rem;
+    padding: 0.3rem 0.5rem;
     height: 38px;
   }
 
   .difficultyText {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
   }
 
   .attemptsRemaining {
-    gap: 0.3rem;
-    padding: 0.3rem 0.6rem;
+    gap: 0.2rem;
+    padding: 0.3rem 0.5rem;
     height: 38px;
   }
 
-  .waldoAvatar {
-    width: 18px;
-    height: 28px;
+  .heartLife {
+    font-size: 1rem;
   }
 
   .scoreItem {
-    padding: 0.3rem 0.6rem;
+    padding: 0.3rem 0.5rem;
     height: 38px;
   }
 
   .scoreLabel {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
   }
 
   .scoreValue {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
   }
 
   .skipButton {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.8rem;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.75rem;
     height: 38px;
   }
 
   .exitButton {
-    padding: 0.3rem 0.6rem;
-    font-size: 0.8rem;
+    padding: 0.3rem 0.5rem;
+    font-size: 0.75rem;
     height: 38px;
   }
 }

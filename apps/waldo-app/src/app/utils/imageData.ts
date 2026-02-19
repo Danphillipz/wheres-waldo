@@ -217,17 +217,45 @@ export const waldoImages: WaldoImage[] = [
 ];
 
 /**
+ * Wedding-themed congratulation messages
+ */
+const amyMessages = [
+  '💐 You spotted the bride! Love is in the air!',
+  '✨ Found Amy! She looks radiant today!',
+  '🌸 Amy spotted! The blushing bride can\'t hide!',
+  '💕 You found Amy! True love always finds a way!',
+];
+
+const danMessages = [
+  '🎩 You found the groom! He cleans up well!',
+  '✨ Dan spotted! The man of the hour!',
+  '💪 Found Dan! The groom can\'t hide from you!',
+  '🥂 You found Dan! Cheers to that!',
+];
+
+const bothMessages = [
+  '💍 You found the happy couple! Together forever!',
+  '💕 Amy & Dan spotted! A match made in heaven!',
+  '🥂 Both found! Here\'s to the lovebirds!',
+  '✨ The couple can\'t hide their love... or themselves!',
+];
+
+function getRandomMessage(messages: string[]): string {
+  return messages[Math.floor(Math.random() * messages.length)];
+}
+
+/**
  * Get congratulation message based on characters found in an image
  */
 export function getCongratulationMessage(image: WaldoImage): string {
   switch (image.characterType) {
     case CharacterType.Both:
-      return 'Congratulations! You found both Dan and Amy!';
+      return getRandomMessage(bothMessages);
     case CharacterType.Dan:
-      return 'Congratulations! You found Dan!';
+      return getRandomMessage(danMessages);
     case CharacterType.Amy:
-      return 'Congratulations! You found Amy!';
+      return getRandomMessage(amyMessages);
     default:
-      return 'Congratulations!';
+      return '✨ You found them!';
   }
 }

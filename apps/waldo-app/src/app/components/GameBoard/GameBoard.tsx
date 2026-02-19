@@ -130,27 +130,27 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
       <div className={styles.completionScreen}>
         <h1 className={styles.completionTitle}>
           <span role="img" aria-label="celebration">
-            🎉
+            💕
           </span>{' '}
           Game Complete!{' '}
           <span role="img" aria-label="celebration">
-            🎉
+            💕
           </span>
         </h1>
         <p className={styles.completionMessage}>
-          You've completed all {organizedImages.length} images!
+          You've searched through all {organizedImages.length} photos!
         </p>
         <div className={styles.completionStats}>
           <div className={styles.statItem}>
-            <span className={styles.statLabel}>Waldos Found:</span>
+            <span className={styles.statLabel}>Couple Found</span>
             <span className={styles.statValue}>{state.foundImages.size}</span>
           </div>
           <div className={styles.statItem}>
-            <span className={styles.statLabel}>Waldos Missed:</span>
+            <span className={styles.statLabel}>They Got Away</span>
             <span className={styles.statValue}>{state.skippedImages.size}</span>
           </div>
           <div className={styles.statItem}>
-            <span className={styles.statLabel}>Total Attempts:</span>
+            <span className={styles.statLabel}>Total Attempts</span>
             <span className={styles.statValue}>{state.attempts}</span>
           </div>
         </div>

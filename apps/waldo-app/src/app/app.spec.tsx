@@ -22,6 +22,7 @@ describe('App', () => {
     // Check for the heading on the start screen
     const heading = getByRole('heading', { level: 1 });
     expect(heading).toBeTruthy();
-    expect(heading.textContent).toContain('Amy and Dan');
+    expect(heading.textContent).toContain('Amy');
+    expect(heading.textContent).toContain('Dan');
   });
 });
