@@ -129,13 +129,7 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
     return (
       <div className={styles.completionScreen}>
         <h1 className={styles.completionTitle}>
-          <span role="img" aria-label="celebration">
-            🎉
-          </span>{' '}
-          Game Complete!{' '}
-          <span role="img" aria-label="celebration">
-            🎉
-          </span>
+          Game Complete!
         </h1>
         <p className={styles.completionMessage}>
           You've completed all {organizedImages.length} images!
