@@ -1,12 +1,12 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import { waldoImages, getCongratulationMessage, Difficulty } from '../../utils/imageData';
 import { useGameState } from '../../hooks/useGameState';
-import { getLeaderboard, updateLeaderboardScore } from '../../utils/leaderboard';
+import { getAttemptHistory, addAttempt } from '../../utils/attemptHistory';
 import ImageViewer from '../ImageViewer/ImageViewer';
 import ProgressIndicator from '../ProgressIndicator/ProgressIndicator';
 import SuccessModal from '../SuccessModal/SuccessModal';
 import UnluckyModal from '../UnluckyModal/UnluckyModal';
-import Leaderboard from '../Leaderboard/Leaderboard';
+import AttemptHistory from '../AttemptHistory/AttemptHistory';
 import Toolbar from '../Toolbar/Toolbar';
 import styles from './GameBoard.module.css';
 
@@ -54,14 +54,14 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
   
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showUnluckyModal, setShowUnluckyModal] = useState(false);
-  const [leaderboardEntries, setLeaderboardEntries] = useState(getLeaderboard());
+  const [attemptEntries, setAttemptEntries] = useState(getAttemptHistory());
   const [scoreAdded, setScoreAdded] = useState(false);
 
   const currentImage = organizedImages[state.currentImageIndex];
   const nextImageData = state.currentImageIndex < organizedImages.length - 1 
     ? organizedImages[state.currentImageIndex + 1] 
     : undefined;
-  const imageIds = organizedImages.map((img) => img.id);
+  const imageIds = useMemo(() => organizedImages.map((img) => img.id), [organizedImages]);
 
   // Check if max attempts reached
   useEffect(() => {
@@ -75,9 +75,9 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
     setShowSuccessModal(true);
   };
 
-  const handleImageClick = () => {
+  const handleImageClick = useCallback(() => {
     recordAttempt();
-  };
+  }, [recordAttempt]);
 
   const handleSkip = () => {
     skipImage(currentImage.id);
@@ -111,14 +111,19 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
     setScoreAdded(false);
   };
 
-  // Add score to leaderboard when game completes
+  // Add attempt to history when game completes
   useEffect(() => {
     if (state.isComplete && playerName && !scoreAdded) {
-      updateLeaderboardScore(playerName, state.attempts, state.foundImages.size);
-      setLeaderboardEntries(getLeaderboard());
+      addAttempt({
+        name: playerName,
+        score: state.attempts,
+        foundImages: state.foundImages.size,
+        totalImages: organizedImages.length,
+      });
+      setAttemptEntries(getAttemptHistory());
       setScoreAdded(true);
     }
-  }, [state.isComplete, playerName, state.attempts, state.foundImages.size, scoreAdded]);
+  }, [state.isComplete, playerName, state.attempts, state.foundImages.size, scoreAdded, organizedImages.length]);
 
   if (state.isComplete) {
     return (
@@ -150,7 +155,7 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
           </div>
         </div>
         
-        <Leaderboard entries={leaderboardEntries} currentPlayerName={playerName} />
+        <AttemptHistory entries={attemptEntries} currentPlayerName={playerName} />
         
         <div className={styles.buttonGroup}>
           <button className={styles.restartButton} onClick={handleRestart}>

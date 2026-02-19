@@ -4,7 +4,6 @@ import {
   isClickNearTarget,
   isClickInRectangle,
   percentToPixels,
-  ClickCoordinates,
 } from '../../utils/clickDetection';
 import { useZoomPan } from '../../hooks/useZoomPan';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
@@ -14,7 +13,7 @@ interface ImageViewerProps {
   image: WaldoImage;
   nextImage?: WaldoImage; // Next image to preload
   onWaldoFound: () => void;
-  onImageClick: (coords: ClickCoordinates) => void;
+  onImageClick: () => void;
   clearMarkers?: boolean;
 }
 
@@ -154,7 +153,7 @@ export function ImageViewer({
       y: Math.max(0, Math.min(100, yPercent)),
     };
 
-    onImageClick(clickCoords);
+    onImageClick();
 
     // Check if click found Waldo based on detection type
     let waldoFound = false;
@@ -365,7 +364,6 @@ export function ImageViewer({
             alt={image.alt}
             className={styles.waldoImage}
             onClick={handleImageClick}
-            onTouchEnd={handleImageClick}
             onLoad={() => {
               const elapsed = Date.now() - loadStartTimeRef.current;
               const minDisplayTime =  500; // 0.5 second minimum
