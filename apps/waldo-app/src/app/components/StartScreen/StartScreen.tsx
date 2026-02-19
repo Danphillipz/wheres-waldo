@@ -43,7 +43,7 @@ export function StartScreen({ onStart }: StartScreenProps) {
         <span className={styles.floatingHeart}>♥</span>
       </div>
       <div className={styles.floatingElement} style={{ top: '15%', right: '10%', animationDelay: '3s' }}>
-        <span className={styles.floatingRing}>💍</span>
+        <span className={styles.floatingRing} role="img" aria-label="ring">💍</span>
       </div>
       <div className={styles.floatingElement} style={{ bottom: '20%', left: '8%', animationDelay: '6s' }}>
         <span className={styles.floatingHeart}>♥</span>
