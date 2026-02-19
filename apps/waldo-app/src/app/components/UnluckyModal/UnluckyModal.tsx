@@ -39,22 +39,22 @@ export function UnluckyModal({
       <div className={styles.modalContent} onClick={(e) => e.stopPropagation()}>
         <div className={styles.modalHeader}>
           <h2 className={styles.modalTitle}>
-            <span role="img" aria-label="disappointed">
-              😔
+            <span role="img" aria-label="broken heart">
+              💔
             </span>
           </h2>
         </div>
         <div className={styles.modalBody}>
           <p className={styles.unluckyMessage}>
-            Unlucky, you didn't find Waldo!
+            They slipped away this time!
           </p>
           <p className={styles.encouragementMessage}>
-            Better luck on the next one!
+            Every love story has its twists — try the next one!
           </p>
         </div>
         <div className={styles.modalFooter}>
           <button className={styles.nextButton} onClick={handleNext}>
-            {isLastImage ? 'Finish Game' : 'Next Image'}
+            {isLastImage ? 'See Results' : 'Next Image →'}
           </button>
         </div>
       </div>

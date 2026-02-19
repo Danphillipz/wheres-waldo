@@ -3,7 +3,7 @@
   flex-direction: column;
   min-height: 100vh;
   max-height: 100vh;
-  background: linear-gradient(to bottom, #fef5e7, #fad7a0);
+  background: linear-gradient(to bottom, #fdf8f4, #f5e6d8);
   padding: 0.5rem;
   gap: 0.25rem;
   overflow: hidden;
@@ -24,12 +24,13 @@
 }
 
 .gameTitle {
+  font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   font-size: 1.75rem;
-  font-weight: bold;
-  color: #8b4513;
+  font-weight: 500;
+  color: #5c4a3a;
   margin: 0;
   text-align: center;
-  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  letter-spacing: 0.03em;
 }
 
 .gameMain {
@@ -53,7 +54,7 @@
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  background: linear-gradient(135deg, #fef5e7 0%, #fad7a0 50%, #f8b88b 100%);
+  background: linear-gradient(160deg, #fdf8f4 0%, #f5e6d8 30%, #e8d5c4 60%, #fdf0e8 100%);
   padding: 2rem;
   text-align: center;
   animation: screenFadeIn 0.8s ease-out;
@@ -69,37 +70,37 @@
 }
 
 .completionTitle {
+  font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
   font-size: 2rem;
-  color: #8b4513;
+  font-weight: 500;
+  color: #5c4a3a;
   margin: 0 0 1rem 0;
-  animation: titleZoomIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  animation: titleSlideIn 0.8s ease-out;
 }
 
-@keyframes titleZoomIn {
+@keyframes titleSlideIn {
   0% {
     opacity: 0;
-    transform: scale(0.3) rotateY(-90deg);
-  }
-  60% {
-    transform: scale(1.1) rotateY(10deg);
+    transform: translateY(-20px);
   }
   100% {
     opacity: 1;
-    transform: scale(1) rotateY(0deg);
+    transform: translateY(0);
   }
 }
 
 .completionMessage {
-  font-size: 1.25rem;
-  color: #333;
+  font-size: 1.1rem;
+  color: #7a6a5a;
   margin: 0 0 2rem 0;
-  animation: messageSlide 0.6s ease-out 0.3s backwards;
+  font-weight: 300;
+  animation: fadeSlideIn 0.6s ease-out 0.3s backwards;
 }
 
-@keyframes messageSlide {
+@keyframes fadeSlideIn {
   0% {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(15px);
   }
   100% {
     opacity: 1;
@@ -112,28 +113,15 @@
   flex-direction: column;
   gap: 1rem;
   margin-bottom: 2rem;
-  background-color: white;
+  background-color: rgba(255, 255, 255, 0.92);
   padding: 1.5rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  border-radius: 2px;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(200, 180, 160, 0.2);
   min-width: 280px;
   max-width: 500px;
   width: 100%;
-  animation: statsPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) 0.5s backwards;
-}
-
-@keyframes statsPop {
-  0% {
-    opacity: 0;
-    transform: scale(0.8) translateY(30px);
-  }
-  60% {
-    transform: scale(1.05) translateY(-5px);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0);
-  }
+  animation: fadeSlideIn 0.6s ease-out 0.5s backwards;
 }
 
 .statItem {
@@ -141,53 +129,29 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 0;
-  border-bottom: 1px solid #e0e0e0;
-  animation: statItemSlide 0.4s ease-out backwards;
+  border-bottom: 1px solid rgba(200, 180, 160, 0.2);
+  animation: fadeSlideIn 0.4s ease-out backwards;
 }
 
 .statItem:nth-child(1) { animation-delay: 0.7s; }
 .statItem:nth-child(2) { animation-delay: 0.8s; }
 .statItem:nth-child(3) { animation-delay: 0.9s; }
 
-@keyframes statItemSlide {
-  0% {
-    opacity: 0;
-    transform: translateX(-30px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
 .statItem:last-child {
   border-bottom: none;
 }
 
 .statLabel {
-  font-weight: 600;
-  color: #666;
+  font-weight: 500;
+  color: #7a6a5a;
+  font-size: 0.95rem;
 }
 
 .statValue {
-  font-size: 1.25rem;
-  font-weight: bold;
-  color: #d4a574;
-  animation: valueCount 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) backwards;
-}
-
-@keyframes valueCount {
-  0% {
-    opacity: 0;
-    transform: scale(0.5) rotate(-180deg);
-  }
-  60% {
-    transform: scale(1.2) rotate(20deg);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) rotate(0deg);
-  }
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: #8c7060;
 }
 
 .buttonGroup {
@@ -196,18 +160,7 @@
   margin-top: 1rem;
   flex-wrap: wrap;
   justify-content: center;
-  animation: buttonGroupFade 0.6s ease-out 1.2s backwards;
-}
-
-@keyframes buttonGroupFade {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  animation: fadeSlideIn 0.6s ease-out 1.2s backwards;
 }
 
 .restartButton,
@@ -215,78 +168,59 @@
   min-width: 140px;
   min-height: 44px;
   padding: 0.75rem 2rem;
-  font-size: 1.125rem;
-  font-weight: 600;
+  font-size: 0.95rem;
+  font-weight: 500;
+  font-family: 'Montserrat', sans-serif;
   border: none;
-  border-radius: 8px;
+  border-radius: 2px;
   cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  position: relative;
-  overflow: hidden;
-}
-
-.restartButton::before,
-.exitButton::before {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.4);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
-}
-
-.restartButton:hover::before,
-.exitButton:hover::before {
-  width: 300px;
-  height: 300px;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .restartButton {
-  background: linear-gradient(135deg, #d4a574 0%, #c9965f 100%);
+  background: linear-gradient(135deg, #b8a090 0%, #a08878 100%);
   color: white;
 }
 
 .restartButton:hover {
-  background: linear-gradient(135deg, #c9965f 0%, #b8834a 100%);
-  transform: translateY(-4px) scale(1.05) rotate(2deg);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(135deg, #a08878 0%, #907868 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
 }
 
 .restartButton:active {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .restartButton:focus-visible {
-  outline: 3px solid #8b4513;
+  outline: 2px solid #8c7060;
   outline-offset: 2px;
 }
 
 .exitButton {
   background: rgba(255, 255, 255, 0.9);
-  color: #8b4513;
-  border: 2px solid #d4a574;
+  color: #5c4a3a;
+  border: 1px solid #d4c4b4;
 }
 
 .exitButton:hover {
-  background: #f5ebe0;
-  border-color: #c9965f;
-  transform: translateY(-4px) scale(1.05) rotate(-2deg);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+  background: #faf5f0;
+  border-color: #c0a898;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
 .exitButton:active {
-  transform: translateY(-2px) scale(1.02);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
 .exitButton:focus-visible {
-  outline: 3px solid #8b4513;
+  outline: 2px solid #8c7060;
   outline-offset: 2px;
 }
 
@@ -305,7 +239,7 @@
   }
 
   .completionMessage {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
   }
 
   .completionStats {

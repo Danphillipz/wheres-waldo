@@ -14,7 +14,7 @@ export function SuccessModal({
   onClose,
   onNext,
   isLastImage,
-  message = 'Congratulations!',
+  message = 'You found them!',
 }: SuccessModalProps) {
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
@@ -39,12 +39,22 @@ export function SuccessModal({
 
   return (
     <div className={styles.modalBackdrop} onClick={onClose}>
-      {/* Firework animations */}
-      <div className={styles.firework} style={{ left: '20%', top: '20%', animationDelay: '0s' }}></div>
-      <div className={styles.firework} style={{ left: '80%', top: '30%', animationDelay: '0.3s' }}></div>
-      <div className={styles.firework} style={{ left: '50%', top: '10%', animationDelay: '0.6s' }}></div>
-      <div className={styles.firework} style={{ left: '10%', top: '60%', animationDelay: '0.9s' }}></div>
-      <div className={styles.firework} style={{ left: '90%', top: '70%', animationDelay: '1.2s' }}></div>
+      {/* Floating hearts animation */}
+      {Array.from({ length: 12 }).map((_, i) => (
+        <span
+          key={i}
+          className={styles.floatingHeart}
+          style={{
+            left: `${8 + Math.random() * 84}%`,
+            animationDelay: `${Math.random() * 2}s`,
+            animationDuration: `${2.5 + Math.random() * 2}s`,
+            fontSize: `${1 + Math.random() * 1.5}rem`,
+            opacity: 0.4 + Math.random() * 0.4,
+          }}
+        >
+          ♥
+        </span>
+      ))}
       
       <div
         className={styles.modalContent}
@@ -53,6 +63,7 @@ export function SuccessModal({
         aria-modal="true"
         aria-labelledby="modal-title"
       >
+        <div className={styles.successIcon}>♥</div>
         <h2 id="modal-title" className={styles.modalTitle}>
           {message}
         </h2>
@@ -66,7 +77,7 @@ export function SuccessModal({
               className={styles.modalButton}
               onClick={onClose}
             >
-              Close
+              See Results
             </button>
           </>
         ) : (
@@ -78,7 +89,7 @@ export function SuccessModal({
               onNext();
             }}
           >
-            Next Image
+            Next Image →
           </button>
         )}
       </div>

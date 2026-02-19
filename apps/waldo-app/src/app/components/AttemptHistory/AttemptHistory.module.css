@@ -1,112 +1,120 @@
 .attemptHistory {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 16px;
-  padding: 2rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 2px;
+  padding: 1.5rem;
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(200, 180, 160, 0.2);
   max-width: 500px;
   width: 100%;
 }
 
 .title {
-  font-size: 2rem;
-  color: #8b4513;
-  margin: 0 0 1.5rem 0;
+  font-family: 'Cormorant Garamond', Georgia, 'Times New Roman', serif;
+  font-size: 1.6rem;
+  font-weight: 500;
+  color: #5c4a3a;
+  margin: 0 0 1.25rem 0;
   text-align: center;
+  letter-spacing: 0.03em;
 }
 
 .emptyMessage {
   text-align: center;
-  color: #5d4037;
-  font-size: 1.125rem;
+  color: #7a6a5a;
+  font-size: 1rem;
   margin: 2rem 0;
+  font-weight: 300;
+  font-style: italic;
 }
 
 .entriesContainer {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 0.5rem;
   max-height: 300px;
   overflow-y: auto;
 }
 
 .entry {
   display: grid;
-  grid-template-columns: 50px 1fr auto;
-  gap: 1rem;
+  grid-template-columns: 40px 1fr auto;
+  gap: 0.75rem;
   align-items: center;
-  padding: 1rem;
-  background: #fff8e1;
-  border-radius: 10px;
-  border: 2px solid transparent;
+  padding: 0.75rem 1rem;
+  background: #faf7f4;
+  border-radius: 2px;
+  border: 1px solid transparent;
   transition: all 0.2s ease;
 }
 
 .entry.latest {
-  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-  border-color: #2196f3;
-  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.2);
+  background: linear-gradient(135deg, #f5ece4 0%, #ede0d4 100%);
+  border-color: #c9a090;
+  box-shadow: 0 1px 6px rgba(200, 160, 140, 0.15);
 }
 
 .attemptNumber {
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 1.3rem;
+  font-weight: 600;
   text-align: center;
-  color: #8b4513;
+  color: #8c7060;
 }
 
 .details {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.15rem;
   overflow: hidden;
 }
 
 .name {
-  font-size: 1.125rem;
-  font-weight: 600;
-  color: #5d4037;
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #5c4a3a;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .date {
-  font-size: 0.8rem;
-  color: #999;
+  font-size: 0.75rem;
+  color: #a08878;
 }
 
 .stats {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0.25rem;
+  gap: 0.15rem;
 }
 
 .score {
+  font-family: 'Cormorant Garamond', Georgia, serif;
   font-size: 1rem;
-  font-weight: 700;
-  color: #d4a574;
+  font-weight: 600;
+  color: #8c7060;
 }
 
 .found {
-  font-size: 0.875rem;
-  color: #666;
+  font-size: 0.8rem;
+  color: #a08878;
 }
 
 /* Mobile adjustments */
 @media (max-width: 480px) {
   .entry {
-    grid-template-columns: 40px 1fr auto;
+    grid-template-columns: 35px 1fr auto;
     gap: 0.5rem;
-    padding: 0.75rem;
+    padding: 0.6rem 0.75rem;
   }
 
   .attemptNumber {
-    font-size: 1.25rem;
+    font-size: 1.1rem;
   }
 
   .name {
-    font-size: 1rem;
+    font-size: 0.9rem;
   }
 
   .score {
@@ -114,6 +122,6 @@
   }
 
   .found {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
   }
 }

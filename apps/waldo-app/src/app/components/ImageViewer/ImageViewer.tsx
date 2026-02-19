@@ -389,7 +389,7 @@ export function ImageViewer({
               top: `${marker.y}px`,
             }}
           >
-            ✕
+            ♥
           </div>
         ))}
       </div>
