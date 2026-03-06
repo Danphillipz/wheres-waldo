@@ -9,6 +9,11 @@ import { useZoomPan } from '../../hooks/useZoomPan';
 import LoadingSpinner from '../LoadingSpinner/LoadingSpinner';
 import styles from './ImageViewer.module.css';
 
+// Build-time flag: true in production builds where optimize-images generates WebP/mobile variants.
+// In dev mode, these files don't exist so we skip <picture> sources to avoid broken images.
+declare const __USE_OPTIMIZED_IMAGES__: boolean;
+const USE_OPTIMIZED_IMAGES = typeof __USE_OPTIMIZED_IMAGES__ !== 'undefined' ? __USE_OPTIMIZED_IMAGES__ : false;
+
 interface ImageViewerProps {
   image: WaldoImage;
   nextImage?: WaldoImage; // Next image to preload
@@ -441,27 +446,50 @@ export function ImageViewer({
             transform: `scale(${transform.scale}) translate(${transform.translateX}px, ${transform.translateY}px)`,
           }}
         >
-          <img
-            ref={imageRef}
-            src={image.src}
-            alt={image.alt}
-            className={styles.waldoImage}
-            onClick={handleImageClick}
-            onLoad={() => {
-              const elapsed = Date.now() - loadStartTimeRef.current;
-              const minDisplayTime = 500; // 0.5 second minimum
-              if (elapsed < minDisplayTime) {
-                setTimeout(() => {
+          <picture>
+            {/* WebP and mobile sources only in production where build generates optimized variants.
+                In dev, Vite's SPA fallback returns HTML for missing files, breaking <source>. */}
+            {USE_OPTIMIZED_IMAGES && (
+              <>
+                <source
+                  srcSet={image.src.replace(/\.(jpe?g|png)$/i, '-mobile.webp')}
+                  type="image/webp"
+                  media="(max-width: 828px)"
+                />
+                <source
+                  srcSet={image.src.replace(/\.(jpe?g|png)$/i, '.webp')}
+                  type="image/webp"
+                />
+              </>
+            )}
+            {USE_OPTIMIZED_IMAGES && (
+              <source
+                srcSet={image.src.replace(/(\.(jpe?g|png))$/i, '-mobile$1')}
+                media="(max-width: 828px)"
+              />
+            )}
+            <img
+              ref={imageRef}
+              src={image.src}
+              alt={image.alt}
+              className={styles.waldoImage}
+              onClick={handleImageClick}
+              onLoad={() => {
+                const elapsed = Date.now() - loadStartTimeRef.current;
+                const minDisplayTime = 500; // 0.5 second minimum
+                if (elapsed < minDisplayTime) {
+                  setTimeout(() => {
+                    setIsLoading(false);
+                    setCurrentImageLoaded(true);
+                  }, minDisplayTime - elapsed);
+                } else {
                   setIsLoading(false);
                   setCurrentImageLoaded(true);
-                }, minDisplayTime - elapsed);
-              } else {
-                setIsLoading(false);
-                setCurrentImageLoaded(true);
-              }
-            }}
-            draggable={false}
-          />
+                }
+              }}
+              draggable={false}
+            />
+          </picture>
         </div>
         {clickMarkers.map((marker) => (
           <div
