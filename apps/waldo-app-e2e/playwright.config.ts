@@ -12,6 +12,12 @@ export default defineConfig({
   ...nxE2EPreset(__filename, { testDir: './src' }),
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
   timeout: 30_000,
+  /* Run tests within each file in parallel — safe because every test navigates to
+     "/" independently and uses its own isolated browser context (no shared state). */
+  fullyParallel: true,
+  /* In CI (GitHub Actions ubuntu-latest = 4 vCPUs) use 4 workers to run projects
+     concurrently.  Locally, default to 50% of available cores. */
+  workers: process.env.CI ? 4 : undefined,
   use: {
     baseURL,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
