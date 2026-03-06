@@ -14,6 +14,9 @@ import styles from './ImageViewer.module.css';
 declare const __USE_OPTIMIZED_IMAGES__: boolean;
 const USE_OPTIMIZED_IMAGES = typeof __USE_OPTIMIZED_IMAGES__ !== 'undefined' ? __USE_OPTIMIZED_IMAGES__ : false;
 
+// Pattern for matching image file extensions (used by <picture> source generation)
+const IMAGE_EXT_PATTERN = /\.(jpe?g|png)$/i;
+
 interface ImageViewerProps {
   image: WaldoImage;
   nextImage?: WaldoImage; // Next image to preload
@@ -452,21 +455,19 @@ export function ImageViewer({
             {USE_OPTIMIZED_IMAGES && (
               <>
                 <source
-                  srcSet={image.src.replace(/\.(jpe?g|png)$/i, '-mobile.webp')}
+                  srcSet={image.src.replace(IMAGE_EXT_PATTERN, '-mobile.webp')}
                   type="image/webp"
                   media="(max-width: 828px)"
                 />
                 <source
-                  srcSet={image.src.replace(/\.(jpe?g|png)$/i, '.webp')}
+                  srcSet={image.src.replace(IMAGE_EXT_PATTERN, '.webp')}
                   type="image/webp"
                 />
+                <source
+                  srcSet={image.src.replace(IMAGE_EXT_PATTERN, '-mobile$&')}
+                  media="(max-width: 828px)"
+                />
               </>
-            )}
-            {USE_OPTIMIZED_IMAGES && (
-              <source
-                srcSet={image.src.replace(/(\.(jpe?g|png))$/i, '-mobile$1')}
-                media="(max-width: 828px)"
-              />
             )}
             <img
               ref={imageRef}
