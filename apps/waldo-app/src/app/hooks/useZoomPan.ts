@@ -76,6 +76,14 @@ export function useZoomPan(minScale = 1, maxScale = 4) {
     }));
   }, [minScale, maxScale]);
 
+  const setTransformTo = useCallback((newTransform: ZoomPanState) => {
+    setTransform({
+      scale: Math.max(minScale, Math.min(maxScale, newTransform.scale)),
+      translateX: newTransform.translateX,
+      translateY: newTransform.translateY,
+    });
+  }, [minScale, maxScale]);
+
   const reset = useCallback(() => {
     setTransform({
       scale: 1,
@@ -89,6 +97,7 @@ export function useZoomPan(minScale = 1, maxScale = 4) {
     handleZoom,
     handlePan,
     setScale,
+    setTransformTo,
     reset,
   };
 }

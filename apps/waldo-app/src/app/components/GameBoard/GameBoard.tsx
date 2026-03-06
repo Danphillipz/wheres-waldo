@@ -49,6 +49,7 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
     skipImage,
     foundWaldo,
     recordAttempt,
+    recordHint,
     reset,
   } = useGameState(organizedImages.length);
   
@@ -56,6 +57,7 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
   const [showUnluckyModal, setShowUnluckyModal] = useState(false);
   const [attemptEntries, setAttemptEntries] = useState(getAttemptHistory());
   const [scoreAdded, setScoreAdded] = useState(false);
+  const [hintRequested, setHintRequested] = useState(false);
 
   const currentImage = organizedImages[state.currentImageIndex];
   const nextImageData = state.currentImageIndex < organizedImages.length - 1 
@@ -83,6 +85,17 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
     skipImage(currentImage.id);
   };
 
+  const handleHint = useCallback(() => {
+    if (!hintRequested) {
+      recordHint();
+      setHintRequested(true);
+    }
+  }, [hintRequested, recordHint]);
+
+  const handleHintAnimationComplete = useCallback(() => {
+    setHintRequested(false);
+  }, []);
+
   const handleNext = () => {
     nextImage();
   };
@@ -109,6 +122,7 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
     setShowSuccessModal(false);
     setShowUnluckyModal(false);
     setScoreAdded(false);
+    setHintRequested(false);
   };
 
   // Add attempt to history when game completes
@@ -119,11 +133,12 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
         score: state.attempts,
         foundImages: state.foundImages.size,
         totalImages: organizedImages.length,
+        hintsUsed: state.hintsUsed,
       });
       setAttemptEntries(getAttemptHistory());
       setScoreAdded(true);
     }
-  }, [state.isComplete, playerName, state.attempts, state.foundImages.size, scoreAdded, organizedImages.length]);
+  }, [state.isComplete, playerName, state.attempts, state.foundImages.size, state.hintsUsed, scoreAdded, organizedImages.length]);
 
   if (state.isComplete) {
     return (
@@ -152,6 +167,10 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
           <div className={styles.statItem}>
             <span className={styles.statLabel}>Total Attempts:</span>
             <span className={styles.statValue}>{state.attempts}</span>
+          </div>
+          <div className={styles.statItem}>
+            <span className={styles.statLabel}>Hints Used:</span>
+            <span className={styles.statValue}>{state.hintsUsed}</span>
           </div>
         </div>
         
@@ -187,6 +206,8 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
           difficulty={currentImage.difficulty}
           onSkip={handleSkip}
           canSkip={!state.isComplete && state.currentImageAttempts < MAX_ATTEMPTS_PER_IMAGE}
+          onHint={handleHint}
+          hintDisabled={hintRequested}
           onExit={onExit}
         />
       </header>
@@ -198,6 +219,8 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
           onWaldoFound={handleWaldoFound}
           onImageClick={handleImageClick}
           clearMarkers={true}
+          hintRequested={hintRequested}
+          onHintAnimationComplete={handleHintAnimationComplete}
         />
       </main>
 

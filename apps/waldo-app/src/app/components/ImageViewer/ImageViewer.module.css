@@ -151,6 +151,10 @@
   position: relative;
 }
 
+.imageWrapper.hintAnimating {
+  transition: transform 2s ease-in-out;
+}
+
 .waldoImage {
   max-width: 100%;
   max-height: 100%;

@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect, useCallback } from 'react';
 import { WaldoImage } from '../../utils/imageData';
 import {
   isClickNearTarget,
@@ -15,6 +15,8 @@ interface ImageViewerProps {
   onWaldoFound: () => void;
   onImageClick: () => void;
   clearMarkers?: boolean;
+  hintRequested?: boolean; // When true, triggers the hint animation
+  onHintAnimationComplete?: () => void; // Called when hint animation finishes
 }
 
 interface ClickMarker {
@@ -29,10 +31,12 @@ export function ImageViewer({
   onWaldoFound,
   onImageClick,
   clearMarkers = false,
+  hintRequested = false,
+  onHintAnimationComplete,
 }: ImageViewerProps) {
   const imageRef = useRef<HTMLImageElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const { transform, handleZoom, handlePan, setScale, reset } = useZoomPan(1, 8);
+  const { transform, handleZoom, handlePan, setScale, setTransformTo, reset } = useZoomPan(1, 8);
   const [clickMarkers, setClickMarkers] = useState<ClickMarker[]>([]);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
@@ -46,6 +50,8 @@ export function ImageViewer({
   const [currentImageLoaded, setCurrentImageLoaded] = useState(false);
   const loadStartTimeRef = useRef<number>(0);
   const preloadedImages = useRef<Set<string>>(new Set());
+  const [isHintAnimating, setIsHintAnimating] = useState(false);
+  const hintAnimationRef = useRef<number | null>(null);
 
   // Image loading state - show spinner for minimum 1 second
   useEffect(() => {
@@ -85,9 +91,66 @@ export function ImageViewer({
     reset();
   }, [image.id, reset]);
 
+  // Get the center coordinates of the waldo location
+  const getWaldoCenter = useCallback(() => {
+    if (image.detectionType === 'rectangle') {
+      const rect = image.waldoLocation as { x1: number; y1: number; x2: number; y2: number };
+      return { x: (rect.x1 + rect.x2) / 2, y: (rect.y1 + rect.y2) / 2 };
+    }
+    const circle = image.waldoLocation as { x: number; y: number; tolerance: number };
+    return { x: circle.x, y: circle.y };
+  }, [image.detectionType, image.waldoLocation]);
+
+  // Hint animation: reset zoom, then slowly zoom toward waldo
+  useEffect(() => {
+    if (!hintRequested || isHintAnimating) return;
+
+    setIsHintAnimating(true);
+
+    // Step 1: Reset to full image view
+    reset();
+
+    // Step 2: After a brief pause, slowly zoom toward waldo location
+    const zoomTimeout = window.setTimeout(() => {
+      const waldoCenter = getWaldoCenter();
+      const targetScale = 3;
+      // Calculate translation to center on waldo
+      // Transform model: scale(S) translate(Tx, Ty) with origin at center
+      // To center waldo at (wx%, wy%), translate so that point maps to center
+      const translateX = -(waldoCenter.x / 100 - 0.5) * targetScale * 100;
+      const translateY = -(waldoCenter.y / 100 - 0.5) * targetScale * 100;
+      
+      setTransformTo({
+        scale: targetScale,
+        translateX,
+        translateY,
+      });
+
+      // Step 3: After animation completes, notify parent
+      const completeTimeout = window.setTimeout(() => {
+        setIsHintAnimating(false);
+        onHintAnimationComplete?.();
+      }, 2500); // Match CSS transition duration
+
+      hintAnimationRef.current = completeTimeout;
+    }, 600); // Wait for reset animation to finish
+
+    return () => {
+      window.clearTimeout(zoomTimeout);
+      if (hintAnimationRef.current) {
+        window.clearTimeout(hintAnimationRef.current);
+      }
+    };
+  }, [hintRequested, isHintAnimating, reset, getWaldoCenter, setTransformTo, onHintAnimationComplete]);
+
   const handleImageClick = (
     event: React.MouseEvent<HTMLImageElement> | React.TouchEvent<HTMLImageElement>
   ) => {
+    // Don't register clicks during hint animation
+    if (isHintAnimating) {
+      return;
+    }
+    
     // Don't register clicks if user was dragging or pinching
     if (hasDragged || isPinching) {
       return;
@@ -353,32 +416,51 @@ export function ImageViewer({
         }}
       >
         <div
-          className={styles.imageWrapper}
+          className={`${styles.imageWrapper} ${isHintAnimating ? styles.hintAnimating : ''}`}
           style={{
             transform: `scale(${transform.scale}) translate(${transform.translateX}px, ${transform.translateY}px)`,
           }}
         >
-          <img
-            ref={imageRef}
-            src={image.src}
-            alt={image.alt}
-            className={styles.waldoImage}
-            onClick={handleImageClick}
-            onLoad={() => {
-              const elapsed = Date.now() - loadStartTimeRef.current;
-              const minDisplayTime =  500; // 0.5 second minimum
-              if (elapsed < minDisplayTime) {
-                setTimeout(() => {
+          <picture>
+            {/* WebP mobile variant for small screens */}
+            <source
+              srcSet={image.src.replace(/\.(jpe?g|png)$/i, '-mobile.webp')}
+              type="image/webp"
+              media="(max-width: 828px)"
+            />
+            {/* Mobile variant for small screens (fallback) */}
+            <source
+              srcSet={image.src.replace(/\.(jpe?g|png)$/i, (match) => `-mobile${match}`)}
+              media="(max-width: 828px)"
+            />
+            {/* WebP for desktop */}
+            <source
+              srcSet={image.src.replace(/\.(jpe?g|png)$/i, '.webp')}
+              type="image/webp"
+            />
+            {/* Original format fallback */}
+            <img
+              ref={imageRef}
+              src={image.src}
+              alt={image.alt}
+              className={styles.waldoImage}
+              onClick={handleImageClick}
+              onLoad={() => {
+                const elapsed = Date.now() - loadStartTimeRef.current;
+                const minDisplayTime = 500; // 0.5 second minimum
+                if (elapsed < minDisplayTime) {
+                  setTimeout(() => {
+                    setIsLoading(false);
+                    setCurrentImageLoaded(true);
+                  }, minDisplayTime - elapsed);
+                } else {
                   setIsLoading(false);
                   setCurrentImageLoaded(true);
-                }, minDisplayTime - elapsed);
-              } else {
-                setIsLoading(false);
-                setCurrentImageLoaded(true);
-              }
-            }}
-            draggable={false}
-          />
+                }
+              }}
+              draggable={false}
+            />
+          </picture>
         </div>
         {clickMarkers.map((marker) => (
           <div

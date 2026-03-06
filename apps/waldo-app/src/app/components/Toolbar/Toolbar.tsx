@@ -9,6 +9,8 @@ interface ToolbarProps {
   difficulty: Difficulty;
   onSkip?: () => void;
   canSkip?: boolean;
+  onHint?: () => void;
+  hintDisabled?: boolean;
   onExit: () => void;
 }
 
@@ -20,6 +22,8 @@ export function Toolbar({
   difficulty,
   onSkip,
   canSkip = true,
+  onHint,
+  hintDisabled = false,
   onExit
 }: ToolbarProps) {
   const attemptsRemaining = maxAttempts - attempts;
@@ -80,6 +84,16 @@ export function Toolbar({
         <span className={styles.scoreLabel}>Game:</span>
         <span className={styles.scoreValue}>{currentGame} of {totalGames}</span>
       </div>
+      {onHint && (
+        <button
+          className={styles.hintButton}
+          onClick={onHint}
+          disabled={hintDisabled}
+          aria-label="Get a hint"
+        >
+          <span role="img" aria-hidden="true">💡</span> Hint
+        </button>
+      )}
       {onSkip && (
         <button
           className={styles.skipButton}

@@ -6,6 +6,7 @@ export interface GameState {
   skippedImages: Set<string>;
   attempts: number;
   currentImageAttempts: number; // Track attempts for current image
+  hintsUsed: number; // Track total hints used across all images
   isComplete: boolean;
 }
 
@@ -16,6 +17,7 @@ export function useGameState(totalImages: number) {
     skippedImages: new Set<string>(),
     attempts: 0,
     currentImageAttempts: 0,
+    hintsUsed: 0,
     isComplete: false,
   });
 
@@ -62,6 +64,13 @@ export function useGameState(totalImages: number) {
     }));
   }, []);
 
+  const recordHint = useCallback(() => {
+    setState((prev) => ({
+      ...prev,
+      hintsUsed: prev.hintsUsed + 1,
+    }));
+  }, []);
+
   const reset = useCallback(() => {
     setState({
       currentImageIndex: 0,
@@ -69,6 +78,7 @@ export function useGameState(totalImages: number) {
       skippedImages: new Set<string>(),
       attempts: 0,
       currentImageAttempts: 0,
+      hintsUsed: 0,
       isComplete: false,
     });
   }, []);
@@ -79,6 +89,7 @@ export function useGameState(totalImages: number) {
     skipImage,
     foundWaldo,
     recordAttempt,
+    recordHint,
     reset,
   };
 }
