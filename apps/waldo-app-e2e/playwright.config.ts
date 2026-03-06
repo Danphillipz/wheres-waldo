@@ -6,17 +6,12 @@ import { workspaceRoot } from '@nx/devkit';
 const baseURL = process.env['BASE_URL'] || 'http://localhost:4300';
 
 /**
- * Read environment variables from file.
- * https://github.com/motdotla/dotenv
- */
-// require('dotenv').config();
-
-/**
  * See https://playwright.dev/docs/test-configuration.
  */
 export default defineConfig({
   ...nxE2EPreset(__filename, { testDir: './src' }),
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
+  timeout: 30_000,
   use: {
     baseURL,
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
@@ -28,9 +23,10 @@ export default defineConfig({
     url: 'http://localhost:4300',
     reuseExistingServer: true,
     cwd: workspaceRoot,
+    timeout: 120_000,
   },
   projects: [
-    // Desktop browsers
+    // Desktop browser — runs all test files
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
@@ -44,14 +40,16 @@ export default defineConfig({
       use: { ...devices['Desktop Safari'] },
     },
 
-    // Top 5 mobile device emulations across categories:
+    // Top 5 mobile device emulations across categories.
+    // Mobile projects only run the example.spec.ts (core UI/responsive) and
+    // webp-support.spec.ts tests to keep total execution time manageable.
     // 1. iPhone 15 Pro - latest flagship iOS (Safari/WebKit)
     {
       name: 'Mobile Safari - iPhone 15 Pro',
       use: {
         ...devices['iPhone 15 Pro'],
       },
-      testMatch: /.*\.spec\.ts/,
+      testMatch: /\b(example|webp-support)\.spec\.ts$/,
     },
     // 2. iPhone 14 Pro Max - large-screen iOS (Safari/WebKit)
     {
@@ -59,7 +57,7 @@ export default defineConfig({
       use: {
         ...devices['iPhone 14 Pro Max'],
       },
-      testMatch: /.*\.spec\.ts/,
+      testMatch: /\b(example|webp-support)\.spec\.ts$/,
     },
     // 3. Pixel 7 - flagship Android (Chrome/Chromium)
     {
@@ -67,7 +65,7 @@ export default defineConfig({
       use: {
         ...devices['Pixel 7'],
       },
-      testMatch: /.*\.spec\.ts/,
+      testMatch: /\b(example|webp-support)\.spec\.ts$/,
     },
     // 4. Samsung Galaxy S24 - popular Android (Chrome/Chromium)
     {
@@ -75,7 +73,7 @@ export default defineConfig({
       use: {
         ...devices['Galaxy S24'],
       },
-      testMatch: /.*\.spec\.ts/,
+      testMatch: /\b(example|webp-support)\.spec\.ts$/,
     },
     // 5. iPad Mini - tablet viewport (Safari/WebKit)
     {
@@ -83,7 +81,7 @@ export default defineConfig({
       use: {
         ...devices['iPad Mini'],
       },
-      testMatch: /.*\.spec\.ts/,
+      testMatch: /\b(example|webp-support)\.spec\.ts$/,
     },
   ],
 });

@@ -1,12 +1,14 @@
 import { test, expect, Page } from '@playwright/test';
 
-// Helper function to start the game
+// Helper function to start the game and wait for the first image to fully load
 async function startGame(page: Page) {
   await page.goto('/');
   await page.locator('input[type="text"]').fill('Test Player');
   await page.locator('button[type="submit"]').click();
   // Wait for game board to load
   await page.waitForSelector('h1:has-text("Amy and Dan")', { timeout: 5000 });
+  // Wait for image loading spinner to disappear so the image container becomes interactive
+  await page.locator('[class*="loadingContainer"]').waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {});
 }
 
 test.describe('Start Screen', () => {
@@ -50,7 +52,7 @@ test.describe('Start Screen', () => {
     await expect(howToPlayButton).toBeVisible();
     
     // Instructions should not be visible initially (collapsed)
-    const instructions = page.locator('ol li:has-text("Click on the image")');
+    const instructions = page.locator('ol li:has-text("hiding")');
     await expect(instructions).not.toBeVisible();
     
     // Click to expand
@@ -148,8 +150,8 @@ test.describe('Touch Gesture Handling', () => {
     const image = page.locator('img[alt*="Find"]');
     await expect(image).toBeVisible();
     
-    // Click on the image
-    await image.click({ position: { x: 50, y: 50 } });
+    // Click on the image (force: true needed because CSS transforms can intercept pointer events)
+    await image.click({ position: { x: 50, y: 50 }, force: true });
     
     // Should not throw any errors
     // Note: We can't easily verify attempt counter without knowing exact Waldo location

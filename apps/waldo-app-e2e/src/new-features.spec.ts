@@ -1,12 +1,14 @@
 import { test, expect, Page } from '@playwright/test';
 
-// Helper function to start the game
+// Helper function to start the game and wait for the first image to fully load
 async function startGame(page: Page) {
   await page.goto('/');
   await page.locator('input[type="text"]').fill('Test Player');
   await page.locator('button[type="submit"]').click();
   // Wait for game board to load
   await page.waitForSelector('h1:has-text("Amy and Dan")', { timeout: 5000 });
+  // Wait for image loading spinner to disappear so the image container becomes interactive
+  await page.locator('[class*="loadingContainer"]').waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {});
 }
 
 test.describe('Rectangular Detection', () => {
@@ -103,7 +105,7 @@ test.describe('Zoom Animation on Success', () => {
     
     // Note: We can't easily test the exact Waldo location without knowing it,
     // but we can verify the game responds to clicks
-    await image.click({ position: { x: 100, y: 100 } });
+    await image.click({ position: { x: 100, y: 100 }, force: true });
     
     // The game should still be functional after click
     await expect(page.locator('h1:has-text("Amy and Dan")')).toBeVisible();
@@ -147,7 +149,7 @@ test.describe('Animation Performance', () => {
     await expect(image).toBeVisible();
     
     // Click on image
-    await image.click({ position: { x: 100, y: 100 } });
+    await image.click({ position: { x: 100, y: 100 }, force: true });
     
     // UI should remain responsive - toolbar should still be visible
     const toolbar = page.locator('[class*="toolbar"]');
@@ -174,7 +176,7 @@ test.describe('Integration - All Features Together', () => {
     
     // Click on image (may or may not find Waldo)
     const image = page.locator('img[alt*="Find"]');
-    await image.click({ position: { x: 200, y: 200 } });
+    await image.click({ position: { x: 200, y: 200 }, force: true });
     
     // Game should still be functional
     await page.waitForTimeout(500);

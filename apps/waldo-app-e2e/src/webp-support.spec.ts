@@ -1,12 +1,14 @@
 import { test, expect, Page } from '@playwright/test';
 
-// Helper function to start the game
+// Helper function to start the game and wait for the first image to fully load
 async function startGame(page: Page) {
   await page.goto('/');
   await page.locator('input[type="text"]').fill('Test Player');
   await page.locator('button[type="submit"]').click();
   // Wait for game board to load
   await page.waitForSelector('h1:has-text("Amy and Dan")', { timeout: 5000 });
+  // Wait for image loading spinner to disappear so the image container becomes interactive
+  await page.locator('[class*="loadingContainer"]').waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {});
 }
 
 test.describe('WebP Image Support', () => {
