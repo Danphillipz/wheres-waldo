@@ -25,6 +25,11 @@ interface ClickMarker {
   y: number;
 }
 
+const HINT_ZOOM_SCALE = 3;
+const HINT_RESET_DELAY_MS = 600;
+const HINT_ANIMATION_DURATION_MS = 2500;
+const IMAGE_CENTER = 0.5;
+
 export function ImageViewer({
   image,
   nextImage,
@@ -118,15 +123,14 @@ export function ImageViewer({
     // Step 2: After a brief pause, slowly zoom toward waldo location
     hintZoomTimeoutRef.current = window.setTimeout(() => {
       const waldoCenter = getWaldoCenter();
-      const targetScale = 3;
       // Calculate translation to center on waldo
       // Transform model: scale(S) translate(Tx, Ty) with origin at center
       // To center waldo at (wx%, wy%), translate so that point maps to center
-      const translateX = -(waldoCenter.x / 100 - 0.5) * targetScale * 100;
-      const translateY = -(waldoCenter.y / 100 - 0.5) * targetScale * 100;
+      const translateX = -(waldoCenter.x / 100 - IMAGE_CENTER) * HINT_ZOOM_SCALE * 100;
+      const translateY = -(waldoCenter.y / 100 - IMAGE_CENTER) * HINT_ZOOM_SCALE * 100;
       
       setTransformTo({
-        scale: targetScale,
+        scale: HINT_ZOOM_SCALE,
         translateX,
         translateY,
       });
@@ -136,8 +140,8 @@ export function ImageViewer({
         setIsHintAnimating(false);
         isHintRunningRef.current = false;
         onHintAnimationComplete?.();
-      }, 2500); // Match CSS transition duration
-    }, 600); // Wait for reset animation to finish
+      }, HINT_ANIMATION_DURATION_MS);
+    }, HINT_RESET_DELAY_MS);
   }, [hintRequested, reset, getWaldoCenter, setTransformTo, onHintAnimationComplete]);
 
   // Reset the running ref when hintRequested is cleared

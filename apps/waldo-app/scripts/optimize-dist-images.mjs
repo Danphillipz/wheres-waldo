@@ -7,7 +7,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const MAX_DIMENSION = 1920; // Reduced from 3840 for better mobile performance
+const MAX_DIMENSION = 1920; // Reduced from 3840 for better desktop loading performance
 const MOBILE_MAX_DIMENSION = 828; // Target iPhone/mobile viewport widths
 const QUALITY = 75; // Slightly lower quality for better compression
 const WEBP_QUALITY = 72; // WebP can use slightly lower quality and still look good
@@ -122,14 +122,9 @@ async function generateMobileVariant(filePath) {
     const mobilePath = path.join(dir, `${baseName}-mobile${ext}`);
     await fs.writeFile(mobilePath, mobileBuffer);
 
-    // Also generate mobile WebP
-    const mobileWebpImage = sharp(inputBuffer, { failOnError: false })
-      .withMetadata({ orientation: undefined })
-      .resize(MOBILE_MAX_DIMENSION, MOBILE_MAX_DIMENSION, {
-        fit: 'inside',
-        withoutEnlargement: true,
-      });
-    const mobileWebpBuffer = await mobileWebpImage.webp({ quality: WEBP_QUALITY }).toBuffer();
+    // Also generate mobile WebP from the already-resized mobile buffer
+    const mobileWebpBuffer = await sharp(mobileBuffer, { failOnError: false })
+      .webp({ quality: WEBP_QUALITY }).toBuffer();
     const mobileWebpPath = path.join(dir, `${baseName}-mobile.webp`);
     await fs.writeFile(mobileWebpPath, mobileWebpBuffer);
 

@@ -152,6 +152,7 @@
 }
 
 .imageWrapper.hintAnimating {
+  /* Duration should be less than HINT_ANIMATION_DURATION_MS (2500ms) in ImageViewer.tsx */
   transition: transform 2s ease-in-out;
 }
 
