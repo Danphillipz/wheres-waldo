@@ -36,7 +36,8 @@ async function generateDevImages() {
       try {
         await fs.access(webpPath);
         skipped++;
-      } catch {
+      } catch (err) {
+        if (err.code !== 'ENOENT') throw err;
         const inputBuffer = await fs.readFile(filePath);
         const webpBuffer = await sharp(inputBuffer, { failOnError: false })
           .withMetadata({ orientation: undefined })
@@ -51,7 +52,8 @@ async function generateDevImages() {
       try {
         await fs.access(mobilePath);
         skipped++;
-      } catch {
+      } catch (err) {
+        if (err.code !== 'ENOENT') throw err;
         const inputBuffer = await fs.readFile(filePath);
         const metadata = await sharp(inputBuffer, { failOnError: false }).metadata();
         if (metadata.width && metadata.height) {
@@ -80,7 +82,8 @@ async function generateDevImages() {
       try {
         await fs.access(mobileWebpPath);
         skipped++;
-      } catch {
+      } catch (err) {
+        if (err.code !== 'ENOENT') throw err;
         const inputBuffer = await fs.readFile(filePath);
         const metadata = await sharp(inputBuffer, { failOnError: false }).metadata();
         if (metadata.width && metadata.height) {

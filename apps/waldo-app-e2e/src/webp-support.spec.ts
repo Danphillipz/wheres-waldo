@@ -42,9 +42,11 @@ test.describe('WebP Image Support', () => {
     // Check the actual source the browser chose to load
     const currentSrc = await image.evaluate((img: HTMLImageElement) => img.currentSrc);
     
-    // The currentSrc should be a WebP file (all test browsers support WebP)
-    if (browserName !== 'firefox') {
-      // Firefox in Playwright may not always negotiate WebP with <picture>
+    if (browserName === 'firefox') {
+      // Firefox in Playwright may not always negotiate WebP with <picture>;
+      // verify it loads a valid image format (WebP or JPEG/PNG fallback)
+      expect(currentSrc).toMatch(/\.(webp|jpe?g|png)$/i);
+    } else {
       expect(currentSrc).toMatch(/\.webp$/i);
     }
   });
