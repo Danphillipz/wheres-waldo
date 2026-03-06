@@ -153,8 +153,6 @@ export function ImageViewer({
       y: Math.max(0, Math.min(100, yPercent)),
     };
 
-    onImageClick();
-
     // Check if click found Waldo based on detection type
     let waldoFound = false;
     
@@ -184,6 +182,7 @@ export function ImageViewer({
     if (waldoFound) {
       onWaldoFound();
     } else {
+      onImageClick();
       // Add a marker for the missed click - store actual pixel position relative to container
       const markerX = clientX - containerRect.left;
       const markerY = clientY - containerRect.top;
