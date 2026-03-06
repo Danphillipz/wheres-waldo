@@ -168,6 +168,34 @@
   font-size: 1.1rem;
 }
 
+.hintButton {
+  background: linear-gradient(135deg, #ffd54f, #ffb300);
+  color: #5d4037;
+  border: none;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  height: 44px;
+  box-sizing: border-box;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.hintButton:hover:not(:disabled) {
+  background: linear-gradient(135deg, #ffca28, #ffa000);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.hintButton:disabled {
+  background: #ccc;
+  color: #999;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .skipButton {
   background: #ff9800;
   color: white;
@@ -265,6 +293,12 @@
   }
 
   .skipButton {
+    padding: 0.3rem 0.6rem;
+    font-size: 0.8rem;
+    height: 38px;
+  }
+
+  .hintButton {
     padding: 0.3rem 0.6rem;
     font-size: 0.8rem;
     height: 38px;

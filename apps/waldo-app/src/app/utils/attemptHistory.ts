@@ -3,6 +3,7 @@ export interface AttemptEntry {
   score: number;
   foundImages: number;
   totalImages: number;
+  hintsUsed?: number;
   timestamp: number;
 }
 

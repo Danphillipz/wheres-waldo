@@ -72,6 +72,9 @@ export function AttemptHistory({
                 <span className={styles.found}>
                   {entry.foundImages}/{entry.totalImages} found
                 </span>
+                {(entry.hintsUsed ?? 0) > 0 && (
+                  <span className={styles.hints}><span role="img" aria-label="lightbulb">💡</span> {entry.hintsUsed} hints</span>
+                )}
               </div>
             </div>
           );

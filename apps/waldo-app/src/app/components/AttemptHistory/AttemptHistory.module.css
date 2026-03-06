@@ -93,6 +93,12 @@
   color: #666;
 }
 
+.hints {
+  font-size: 0.875rem;
+  color: #f59e0b;
+  font-weight: 600;
+}
+
 /* Mobile adjustments */
 @media (max-width: 480px) {
   .entry {
