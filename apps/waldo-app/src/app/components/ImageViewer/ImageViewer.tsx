@@ -102,16 +102,21 @@ export function ImageViewer({
   }, [image.detectionType, image.waldoLocation]);
 
   // Hint animation: reset zoom, then slowly zoom toward waldo
-  useEffect(() => {
-    if (!hintRequested || isHintAnimating) return;
+  // Use refs to avoid cleanup clearing active timeouts when state changes
+  const hintZoomTimeoutRef = useRef<number | null>(null);
+  const isHintRunningRef = useRef(false);
 
+  useEffect(() => {
+    if (!hintRequested || isHintRunningRef.current) return;
+
+    isHintRunningRef.current = true;
     setIsHintAnimating(true);
 
     // Step 1: Reset to full image view
     reset();
 
     // Step 2: After a brief pause, slowly zoom toward waldo location
-    const zoomTimeout = window.setTimeout(() => {
+    hintZoomTimeoutRef.current = window.setTimeout(() => {
       const waldoCenter = getWaldoCenter();
       const targetScale = 3;
       // Calculate translation to center on waldo
@@ -127,21 +132,32 @@ export function ImageViewer({
       });
 
       // Step 3: After animation completes, notify parent
-      const completeTimeout = window.setTimeout(() => {
+      hintAnimationRef.current = window.setTimeout(() => {
         setIsHintAnimating(false);
+        isHintRunningRef.current = false;
         onHintAnimationComplete?.();
       }, 2500); // Match CSS transition duration
-
-      hintAnimationRef.current = completeTimeout;
     }, 600); // Wait for reset animation to finish
+  }, [hintRequested, reset, getWaldoCenter, setTransformTo, onHintAnimationComplete]);
 
+  // Reset the running ref when hintRequested is cleared
+  useEffect(() => {
+    if (!hintRequested) {
+      isHintRunningRef.current = false;
+    }
+  }, [hintRequested]);
+
+  // Cleanup timeouts on unmount
+  useEffect(() => {
     return () => {
-      window.clearTimeout(zoomTimeout);
+      if (hintZoomTimeoutRef.current) {
+        window.clearTimeout(hintZoomTimeoutRef.current);
+      }
       if (hintAnimationRef.current) {
         window.clearTimeout(hintAnimationRef.current);
       }
     };
-  }, [hintRequested, isHintAnimating, reset, getWaldoCenter, setTransformTo, onHintAnimationComplete]);
+  }, []);
 
   const handleImageClick = (
     event: React.MouseEvent<HTMLImageElement> | React.TouchEvent<HTMLImageElement>
@@ -421,46 +437,27 @@ export function ImageViewer({
             transform: `scale(${transform.scale}) translate(${transform.translateX}px, ${transform.translateY}px)`,
           }}
         >
-          <picture>
-            {/* WebP mobile variant for small screens */}
-            <source
-              srcSet={image.src.replace(/\.(jpe?g|png)$/i, '-mobile.webp')}
-              type="image/webp"
-              media="(max-width: 828px)"
-            />
-            {/* Mobile variant for small screens (fallback) */}
-            <source
-              srcSet={image.src.replace(/\.(jpe?g|png)$/i, (match) => `-mobile${match}`)}
-              media="(max-width: 828px)"
-            />
-            {/* WebP for desktop */}
-            <source
-              srcSet={image.src.replace(/\.(jpe?g|png)$/i, '.webp')}
-              type="image/webp"
-            />
-            {/* Original format fallback */}
-            <img
-              ref={imageRef}
-              src={image.src}
-              alt={image.alt}
-              className={styles.waldoImage}
-              onClick={handleImageClick}
-              onLoad={() => {
-                const elapsed = Date.now() - loadStartTimeRef.current;
-                const minDisplayTime = 500; // 0.5 second minimum
-                if (elapsed < minDisplayTime) {
-                  setTimeout(() => {
-                    setIsLoading(false);
-                    setCurrentImageLoaded(true);
-                  }, minDisplayTime - elapsed);
-                } else {
+          <img
+            ref={imageRef}
+            src={image.src}
+            alt={image.alt}
+            className={styles.waldoImage}
+            onClick={handleImageClick}
+            onLoad={() => {
+              const elapsed = Date.now() - loadStartTimeRef.current;
+              const minDisplayTime = 500; // 0.5 second minimum
+              if (elapsed < minDisplayTime) {
+                setTimeout(() => {
                   setIsLoading(false);
                   setCurrentImageLoaded(true);
-                }
-              }}
-              draggable={false}
-            />
-          </picture>
+                }, minDisplayTime - elapsed);
+              } else {
+                setIsLoading(false);
+                setCurrentImageLoaded(true);
+              }
+            }}
+            draggable={false}
+          />
         </div>
         {clickMarkers.map((marker) => (
           <div
