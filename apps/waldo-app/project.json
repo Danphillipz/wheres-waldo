@@ -4,6 +4,12 @@
   "sourceRoot": "apps/waldo-app/src",
   "projectType": "application",
   "targets": {
+    "generate-dev-images": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "node apps/waldo-app/scripts/generate-dev-images.mjs"
+      }
+    },
     "vite-build": {
       "executor": "@nx/vite:build",
       "outputs": ["{options.outputPath}"],

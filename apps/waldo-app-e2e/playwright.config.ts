@@ -30,45 +30,60 @@ export default defineConfig({
     cwd: workspaceRoot,
   },
   projects: [
+    // Desktop browsers
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-
     {
       name: 'firefox',
       use: { ...devices['Desktop Firefox'] },
     },
-
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
     },
 
-    // Mobile browsers
+    // Top 5 mobile device emulations across categories:
+    // 1. iPhone 15 Pro - latest flagship iOS (Safari/WebKit)
     {
-      name: 'Mobile Chrome',
-      use: { 
-        ...devices['Pixel 5'],
+      name: 'Mobile Safari - iPhone 15 Pro',
+      use: {
+        ...devices['iPhone 15 Pro'],
       },
       testMatch: /.*\.spec\.ts/,
     },
+    // 2. iPhone 14 Pro Max - large-screen iOS (Safari/WebKit)
     {
-      name: 'Mobile Safari',
-      use: { 
-        ...devices['iPhone 12'],
+      name: 'Mobile Safari - iPhone 14 Pro Max',
+      use: {
+        ...devices['iPhone 14 Pro Max'],
       },
       testMatch: /.*\.spec\.ts/,
     },
-
-    // Uncomment for branded browsers
-    /* {
-      name: 'Microsoft Edge',
-      use: { ...devices['Desktop Edge'], channel: 'msedge' },
-    },
+    // 3. Pixel 7 - flagship Android (Chrome/Chromium)
     {
-      name: 'Google Chrome',
-      use: { ...devices['Desktop Chrome'], channel: 'chrome' },
-    } */
+      name: 'Mobile Chrome - Pixel 7',
+      use: {
+        ...devices['Pixel 7'],
+      },
+      testMatch: /.*\.spec\.ts/,
+    },
+    // 4. Samsung Galaxy S24 - popular Android (Chrome/Chromium)
+    {
+      name: 'Mobile Chrome - Galaxy S24',
+      use: {
+        ...devices['Galaxy S24'],
+      },
+      testMatch: /.*\.spec\.ts/,
+    },
+    // 5. iPad Mini - tablet viewport (Safari/WebKit)
+    {
+      name: 'Tablet Safari - iPad Mini',
+      use: {
+        ...devices['iPad Mini'],
+      },
+      testMatch: /.*\.spec\.ts/,
+    },
   ],
 });

@@ -8,7 +8,6 @@ export default defineConfig(() => ({
   base: process.env.VITE_BASE_PATH || '/',
   define: {
     __BASE_URL__: JSON.stringify(process.env.VITE_BASE_PATH || '/'),
-    __USE_OPTIMIZED_IMAGES__: JSON.stringify(process.env.NODE_ENV === 'production'),
   },
   server: {
     port: 4200,
