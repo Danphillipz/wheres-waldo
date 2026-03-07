@@ -13,8 +13,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const MOBILE_MAX_DIMENSION = 828;
-const QUALITY = 75;
-const WEBP_QUALITY = 72;
+const QUALITY = 85;
+const WEBP_QUALITY = 82;
 
 async function generateDevImages() {
   const publicImages = path.join(__dirname, '..', 'public', 'images');
@@ -40,7 +40,7 @@ async function generateDevImages() {
         if (err.code !== 'ENOENT') throw err;
         const inputBuffer = await fs.readFile(filePath);
         const webpBuffer = await sharp(inputBuffer, { failOnError: false })
-          .withMetadata({ orientation: undefined })
+          .rotate()
           .webp({ quality: WEBP_QUALITY })
           .toBuffer();
         await fs.writeFile(webpPath, webpBuffer);
@@ -60,7 +60,7 @@ async function generateDevImages() {
           const maxDim = Math.max(metadata.width, metadata.height);
           if (maxDim > MOBILE_MAX_DIMENSION) {
             let mobileImage = sharp(inputBuffer, { failOnError: false })
-              .withMetadata({ orientation: undefined })
+              .rotate()
               .resize(MOBILE_MAX_DIMENSION, MOBILE_MAX_DIMENSION, {
                 fit: 'inside',
                 withoutEnlargement: true,
@@ -90,7 +90,7 @@ async function generateDevImages() {
           const maxDim = Math.max(metadata.width, metadata.height);
           if (maxDim > MOBILE_MAX_DIMENSION) {
             const mobileWebpBuffer = await sharp(inputBuffer, { failOnError: false })
-              .withMetadata({ orientation: undefined })
+              .rotate()
               .resize(MOBILE_MAX_DIMENSION, MOBILE_MAX_DIMENSION, {
                 fit: 'inside',
                 withoutEnlargement: true,
