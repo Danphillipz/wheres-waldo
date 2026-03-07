@@ -7,10 +7,10 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const MAX_DIMENSION = 1920; // Reduced from 3840 for better desktop loading performance
+const MAX_DIMENSION = 3840;
 const MOBILE_MAX_DIMENSION = 828; // Target iPhone/mobile viewport widths
-const QUALITY = 75; // Slightly lower quality for better compression
-const WEBP_QUALITY = 72; // WebP can use slightly lower quality and still look good
+const QUALITY = 85;
+const WEBP_QUALITY = 82;
 
 async function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
@@ -20,10 +20,8 @@ async function processImage(filePath, originalSize) {
   try {
     // Read to buffer first to avoid file locking
     const inputBuffer = await fs.readFile(filePath);
-    // Disable auto-rotation by not rotating based on EXIF orientation
-    const image = sharp(inputBuffer, { failOnError: false });
-    // Remove any rotation by stripping metadata
-    image.withMetadata({ orientation: undefined });
+    // Auto-rotate based on EXIF orientation so portrait images display correctly
+    const image = sharp(inputBuffer, { failOnError: false }).rotate();
     const metadata = await image.metadata();
     
     if (!metadata.width || !metadata.height) {
@@ -74,8 +72,7 @@ async function processImage(filePath, originalSize) {
 async function generateWebP(filePath) {
   try {
     const inputBuffer = await fs.readFile(filePath);
-    const image = sharp(inputBuffer, { failOnError: false });
-    image.withMetadata({ orientation: undefined });
+    const image = sharp(inputBuffer, { failOnError: false }).rotate();
 
     const webpBuffer = await image.webp({ quality: WEBP_QUALITY }).toBuffer();
     const webpPath = filePath.replace(/\.(jpe?g|png)$/i, '.webp');
@@ -93,8 +90,7 @@ async function generateWebP(filePath) {
 async function generateMobileVariant(filePath) {
   try {
     const inputBuffer = await fs.readFile(filePath);
-    const image = sharp(inputBuffer, { failOnError: false });
-    image.withMetadata({ orientation: undefined });
+    const image = sharp(inputBuffer, { failOnError: false }).rotate();
     const metadata = await image.metadata();
 
     if (!metadata.width || !metadata.height) return;
