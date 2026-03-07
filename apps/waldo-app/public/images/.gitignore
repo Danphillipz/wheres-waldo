@@ -1,3 +1,0 @@
-# Generated image variants (created by generate-dev-images.mjs / optimize-dist-images.mjs)
-*.webp
-*-mobile.*
