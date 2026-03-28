@@ -3,7 +3,8 @@ import { test, expect, Page } from '@playwright/test';
 // Helper function to start the game and wait for the first image to fully load
 async function startGame(page: Page) {
   await page.goto('/');
-  await page.locator('input[type="text"]').fill('Test Player');
+  await page.locator('input#firstName').fill('Test');
+  await page.locator('input#lastName').fill('Player');
   await page.locator('button[type="submit"]').click();
   // Wait for game board to load
   await page.waitForSelector('h1:has-text("Amy and Dan")', { timeout: 5000 });
@@ -17,7 +18,8 @@ test.describe('Start Screen', () => {
     
     // Verify all start screen elements are present
     await expect(page.locator('h1')).toContainText("Where's");
-    await expect(page.locator('input[type="text"]')).toBeVisible();
+    await expect(page.locator('input#firstName')).toBeVisible();
+    await expect(page.locator('input#lastName')).toBeVisible();
     await expect(page.locator('button[type="submit"]')).toBeVisible();
     // Button should be disabled when no name is entered
     await expect(page.locator('button[type="submit"]')).toBeDisabled();
@@ -29,10 +31,12 @@ test.describe('Start Screen', () => {
     // Button should be disabled initially
     await expect(page.locator('button[type="submit"]')).toBeDisabled();
     
-    // Enter a name
-    await page.locator('input[type="text"]').fill('Test Player');
+    // Enter first name only — button should still be disabled
+    await page.locator('input#firstName').fill('Test');
+    await expect(page.locator('button[type="submit"]')).toBeDisabled();
     
-    // Button should now be enabled
+    // Enter last name — button should now be enabled
+    await page.locator('input#lastName').fill('Player');
     await expect(page.locator('button[type="submit"]')).toBeEnabled();
   });
 
@@ -255,7 +259,7 @@ test.describe('Game Navigation', () => {
     
     // Should return to start screen
     await expect(page.locator('h1')).toContainText("Where's");
-    await expect(page.locator('input[type="text"]')).toBeVisible();
+    await expect(page.locator('input#firstName')).toBeVisible();
   });
 });
 
@@ -267,7 +271,8 @@ test.describe('Cross-Browser Compatibility', () => {
     await expect(page.locator('h1')).toBeVisible();
     
     // Start game
-    await page.locator('input[type="text"]').fill(`Test-${browserName}`);
+    await page.locator('input#firstName').fill(`Test-${browserName}`);
+    await page.locator('input#lastName').fill('Player');
     await page.locator('button[type="submit"]').click();
     
     // Verify game starts

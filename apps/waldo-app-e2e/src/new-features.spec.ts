@@ -3,7 +3,8 @@ import { test, expect, Page } from '@playwright/test';
 // Helper function to start the game and wait for the first image to fully load
 async function startGame(page: Page) {
   await page.goto('/');
-  await page.locator('input[type="text"]').fill('Test Player');
+  await page.locator('input#firstName').fill('Test');
+  await page.locator('input#lastName').fill('Player');
   await page.locator('button[type="submit"]').click();
   // Wait for game board to load
   await page.waitForSelector('h1:has-text("Amy and Dan")', { timeout: 5000 });
@@ -31,9 +32,10 @@ test.describe('Image Randomization', () => {
     
     // Exit and start second game
     await page.locator('button:has-text("Exit")').click();
-    await page.waitForSelector('input[type="text"]', { timeout: 5000 });
+    await page.waitForSelector('input#firstName', { timeout: 5000 });
     
-    await page.locator('input[type="text"]').fill('Test Player 2');
+    await page.locator('input#firstName').fill('Test');
+    await page.locator('input#lastName').fill('Player 2');
     await page.locator('button[type="submit"]').click();
     await page.waitForSelector('h1:has-text("Amy and Dan")', { timeout: 5000 });
     
@@ -189,8 +191,9 @@ test.describe('Integration - All Features Together', () => {
     await page.locator('button:has-text("Exit")').click();
     
     // Start second game
-    await page.waitForSelector('input[type="text"]', { timeout: 5000 });
-    await page.locator('input[type="text"]').fill('Test Player 2');
+    await page.waitForSelector('input#firstName', { timeout: 5000 });
+    await page.locator('input#firstName').fill('Test');
+    await page.locator('input#lastName').fill('Player 2');
     await page.locator('button[type="submit"]').click();
     
     // Verify second game started
