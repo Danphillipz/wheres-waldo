@@ -376,8 +376,15 @@
   color: #8b4513;
 }
 
-.nameInput {
+.nameInputRow {
+  display: flex;
+  gap: 0.75rem;
+  width: 100%;
   min-width: 280px;
+}
+
+.nameInput {
+  width: 100%;
   padding: 0.75rem 1rem;
   font-size: 1rem;
   border: 2px solid #d4a574;
@@ -493,4 +500,38 @@
   .description {
     font-size: 1.35rem;
   }
+}
+
+/* Leaderboard toggle button */
+.leaderboardButton {
+  margin-top: 1.5rem;
+  padding: 0.6rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  background: none;
+  color: #8b4513;
+  border: 2px solid #d4a574;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.leaderboardButton:hover {
+  background: #f5ebe0;
+  border-color: #c9965f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.leaderboardButton:focus-visible {
+  outline: 3px solid #8b4513;
+  outline-offset: 2px;
+}
+
+.leaderboardSection {
+  margin-top: 1.5rem;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  animation: formFadeIn 0.5s ease-out;
 }

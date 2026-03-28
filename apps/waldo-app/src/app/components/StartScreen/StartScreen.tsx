@@ -1,18 +1,35 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { subscribeToLeaderboard, LeaderboardEntry } from '../../utils/firestoreLeaderboard';
+import Leaderboard from '../Leaderboard/Leaderboard';
 import styles from './StartScreen.module.css';
 
 interface StartScreenProps {
-  onStart: (playerName: string) => void;
+  onStart: (firstName: string, lastName: string) => void;
 }
 
 export function StartScreen({ onStart }: StartScreenProps) {
-  const [playerName, setPlayerName] = useState('');
+  const [firstName, setFirstName] = useState('');
+  const [lastName, setLastName] = useState('');
   const [isHowToPlayOpen, setIsHowToPlayOpen] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [leaderboardEntries, setLeaderboardEntries] = useState<LeaderboardEntry[]>([]);
+  const [leaderboardLoading, setLeaderboardLoading] = useState(true);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToLeaderboard((entries) => {
+      setLeaderboardEntries(entries);
+      setLeaderboardLoading(false);
+    });
+    if (!unsubscribe) {
+      setLeaderboardLoading(false);
+    }
+    return () => unsubscribe?.();
+  }, []);
 
   const handleSubmitName = (e: React.FormEvent) => {
     e.preventDefault();
-    if (playerName.trim()) {
-      onStart(playerName.trim());
+    if (firstName.trim() && lastName.trim()) {
+      onStart(firstName.trim(), lastName.trim());
     }
   };
 
@@ -88,27 +105,55 @@ export function StartScreen({ onStart }: StartScreenProps) {
         </div>
 
         <form className={styles.nameForm} onSubmit={handleSubmitName}>
-          <label htmlFor="playerName" className={styles.nameLabel}>
+          <label htmlFor="firstName" className={styles.nameLabel}>
             Enter Your Name:
           </label>
-          <input
-            type="text"
-            id="playerName"
-            className={styles.nameInput}
-            value={playerName}
-            onChange={(e) => setPlayerName(e.target.value)}
-            placeholder="Your name"
-            autoFocus
-            required
-          />
-          <button 
-            type="submit" 
+          <div className={styles.nameInputRow}>
+            <input
+              type="text"
+              id="firstName"
+              className={styles.nameInput}
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+              placeholder="First name"
+              autoFocus
+              required
+            />
+            <input
+              type="text"
+              id="lastName"
+              className={styles.nameInput}
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              placeholder="Last name"
+              required
+            />
+          </div>
+          <button
+            type="submit"
             className={styles.submitButton}
-            disabled={!playerName.trim()}
+            disabled={!firstName.trim() || !lastName.trim()}
           >
-            Let's Find Waldo!
+            Let's Find Amy and Dan!
           </button>
         </form>
+
+        <button
+          type="button"
+          className={styles.leaderboardButton}
+          onClick={() => setShowLeaderboard(!showLeaderboard)}
+        >
+          {showLeaderboard ? 'Hide Leaderboard' : '🏆 View Leaderboard'}
+        </button>
+
+        {showLeaderboard && (
+          <div className={styles.leaderboardSection}>
+            <Leaderboard
+              entries={leaderboardEntries}
+              loading={leaderboardLoading}
+            />
+          </div>
+        )}
       </div>
     </div>
   );

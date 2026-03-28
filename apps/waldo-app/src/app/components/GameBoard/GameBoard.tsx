@@ -2,11 +2,13 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { waldoImages, getCongratulationMessage, Difficulty } from '../../utils/imageData';
 import { useGameState } from '../../hooks/useGameState';
 import { getAttemptHistory, addAttempt } from '../../utils/attemptHistory';
+import { submitScore, subscribeToLeaderboard, LeaderboardEntry } from '../../utils/firestoreLeaderboard';
 import ImageViewer from '../ImageViewer/ImageViewer';
 import ProgressIndicator from '../ProgressIndicator/ProgressIndicator';
 import SuccessModal from '../SuccessModal/SuccessModal';
 import UnluckyModal from '../UnluckyModal/UnluckyModal';
 import AttemptHistory from '../AttemptHistory/AttemptHistory';
+import Leaderboard from '../Leaderboard/Leaderboard';
 import Toolbar from '../Toolbar/Toolbar';
 import styles from './GameBoard.module.css';
 
@@ -14,6 +16,8 @@ const MAX_ATTEMPTS_PER_IMAGE = 5;
 
 interface GameBoardProps {
   playerName: string;
+  playerFirstName: string;
+  playerLastName: string;
   onExit: () => void;
 }
 
@@ -39,7 +43,7 @@ function organizeImages() {
   return [...practiceImages, ...shuffledOthers];
 }
 
-export function GameBoard({ playerName, onExit }: GameBoardProps) {
+export function GameBoard({ playerName, playerFirstName, playerLastName, onExit }: GameBoardProps) {
   // Memoize the organized images so they don't shuffle on every render
   const organizedImages = useMemo(() => organizeImages(), []);
   
@@ -58,6 +62,9 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
   const [attemptEntries, setAttemptEntries] = useState(getAttemptHistory());
   const [scoreAdded, setScoreAdded] = useState(false);
   const [hintRequested, setHintRequested] = useState(false);
+  const [leaderboardEntries, setLeaderboardEntries] = useState<LeaderboardEntry[]>([]);
+  const [leaderboardLoading, setLeaderboardLoading] = useState(true);
+  const [alreadySubmitted, setAlreadySubmitted] = useState(false);
 
   const currentImage = organizedImages[state.currentImageIndex];
   const nextImageData = state.currentImageIndex < organizedImages.length - 1 
@@ -123,9 +130,22 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
     setShowUnluckyModal(false);
     setScoreAdded(false);
     setHintRequested(false);
+    setAlreadySubmitted(false);
   };
 
-  // Add attempt to history when game completes
+  // Subscribe to cloud leaderboard
+  useEffect(() => {
+    const unsubscribe = subscribeToLeaderboard((entries) => {
+      setLeaderboardEntries(entries);
+      setLeaderboardLoading(false);
+    });
+    if (!unsubscribe) {
+      setLeaderboardLoading(false);
+    }
+    return () => unsubscribe?.();
+  }, []);
+
+  // Add attempt to history and submit to cloud leaderboard when game completes
   useEffect(() => {
     if (state.isComplete && playerName && !scoreAdded) {
       addAttempt({
@@ -136,6 +156,21 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
         hintsUsed: state.hintsUsed,
       });
       setAttemptEntries(getAttemptHistory());
+
+      submitScore({
+        name: playerName,
+        firstName: playerFirstName,
+        lastName: playerLastName,
+        score: state.attempts,
+        foundImages: state.foundImages.size,
+        totalImages: organizedImages.length,
+        hintsUsed: state.hintsUsed,
+      }).then((result) => {
+        if (result.alreadyExists) {
+          setAlreadySubmitted(true);
+        }
+      });
+
       setScoreAdded(true);
     }
   }, [state.isComplete, playerName, state.attempts, state.foundImages.size, state.hintsUsed, scoreAdded, organizedImages.length]);
@@ -143,6 +178,33 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
   if (state.isComplete) {
     return (
       <div className={styles.completionScreen}>
+        <div className={styles.floatingWaldo} style={{ top: '10%', left: '5%', animationDelay: '0s' }}>
+          <div className={styles.waldoCharacter}>
+            <div className={styles.waldoHead}>
+              <div className={styles.waldoHat}><div className={styles.waldoHatStripe}></div></div>
+              <div className={styles.waldoGlasses}></div>
+            </div>
+            <div className={styles.waldoBody}><div className={styles.waldoStripes}></div></div>
+          </div>
+        </div>
+        <div className={styles.floatingWaldo} style={{ top: '60%', right: '8%', animationDelay: '2s' }}>
+          <div className={styles.waldoCharacter}>
+            <div className={styles.waldoHead}>
+              <div className={styles.waldoHat}><div className={styles.waldoHatStripe}></div></div>
+              <div className={styles.waldoGlasses}></div>
+            </div>
+            <div className={styles.waldoBody}><div className={styles.waldoStripes}></div></div>
+          </div>
+        </div>
+        <div className={styles.floatingWaldo} style={{ bottom: '15%', left: '10%', animationDelay: '4s' }}>
+          <div className={styles.waldoCharacter}>
+            <div className={styles.waldoHead}>
+              <div className={styles.waldoHat}><div className={styles.waldoHatStripe}></div></div>
+              <div className={styles.waldoGlasses}></div>
+            </div>
+            <div className={styles.waldoBody}><div className={styles.waldoStripes}></div></div>
+          </div>
+        </div>
         <h1 className={styles.completionTitle}>
           Game Complete!
         </h1>
@@ -151,11 +213,11 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
         </p>
         <div className={styles.completionStats}>
           <div className={styles.statItem}>
-            <span className={styles.statLabel}>Waldos Found:</span>
+            <span className={styles.statLabel}>Times Found Amy or Dan:</span>
             <span className={styles.statValue}>{state.foundImages.size}</span>
           </div>
           <div className={styles.statItem}>
-            <span className={styles.statLabel}>Waldos Missed:</span>
+            <span className={styles.statLabel}>Times Not Found Either:</span>
             <span className={styles.statValue}>{state.skippedImages.size}</span>
           </div>
           <div className={styles.statItem}>
@@ -168,7 +230,21 @@ export function GameBoard({ playerName, onExit }: GameBoardProps) {
           </div>
         </div>
         
-        <AttemptHistory entries={attemptEntries} currentPlayerName={playerName} />
+        {alreadySubmitted && (
+          <p className={styles.alreadySubmittedMessage}>
+            Only your first attempt counted for the leaderboard!
+          </p>
+        )}
+
+        <Leaderboard
+          entries={leaderboardEntries}
+          currentPlayerName={playerName}
+          loading={leaderboardLoading}
+        />
+
+        <div className={styles.attemptHistoryWrapper}>
+          <AttemptHistory entries={attemptEntries} currentPlayerName={playerName} />
+        </div>
         
         <div className={styles.buttonGroup}>
           <button className={styles.restartButton} onClick={handleRestart}>

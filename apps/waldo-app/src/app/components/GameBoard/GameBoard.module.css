@@ -57,6 +57,111 @@
   padding: 2rem;
   text-align: center;
   animation: screenFadeIn 0.8s ease-out;
+  position: relative;
+  overflow: hidden;
+}
+
+.floatingWaldo {
+  position: absolute;
+  opacity: 0.15;
+  animation: float3D 25s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  pointer-events: none;
+  z-index: 0;
+  transform-style: preserve-3d;
+}
+
+@keyframes float3D {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) rotateY(0deg) rotateZ(0deg);
+  }
+  20% {
+    transform: translate3d(30px, -40px, 20px) rotateY(15deg) rotateZ(5deg);
+  }
+  40% {
+    transform: translate3d(-20px, -70px, -10px) rotateY(-10deg) rotateZ(-3deg);
+  }
+  60% {
+    transform: translate3d(25px, -30px, 15px) rotateY(8deg) rotateZ(4deg);
+  }
+  80% {
+    transform: translate3d(-15px, -50px, 5px) rotateY(-12deg) rotateZ(-2deg);
+  }
+}
+
+.waldoCharacter {
+  width: 60px;
+  height: 90px;
+  position: relative;
+}
+
+.waldoHead {
+  width: 38px;
+  height: 38px;
+  background: #ffd7b5;
+  border-radius: 50%;
+  position: relative;
+  margin: 0 auto;
+  border: 2px solid #8b4513;
+}
+
+.waldoHat {
+  position: absolute;
+  top: -12px;
+  left: 4px;
+  width: 30px;
+  height: 15px;
+  background: red;
+  border-radius: 8px 8px 0 0;
+  border: 2px solid #8b4513;
+}
+
+.waldoHatStripe {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 22px;
+  height: 6px;
+  background: white;
+  border-radius: 1px;
+}
+
+.waldoGlasses {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 26px;
+  height: 9px;
+  border: 2px solid #333;
+  border-radius: 6px;
+  background: rgba(100, 200, 255, 0.3);
+}
+
+.waldoBody {
+  width: 38px;
+  height: 45px;
+  background: white;
+  position: relative;
+  margin: 4px auto 0;
+  border-radius: 4px;
+  border: 2px solid #8b4513;
+}
+
+.waldoStripes {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    0deg,
+    red 0px,
+    red 6px,
+    white 6px,
+    white 12px
+  );
+  border-radius: 4px;
 }
 
 @keyframes screenFadeIn {
@@ -313,6 +418,20 @@
     min-width: 360px;
     padding: 2rem;
   }
+}
+
+.attemptHistoryWrapper {
+  margin-top: 2rem;
+  width: 100%;
+  max-width: 500px;
+}
+
+.alreadySubmittedMessage {
+  color: #c9965f;
+  font-weight: 600;
+  text-align: center;
+  margin: 0 0 1rem 0;
+  animation: messageSlide 0.6s ease-out 0.3s backwards;
 }
 
 /* Desktop - ensure no scrollbar on HD screens */

@@ -4,23 +4,34 @@ import StartScreen from './components/StartScreen/StartScreen';
 
 export function App() {
   const [hasStarted, setHasStarted] = useState(false);
-  const [playerName, setPlayerName] = useState('');
+  const [playerFirstName, setPlayerFirstName] = useState('');
+  const [playerLastName, setPlayerLastName] = useState('');
 
-  const handleStart = (name: string) => {
-    setPlayerName(name);
+  const handleStart = (firstName: string, lastName: string) => {
+    setPlayerFirstName(firstName);
+    setPlayerLastName(lastName);
     setHasStarted(true);
   };
 
   const handleExit = () => {
     setHasStarted(false);
-    setPlayerName('');
+    setPlayerFirstName('');
+    setPlayerLastName('');
   };
 
   if (!hasStarted) {
     return <StartScreen onStart={handleStart} />;
   }
 
-  return <GameBoard playerName={playerName} onExit={handleExit} />;
+  const playerName = `${playerFirstName} ${playerLastName}`;
+  return (
+    <GameBoard
+      playerName={playerName}
+      playerFirstName={playerFirstName}
+      playerLastName={playerLastName}
+      onExit={handleExit}
+    />
+  );
 }
 
 export default App;
