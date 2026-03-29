@@ -148,7 +148,10 @@ export function GameBoard({ playerName, playerFirstName, playerLastName, onExit 
       });
   }, [playerFirstName, playerLastName]);
 
-  // Save progress to cloud leaderboard after each image is completed
+  // Save progress to cloud leaderboard after each image is completed.
+  // Guard: hasExistingEntry !== null ensures we wait for the initial check to
+  // complete before saving. saveProgress itself handles the comparison to
+  // prevent overwriting a better existing score.
   const imagesAttempted = state.foundImages.size + state.skippedImages.size;
   useEffect(() => {
     if (imagesAttempted > prevImagesAttempted.current && playerName && hasExistingEntry !== null) {
