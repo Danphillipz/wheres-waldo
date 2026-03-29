@@ -75,39 +75,14 @@ export async function getLeaderboard(): Promise<LeaderboardEntry[]> {
   }
 }
 
-export async function submitScore(
-  entry: Omit<LeaderboardEntry, 'timestamp'>
-): Promise<{ success: boolean; alreadyExists: boolean }> {
-  try {
-    const db = getDb();
-    if (!db) return { success: false, alreadyExists: false };
-
-    const docId = toDocId(entry.firstName, entry.lastName);
-    const docRef = doc(db, COLLECTION_NAME, docId);
-    const existing = await getDoc(docRef);
-
-    if (existing.exists()) {
-      return { success: false, alreadyExists: true };
-    }
-
-    const newEntry: LeaderboardEntry = {
-      ...entry,
-      timestamp: Date.now(),
-    };
-
-    await setDoc(docRef, newEntry);
-    return { success: true, alreadyExists: false };
-  } catch (error) {
-    console.error('Error submitting score:', error);
-    return { success: false, alreadyExists: false };
-  }
-}
-
 /**
  * Save or update a player's progress. Creates the entry if it doesn't exist,
- * or overwrites it with the latest progress. Used for incremental saves after
- * each image is completed so partial game progress is preserved.
- * @returns Object indicating save success. Returns false if database unavailable or write fails.
+ * or updates it only when the new progress is strictly better than the existing
+ * entry. "Better" means more found images, or the same found images with fewer
+ * misses. This allows returning players to improve their score while preventing
+ * a new game from overwriting a previous better result.
+ * @returns Object indicating save success. Returns false if database unavailable,
+ *          write fails, or the existing entry is already equal or better.
  */
 export async function saveProgress(
   entry: Omit<LeaderboardEntry, 'timestamp'>
@@ -118,6 +93,22 @@ export async function saveProgress(
 
     const docId = toDocId(entry.firstName, entry.lastName);
     const docRef = doc(db, COLLECTION_NAME, docId);
+
+    const existing = await getDoc(docRef);
+    if (existing.exists()) {
+      const data = existing.data();
+      const existingFound = data['foundImages'] as number;
+      const existingScore = data['score'] as number;
+
+      // Only overwrite if new progress is strictly better:
+      // more found images, or same found images with fewer misses
+      if (existingFound > entry.foundImages) {
+        return { success: false };
+      }
+      if (existingFound === entry.foundImages && existingScore <= entry.score) {
+        return { success: false };
+      }
+    }
 
     const newEntry: LeaderboardEntry = {
       ...entry,

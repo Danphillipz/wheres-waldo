@@ -151,7 +151,7 @@ export function GameBoard({ playerName, playerFirstName, playerLastName, onExit 
   // Save progress to cloud leaderboard after each image is completed
   const imagesAttempted = state.foundImages.size + state.skippedImages.size;
   useEffect(() => {
-    if (imagesAttempted > prevImagesAttempted.current && playerName && hasExistingEntry === false) {
+    if (imagesAttempted > prevImagesAttempted.current && playerName && hasExistingEntry !== null) {
       prevImagesAttempted.current = imagesAttempted;
       saveProgress({
         name: playerName,
@@ -254,7 +254,7 @@ export function GameBoard({ playerName, playerFirstName, playerLastName, onExit 
         
         {alreadySubmitted && (
           <p className={styles.alreadySubmittedMessage}>
-            Only your first attempt counted for the leaderboard!
+            Your best score is kept on the leaderboard!
           </p>
         )}
 
