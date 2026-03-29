@@ -59,7 +59,7 @@ export function getBestAttempt(playerName: string): AttemptEntry | null {
 
   if (playerAttempts.length === 0) return null;
 
-  // Best = most found images, then fewest attempts
+  // Best = most found images, then fewest misses
   return playerAttempts.reduce((best, current) => {
     if (current.foundImages > best.foundImages) return current;
     if (

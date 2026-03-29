@@ -12,7 +12,6 @@ apps/
   image-creator/      # Dev-only tool for creating image configurations
 libs/
   shared-ui/          # Shared utilities (click detection, image types)
-.specify/             # Spec-driven development (GitHub Spec Kit integration)
 ```
 
 ### Key Components & Data Flow
@@ -22,12 +21,12 @@ libs/
 2. **`GameBoard.tsx`** - Main orchestrator:
    - Shuffles images (Practice difficulty first, then randomized)
    - Manages modals (`SuccessModal`, `UnluckyModal`)
-   - Tracks attempts limit (5 per image via `MAX_ATTEMPTS_PER_IMAGE`)
+   - Tracks misses limit (5 per image via `MAX_ATTEMPTS_PER_IMAGE`)
    - Handles completion screen with leaderboard integration
 3. **`ImageViewer.tsx`** - User interaction layer:
    - Click/touch detection on images
    - Zoom/pan controls (scale 1-4x) with constrained boundaries
-   - Visual feedback: success markers (exploding animation), jail bars (on max attempts)
+   - Visual feedback: success markers (exploding animation), jail bars (on max misses)
 4. **`StartScreen.tsx`** - Entry point with floating Waldo decorations
 
 **Custom Hooks** (`apps/waldo-app/src/app/hooks/`):
@@ -112,31 +111,9 @@ npx nx dev @wheres-waldo/image-creator
 ### Animation Patterns
 Component-specific `@keyframes` in CSS Modules:
 - `SuccessModal`: `fireworkBurst`, `modalPopIn`, `titleBounce`
-- `ImageViewer`: `markerExplode` (on Waldo found), `jailPulse` (on max attempts)
+- `ImageViewer`: `markerExplode` (on Waldo found), `jailPulse` (on max misses)
 - `GameBoard`: Staggered `animation-delay` for completion stats
 - `ProgressIndicator`: `dotPulse` for current image, `dotFound` for completed
-
-## Spec-Driven Development
-
-**GitHub Spec Kit** integration in `.specify/`:
-
-```
-.specify/
-  memory/           # constitution.md (project principles)
-  specs/            # Feature specs, plans, tasks (per feature)
-  templates/        # Spec/plan/task templates
-  scripts/          # Automation
-```
-
-**Workflow (use slash commands in order):**
-1. `/speckit.constitution` → `.specify/memory/constitution.md`
-2. `/speckit.specify` → `.specify/specs/{feature}.spec.md`
-3. `/speckit.clarify` → Resolve ambiguities
-4. `/speckit.plan` → `.specify/specs/{feature}.plan.md`
-5. `/speckit.tasks` → `.specify/specs/{feature}.tasks.md`
-6. `/speckit.implement` → Execute tasks
-
-**NEVER manually create spec files** - commands auto-generate from templates.
 
 ## Critical Implementation Details
 
@@ -152,7 +129,7 @@ Component-specific `@keyframes` in CSS Modules:
 ```typescript
 // Key: 'waldoLeaderboard'
 { name: string, score: number, foundImages: number, timestamp: number }[]
-// Sorted by foundImages DESC, then score ASC (lower attempts = better)
+// Sorted by foundImages DESC, then score ASC (lower misses = better)
 // Limited to top 10 entries
 ```
 
@@ -166,9 +143,9 @@ Component-specific `@keyframes` in CSS Modules:
 3. Memoized - doesn't reshuffle on re-render
 ```
 
-**Attempts system:**
+**Misses system:**
 - Per-image limit: `MAX_ATTEMPTS_PER_IMAGE = 5`
-- Global counter: `state.attempts` (sum across all images)
+- Global counter: `state.attempts` (sum of misses across all images)
 - Per-image reset: `currentImageAttempts` resets to 0 on `nextImage()`
 
 ### GitHub Pages Deployment

@@ -98,8 +98,8 @@ export function StartScreen({ onStart }: StartScreenProps) {
               <li>Somewhere in the picture Amy and/or Dan are hiding.</li>
               <li>Zoom in to get a closer look at the picture.</li>
               <li>If you think you've found them, click on their location.</li>
-              <li>Try to find them in as few attempts as possible.</li>
-              <li>If you've not found them in 5 attempts, game over!</li>
+              <li>Try to find them in as few clicks as possible.</li>
+              <li>If you've not found them after 5 misses, game over!</li>
             </ol>
           )}
         </div>

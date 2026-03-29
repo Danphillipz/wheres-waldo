@@ -116,7 +116,7 @@ describe('attemptHistory', () => {
       const best = getBestAttempt('Player1');
       expect(best).toBeDefined();
       expect(best!.foundImages).toBe(7);
-      expect(best!.score).toBe(8); // Fewer attempts is better when foundImages are equal
+      expect(best!.score).toBe(8); // Fewer misses is better when foundImages are equal
     });
 
     it('should return null for unknown player', () => {

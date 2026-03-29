@@ -68,7 +68,7 @@ export function AttemptHistory({
                 <div className={styles.date}>{formattedDate}</div>
               </div>
               <div className={styles.stats}>
-                <span className={styles.score}>{entry.score} attempts</span>
+                <span className={styles.score}>{entry.score} misses</span>
                 <span className={styles.found}>
                   {entry.foundImages}/{entry.totalImages} found
                 </span>

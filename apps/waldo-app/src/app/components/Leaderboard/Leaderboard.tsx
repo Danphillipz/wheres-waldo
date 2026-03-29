@@ -63,7 +63,7 @@ export function Leaderboard({
               <div className={styles.podiumDetails}>
                 <span className={styles.podiumName}>{entry.name}</span>
                 <span className={styles.podiumStats}>
-                  {entry.foundImages}/{entry.totalImages} found · {entry.score} attempts
+                  {entry.foundImages}/{entry.totalImages} found · {entry.score} misses
                   {entry.hintsUsed > 0 && ` · 💡${entry.hintsUsed}`}
                 </span>
               </div>
@@ -86,7 +86,7 @@ export function Leaderboard({
                 <span className={styles.rank}>{rank}</span>
                 <span className={styles.restName}>{entry.name}</span>
                 <span className={styles.restStats}>
-                  {entry.foundImages}/{entry.totalImages} · {entry.score} att.
+                  {entry.foundImages}/{entry.totalImages} · {entry.score} miss.
                   {entry.hintsUsed > 0 && ` · 💡${entry.hintsUsed}`}
                 </span>
               </div>

@@ -55,7 +55,7 @@ function snapshotToEntries(
       timestamp: data['timestamp'] as number,
     };
   });
-  // Secondary sort: fewer attempts is better, then fewer hints used
+  // Secondary sort: fewer misses is better, then fewer hints used
   return entries.sort((a, b) => {
     if (b.foundImages !== a.foundImages) return b.foundImages - a.foundImages;
     if (a.score !== b.score) return a.score - b.score;
@@ -100,6 +100,34 @@ export async function submitScore(
   } catch (error) {
     console.error('Error submitting score:', error);
     return { success: false, alreadyExists: false };
+  }
+}
+
+/**
+ * Save or update a player's progress. Creates the entry if it doesn't exist,
+ * or overwrites it with the latest progress. Used for incremental saves after
+ * each image is completed so partial game progress is preserved.
+ */
+export async function saveProgress(
+  entry: Omit<LeaderboardEntry, 'timestamp'>
+): Promise<{ success: boolean }> {
+  try {
+    const db = getDb();
+    if (!db) return { success: false };
+
+    const docId = toDocId(entry.firstName, entry.lastName);
+    const docRef = doc(db, COLLECTION_NAME, docId);
+
+    const newEntry: LeaderboardEntry = {
+      ...entry,
+      timestamp: Date.now(),
+    };
+
+    await setDoc(docRef, newEntry);
+    return { success: true };
+  } catch (error) {
+    console.error('Error saving progress:', error);
+    return { success: false };
   }
 }
 

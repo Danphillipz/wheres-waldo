@@ -1,13 +1,12 @@
 # Where's Waldo
 
-An Nx monorepo with a React application, configured for spec-driven development using GitHub Spec Kit.
+An Nx monorepo with a React application — an interactive "Where's Amy & Dan" game.
 
 ## Overview
 
 This project demonstrates a modern development setup combining:
 - **Nx monorepo** for efficient workspace management
 - **React application** built with Vite
-- **GitHub Spec Kit** for spec-driven development workflows
 - **GitHub Pages** for automated deployment
 - **Cloud-ready leaderboard** for cross-device score persistence
 
@@ -93,36 +92,12 @@ VITE_BASE_PATH=/wheres-waldo/ npx nx build @wheres-waldo/waldo-app
 wheres-waldo/
 ├── apps/
 │   ├── waldo-app/          # Main React application
-│   └── waldo-app-e2e/      # End-to-end tests
-├── .specify/               # Spec-driven development artifacts
-│   ├── memory/            # Project constitution and memory
-│   ├── scripts/           # Automation scripts
-│   ├── templates/         # Spec, plan, and task templates
-│   └── specs/             # Feature specifications (created per feature)
+│   ├── waldo-app-e2e/      # End-to-end tests
+│   └── image-creator/      # Dev-only tool for creating image configurations
+├── libs/
+│   └── shared-ui/          # Shared utilities (click detection, image types)
 └── ...
 ```
-
-## Spec-Driven Development
-
-This project uses GitHub Spec Kit for structured, specification-driven development. The workflow includes:
-
-1. **Constitution** - Establish project principles
-2. **Specify** - Define feature requirements
-3. **Plan** - Create technical implementation plans
-4. **Tasks** - Break down into actionable tasks
-5. **Implement** - Execute the implementation
-
-### Available Commands
-
-When working with AI coding assistants, these slash commands are available:
-
-- `/speckit.constitution` - Create/update project governing principles
-- `/speckit.specify` - Define feature requirements and user stories
-- `/speckit.plan` - Create technical implementation plans
-- `/speckit.tasks` - Generate actionable task breakdown
-- `/speckit.implement` - Execute all tasks to build the feature
-
-See `.specify/COPILOT.md` for detailed development guidelines.
 
 ## Technologies
 

@@ -2,7 +2,7 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { waldoImages, getCongratulationMessage, Difficulty } from '../../utils/imageData';
 import { useGameState } from '../../hooks/useGameState';
 import { getAttemptHistory, addAttempt } from '../../utils/attemptHistory';
-import { submitScore, subscribeToLeaderboard, LeaderboardEntry } from '../../utils/firestoreLeaderboard';
+import { saveProgress, hasPlayerSubmitted, subscribeToLeaderboard, LeaderboardEntry } from '../../utils/firestoreLeaderboard';
 import ImageViewer from '../ImageViewer/ImageViewer';
 import ProgressIndicator from '../ProgressIndicator/ProgressIndicator';
 import SuccessModal from '../SuccessModal/SuccessModal';
@@ -65,6 +65,7 @@ export function GameBoard({ playerName, playerFirstName, playerLastName, onExit 
   const [leaderboardEntries, setLeaderboardEntries] = useState<LeaderboardEntry[]>([]);
   const [leaderboardLoading, setLeaderboardLoading] = useState(true);
   const [alreadySubmitted, setAlreadySubmitted] = useState(false);
+  const [hasExistingEntry, setHasExistingEntry] = useState<boolean | null>(null);
 
   const currentImage = organizedImages[state.currentImageIndex];
   const nextImageData = state.currentImageIndex < organizedImages.length - 1 
@@ -133,6 +134,29 @@ export function GameBoard({ playerName, playerFirstName, playerLastName, onExit 
     setAlreadySubmitted(false);
   };
 
+  // Check if player already has a leaderboard entry
+  useEffect(() => {
+    hasPlayerSubmitted(playerFirstName, playerLastName).then((submitted) => {
+      setHasExistingEntry(submitted);
+    });
+  }, [playerFirstName, playerLastName]);
+
+  // Save progress to cloud leaderboard after each image is completed
+  const imagesAttempted = state.foundImages.size + state.skippedImages.size;
+  useEffect(() => {
+    if (imagesAttempted > 0 && playerName && hasExistingEntry === false) {
+      saveProgress({
+        name: playerName,
+        firstName: playerFirstName,
+        lastName: playerLastName,
+        score: state.attempts,
+        foundImages: state.foundImages.size,
+        totalImages: imagesAttempted,
+        hintsUsed: state.hintsUsed,
+      });
+    }
+  }, [imagesAttempted, playerName, playerFirstName, playerLastName, hasExistingEntry, state.attempts, state.foundImages.size, state.hintsUsed]);
+
   // Subscribe to cloud leaderboard
   useEffect(() => {
     const unsubscribe = subscribeToLeaderboard((entries) => {
@@ -145,35 +169,25 @@ export function GameBoard({ playerName, playerFirstName, playerLastName, onExit 
     return () => unsubscribe?.();
   }, []);
 
-  // Add attempt to history and submit to cloud leaderboard when game completes
+  // Add attempt to local history when game completes
   useEffect(() => {
     if (state.isComplete && playerName && !scoreAdded) {
       addAttempt({
         name: playerName,
         score: state.attempts,
         foundImages: state.foundImages.size,
-        totalImages: organizedImages.length,
+        totalImages: state.foundImages.size + state.skippedImages.size,
         hintsUsed: state.hintsUsed,
       });
       setAttemptEntries(getAttemptHistory());
 
-      submitScore({
-        name: playerName,
-        firstName: playerFirstName,
-        lastName: playerLastName,
-        score: state.attempts,
-        foundImages: state.foundImages.size,
-        totalImages: organizedImages.length,
-        hintsUsed: state.hintsUsed,
-      }).then((result) => {
-        if (result.alreadyExists) {
-          setAlreadySubmitted(true);
-        }
-      });
+      if (hasExistingEntry) {
+        setAlreadySubmitted(true);
+      }
 
       setScoreAdded(true);
     }
-  }, [state.isComplete, playerName, state.attempts, state.foundImages.size, state.hintsUsed, scoreAdded, organizedImages.length]);
+  }, [state.isComplete, playerName, state.attempts, state.foundImages.size, state.skippedImages.size, state.hintsUsed, scoreAdded, hasExistingEntry]);
 
   if (state.isComplete) {
     return (
@@ -221,7 +235,7 @@ export function GameBoard({ playerName, playerFirstName, playerLastName, onExit 
             <span className={styles.statValue}>{state.skippedImages.size}</span>
           </div>
           <div className={styles.statItem}>
-            <span className={styles.statLabel}>Total Attempts:</span>
+            <span className={styles.statLabel}>Total Misses:</span>
             <span className={styles.statValue}>{state.attempts}</span>
           </div>
           <div className={styles.statItem}>
