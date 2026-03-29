@@ -107,6 +107,7 @@ export async function submitScore(
  * Save or update a player's progress. Creates the entry if it doesn't exist,
  * or overwrites it with the latest progress. Used for incremental saves after
  * each image is completed so partial game progress is preserved.
+ * @returns Object indicating save success. Returns false if database unavailable or write fails.
  */
 export async function saveProgress(
   entry: Omit<LeaderboardEntry, 'timestamp'>

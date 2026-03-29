@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { waldoImages, getCongratulationMessage, Difficulty } from '../../utils/imageData';
 import { useGameState } from '../../hooks/useGameState';
 import { getAttemptHistory, addAttempt } from '../../utils/attemptHistory';
@@ -66,6 +66,7 @@ export function GameBoard({ playerName, playerFirstName, playerLastName, onExit 
   const [leaderboardLoading, setLeaderboardLoading] = useState(true);
   const [alreadySubmitted, setAlreadySubmitted] = useState(false);
   const [hasExistingEntry, setHasExistingEntry] = useState<boolean | null>(null);
+  const prevImagesAttempted = useRef(0);
 
   const currentImage = organizedImages[state.currentImageIndex];
   const nextImageData = state.currentImageIndex < organizedImages.length - 1 
@@ -132,19 +133,26 @@ export function GameBoard({ playerName, playerFirstName, playerLastName, onExit 
     setScoreAdded(false);
     setHintRequested(false);
     setAlreadySubmitted(false);
+    prevImagesAttempted.current = 0;
   };
 
   // Check if player already has a leaderboard entry
   useEffect(() => {
-    hasPlayerSubmitted(playerFirstName, playerLastName).then((submitted) => {
-      setHasExistingEntry(submitted);
-    });
+    hasPlayerSubmitted(playerFirstName, playerLastName)
+      .then((submitted) => {
+        setHasExistingEntry(submitted);
+      })
+      .catch((error) => {
+        console.error('Error checking player submission:', error);
+        setHasExistingEntry(false);
+      });
   }, [playerFirstName, playerLastName]);
 
   // Save progress to cloud leaderboard after each image is completed
   const imagesAttempted = state.foundImages.size + state.skippedImages.size;
   useEffect(() => {
-    if (imagesAttempted > 0 && playerName && hasExistingEntry === false) {
+    if (imagesAttempted > prevImagesAttempted.current && playerName && hasExistingEntry === false) {
+      prevImagesAttempted.current = imagesAttempted;
       saveProgress({
         name: playerName,
         firstName: playerFirstName,
